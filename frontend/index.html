@@ -347,7 +347,12 @@
       transition: width .2s, height .2s, background .2s; left: -100px; top: -100px; }
     .cursor.hot { width: 48px; height: 48px; background: rgba(255,255,255,.9); }
   }
-  @media (max-width: 880px) {
+  /* scroll progress bar */
+  .scrollbar { position: fixed; top: 0; left: 0; right: 0; height: 4px; z-index: 96;
+    transform-origin: left; transform: scaleX(0); pointer-events: none;
+    background: linear-gradient(90deg, var(--red) 0 25%, var(--cobalt) 25% 50%, var(--mustard) 50% 75%, var(--forest) 75% 100%); }
+
+  @media (max-width: 640px) {
     .hero { grid-template-columns: 1fr; padding-top: 130px; text-align: center; }
     .hero-sub, .hero-ctas { margin-left: auto; margin-right: auto; justify-content: center; }
     .badge-spin, .badge-center { display: none; }
@@ -389,6 +394,7 @@
 
 <div class="grain"></div>
 <canvas id="confetti"></canvas>
+<div class="scrollbar" id="scrollbar"></div>
 <div class="cursor" id="cursor"></div>
 
 <header id="site-header">
@@ -468,9 +474,22 @@
 
 <!-- PROBLEM (RED) -->
 <section class="problem" id="problem-sec">
-  <div class="deco circle" data-par="-0.12" style="width:180px;height:180px;background:rgba(255,255,255,.14);left:-60px;bottom:40px"></div>
-  <div class="deco ring" data-par="0.1" style="width:120px;height:120px;border:14px solid rgba(0,0,0,.15);right:6%;top:60px"></div>
-  <div class="deco tri" data-par="-0.07" style="border-bottom:46px solid rgba(255,255,255,.16);right:14%;bottom:90px"></div>
+  <svg class="deco" data-par="-0.12" style="width:130px;left:-30px;bottom:40px;opacity:.2" viewBox="0 0 60 90">
+    <rect x="4" y="8" width="52" height="78" rx="10" fill="#fff"/>
+    <ellipse cx="30" cy="10" rx="24" ry="6" fill="rgba(0,0,0,.28)"/>
+    <rect x="4" y="26" width="52" height="9" fill="rgba(0,0,0,.16)"/>
+    <rect x="4" y="62" width="52" height="9" fill="rgba(0,0,0,.16)"/>
+  </svg>
+  <svg class="deco" data-par="0.1" style="width:110px;right:6%;top:60px;opacity:.2" viewBox="0 0 80 80">
+    <circle cx="40" cy="40" r="38" fill="#16140f"/>
+    <circle cx="40" cy="40" r="27" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="4"/>
+    <text x="40" y="53" text-anchor="middle" font-family="Courier Prime" font-size="34" font-weight="700" fill="rgba(255,255,255,.55)">¢</text>
+  </svg>
+  <svg class="deco" data-par="-0.07" style="width:56px;right:14%;bottom:90px;opacity:.22" viewBox="0 0 44 90">
+    <rect x="14" y="4" width="16" height="10" rx="3" fill="rgba(0,0,0,.3)"/>
+    <rect x="12" y="12" width="20" height="18" fill="#fff"/>
+    <rect x="4" y="30" width="36" height="56" rx="9" fill="#fff"/>
+  </svg>
   <h2 class="scrub" id="scrub-h">It's 2 a.m. and Machine 7 <span class="b">sold out again.</span></h2>
   <p class="scrub" id="scrub-p">An empty coil is a sale that never happens. Most operators find out days
     later, on a drive-by, or in a spreadsheet that stopped scaling at machine number three.
@@ -514,11 +533,22 @@
         <div class="vhead">M03 · RIVERSIDE GYM · CONSOLE</div>
         <div class="vstate" data-vs="0">
           <div class="spark-label"><b>ENERGY DRINK</b> · 5.9 SOLD / DAY</div>
-          <svg id="spark" viewBox="0 0 340 120" xmlns="http://www.w3.org/2000/svg">
+          <svg id="spark" viewBox="0 0 340 152" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="sparkfill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#e23b2e" stop-opacity=".22"/>
+                <stop offset="1" stop-color="#e23b2e" stop-opacity="0"/>
+              </linearGradient>
+              <clipPath id="spark-clip"><rect id="spark-clip-rect" x="0" y="0" width="0" height="152"/></clipPath>
+            </defs>
+            <path clip-path="url(#spark-clip)" fill="url(#sparkfill)" stroke="none"
+              d="M0,95 C12,92 20,80 32,84 C44,88 52,70 64,74 C76,78 84,60 96,66 C108,72 116,52 128,58 C140,64 148,44 160,50 C172,56 180,40 192,44 C204,48 212,30 224,36 C236,42 244,26 256,30 C268,34 276,18 288,24 C300,30 308,14 320,18 C328,21 334,12 340,14 L340,110 L0,110 Z"/>
             <line class="axis" x1="0" y1="110" x2="340" y2="110"/>
+            <g id="spark-bars"></g>
             <path id="spark-path" d="M0,95 C12,92 20,80 32,84 C44,88 52,70 64,74 C76,78 84,60 96,66 C108,72 116,52 128,58 C140,64 148,44 160,50 C172,56 180,40 192,44 C204,48 212,30 224,36 C236,42 244,26 256,30 C268,34 276,18 288,24 C300,30 308,14 320,18 C328,21 334,12 340,14"/>
+            <circle id="spark-dot" r="4.5" fill="#e23b2e" opacity="0"/>
           </svg>
-          <div class="spark-note">90 DAYS, SMOOTHED BY WEEKDAY</div>
+          <div class="spark-note">90 DAYS, SMOOTHED BY WEEKDAY · WEEKEND BARS IN RED</div>
         </div>
         <div class="vstate" data-vs="1">
           <div class="receipt" id="receipt">
@@ -600,8 +630,17 @@
 
 <!-- STORY (MUSTARD) -->
 <section class="vend" id="story">
-  <div class="deco circle" data-par="0.08" style="width:220px;height:220px;background:rgba(0,0,0,.08);right:-70px;top:-70px"></div>
-  <div class="deco ring" data-par="-0.06" style="width:90px;height:90px;border:12px solid rgba(255,255,255,.35);left:8%;bottom:30px"></div>
+  <svg class="deco" data-par="0.08" style="width:170px;right:-40px;top:-30px;opacity:.16" viewBox="0 0 80 80">
+    <circle cx="40" cy="40" r="38" fill="#16140f"/>
+    <circle cx="40" cy="40" r="27" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="4"/>
+    <text x="40" y="53" text-anchor="middle" font-family="Courier Prime" font-size="34" font-weight="700" fill="rgba(255,255,255,.55)">¢</text>
+  </svg>
+  <svg class="deco" data-par="-0.06" style="width:80px;left:8%;bottom:30px;opacity:.3" viewBox="0 0 60 90">
+    <rect x="4" y="8" width="52" height="78" rx="10" fill="#fff"/>
+    <ellipse cx="30" cy="10" rx="24" ry="6" fill="rgba(0,0,0,.28)"/>
+    <rect x="4" y="26" width="52" height="9" fill="rgba(0,0,0,.16)"/>
+    <rect x="4" y="62" width="52" height="9" fill="rgba(0,0,0,.16)"/>
+  </svg>
   <div class="shell">
     <div class="cube reveal">🧊</div>
     <div class="reveal">
@@ -616,8 +655,17 @@
 
 <!-- FINAL (INK) -->
 <section class="final">
-  <div class="deco circle" data-par="-0.1" style="width:160px;height:160px;background:rgba(226,59,46,.35);left:6%;top:80px"></div>
-  <div class="deco ring" data-par="0.08" style="width:110px;height:110px;border:13px solid rgba(37,71,208,.5);right:8%;bottom:100px"></div>
+  <svg class="deco" data-par="-0.1" style="width:96px;left:6%;top:80px;opacity:.7" viewBox="0 0 60 90">
+    <rect x="4" y="8" width="52" height="78" rx="10" fill="#e23b2e"/>
+    <ellipse cx="30" cy="10" rx="24" ry="6" fill="rgba(0,0,0,.3)"/>
+    <rect x="4" y="26" width="52" height="9" fill="rgba(0,0,0,.2)"/>
+    <rect x="4" y="62" width="52" height="9" fill="rgba(0,0,0,.2)"/>
+  </svg>
+  <svg class="deco" data-par="0.08" style="width:100px;right:8%;bottom:100px;opacity:.75" viewBox="0 0 80 80">
+    <circle cx="40" cy="40" r="38" fill="#2547d0"/>
+    <circle cx="40" cy="40" r="27" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="4"/>
+    <text x="40" y="53" text-anchor="middle" font-family="Courier Prime" font-size="34" font-weight="700" fill="rgba(255,255,255,.6)">¢</text>
+  </svg>
   <h2 id="final-h">Stop counting <span class="fr">cans.</span></h2>
   <p class="reveal">Your fleet already knows what it needs. Go approve it.</p>
   <a class="big-cta magnetic reveal" href="login.html">OPEN THE OWNER CONSOLE →</a>
@@ -777,11 +825,35 @@ const sparkPath = document.getElementById('spark-path');
 const sparkLen = sparkPath.getTotalLength();
 sparkPath.style.strokeDasharray = sparkLen;
 sparkPath.style.strokeDashoffset = sparkLen;
+const sparkClip = document.getElementById('spark-clip-rect');
+const sparkDot = document.getElementById('spark-dot');
+const BAR_H = [20, 15, 16, 18, 14, 30, 26];
+const sparkBars = BAR_H.map((h, i) => {
+  const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  r.setAttribute('x', 21 + i * 44); r.setAttribute('width', 34); r.setAttribute('rx', 3);
+  r.setAttribute('y', 148); r.setAttribute('height', 0.01);
+  r.setAttribute('fill', i >= 5 ? '#e23b2e' : '#efaf1b');
+  document.getElementById('spark-bars').appendChild(r);
+  return r;
+});
+function sparkAt(sp) {
+  sparkPath.style.strokeDashoffset = sparkLen * (1 - sp);
+  sparkClip.setAttribute('width', 340 * sp);
+  if (sp > 0.01) {
+    const pt = sparkPath.getPointAtLength(sparkLen * sp);
+    sparkDot.setAttribute('cx', pt.x); sparkDot.setAttribute('cy', pt.y);
+    sparkDot.setAttribute('opacity', 1);
+  } else sparkDot.setAttribute('opacity', 0);
+  sparkBars.forEach((b, i) => {
+    const bh = BAR_H[i] * ease3(clamp((sp - i * .08) / .4, 0, 1));
+    b.setAttribute('y', 148 - bh); b.setAttribute('height', Math.max(0.01, bh));
+  });
+}
 const rLines = [...document.querySelectorAll('#receipt .rline')];
 const dStamp = document.getElementById('decide-stamp');
 const dLog = document.getElementById('decide-log');
 const decos = [...document.querySelectorAll('.deco')];
-const mobile = () => innerWidth <= 880;
+const mobile = () => innerWidth <= 640;
 const ease3 = p => 1 - Math.pow(1 - p, 3);
 
 /* stacked guardrail cards (Apple-style card pin) */
@@ -817,9 +889,15 @@ if (!reduced) {
 }
 let lastY = scrollY, vel = 0;
 
+const scrollbarEl = document.getElementById('scrollbar');
+let sparkStatic = false;
+
 function frame() {
   const y = scrollY, vh = innerHeight;
   const dy = y - lastY; lastY = y; vel = vel * .88 + dy * .12;
+
+  scrollbarEl.style.transform = `scaleX(${clamp(y / ((document.documentElement.scrollHeight - vh) || 1), 0, 1)})`;
+  if (mobile() && !sparkStatic) { sparkAt(1); sparkStatic = true; }
 
   const hp = clamp(y / (vh * .9), 0, 1);
   if (!mobile()) {
@@ -919,7 +997,8 @@ function frame() {
       d.style.width = (clamp((p - i * seg) / seg, 0, 1) * 100) + '%';
     });
     const lp = i => clamp((p - i * seg) / seg, 0, 1);
-    sparkPath.style.strokeDashoffset = sparkLen * (1 - clamp(lp(0) * 1.35, 0, 1));
+    sparkAt(clamp(lp(0) * 1.35, 0, 1));
+    sparkStatic = false;
     const shown = Math.floor(clamp(lp(1) * 1.25, 0, 1) * rLines.length);
     rLines.forEach((l, i) => l.classList.toggle('on', i < shown));
     const sp = clamp((lp(2) - .25) / .3, 0, 1);
@@ -933,7 +1012,7 @@ function frame() {
 if (!reduced) requestAnimationFrame(frame);
 else {
   rLines.forEach(l => l.classList.add('on'));
-  sparkPath.style.strokeDashoffset = 0;
+  sparkAt(1);
 }
 
 /* ---- confetti: drifting geometric shapes ---- */
@@ -947,36 +1026,51 @@ else {
     cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
   }
   size(); addEventListener('resize', size);
-  const N = Math.min(26, Math.floor(innerWidth / 55));
-  const TYPES = ['circle', 'square', 'tri', 'cross', 'semi'];
+  const N = Math.min(24, Math.floor(innerWidth / 60));
+  const TYPES = ['can', 'coin', 'bottle', 'can', 'coin'];
   for (let i = 0; i < N; i++) P.push({
     x: Math.random(), y: Math.random(),
-    s: (Math.random() * 6 + 5) * devicePixelRatio,
+    s: (Math.random() * 8 + 9) * devicePixelRatio,
     v: Math.random() * .00022 + .00008,
     sway: Math.random() * .0008 + .0003,
     ph: Math.random() * Math.PI * 2,
-    rot: Math.random() * Math.PI * 2,
-    vr: (Math.random() - .5) * .012,
+    tilt: (Math.random() - .5) * .5,
     color: PALETTE[i % PALETTE.length],
     type: TYPES[i % TYPES.length],
-    o: Math.random() * .3 + .18,
+    o: Math.random() * .3 + .2,
   });
   function shape(p, x, y) {
     ctx.save();
-    ctx.translate(x, y); ctx.rotate(p.rot);
-    ctx.globalAlpha = p.o; ctx.fillStyle = p.color;
+    ctx.translate(x, y);
+    ctx.rotate(p.tilt + Math.sin(p.ph * .9) * .3);  /* flutter, not spin */
+    ctx.globalAlpha = p.o;
     const s = p.s;
-    if (p.type === 'circle') { ctx.beginPath(); ctx.arc(0, 0, s * .6, 0, Math.PI * 2); ctx.fill(); }
-    else if (p.type === 'square') { ctx.fillRect(-s * .5, -s * .5, s, s); }
-    else if (p.type === 'tri') { ctx.beginPath(); ctx.moveTo(0, -s * .6); ctx.lineTo(s * .55, s * .45); ctx.lineTo(-s * .55, s * .45); ctx.closePath(); ctx.fill(); }
-    else if (p.type === 'semi') { ctx.beginPath(); ctx.arc(0, 0, s * .6, 0, Math.PI); ctx.fill(); }
-    else { ctx.fillRect(-s * .5, -s * .16, s, s * .32); ctx.fillRect(-s * .16, -s * .5, s * .32, s); }
+    if (p.type === 'can') {
+      ctx.fillStyle = p.color;
+      const w = s * .72;
+      ctx.beginPath(); ctx.roundRect(-w / 2, -s / 2, w, s, s * .16); ctx.fill();
+      ctx.fillStyle = 'rgba(0,0,0,.28)';
+      ctx.fillRect(-w / 2, -s / 2 + s * .18, w, s * .1);
+      ctx.fillRect(-w / 2, s / 2 - s * .26, w, s * .1);
+    } else if (p.type === 'coin') {
+      ctx.fillStyle = p.color;
+      ctx.beginPath(); ctx.arc(0, 0, s * .5, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,.3)'; ctx.lineWidth = Math.max(1, s * .08);
+      ctx.beginPath(); ctx.arc(0, 0, s * .32, 0, Math.PI * 2); ctx.stroke();
+    } else {
+      ctx.fillStyle = p.color;
+      const w = s * .5;
+      ctx.beginPath(); ctx.roundRect(-w / 2, -s * .12, w, s * .62, s * .12); ctx.fill();
+      ctx.fillRect(-s * .11, -s * .42, s * .22, s * .34);
+      ctx.fillStyle = 'rgba(0,0,0,.35)';
+      ctx.fillRect(-s * .13, -s * .5, s * .26, s * .1);
+    }
     ctx.restore();
   }
   function draw() {
     ctx.clearRect(0, 0, W, H);
     P.forEach(p => {
-      p.y += p.v; p.ph += .008; p.rot += p.vr;
+      p.y += p.v; p.ph += .008;
       if (p.y > 1.03) { p.y = -.03; p.x = Math.random(); }
       shape(p, (p.x + Math.sin(p.ph) * p.sway * 30) * W, p.y * H);
     });

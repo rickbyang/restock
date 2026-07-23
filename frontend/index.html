@@ -3,71 +3,72 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Restock — The fleet thinks. You decide.</title>
+<title>Restock. The fleet thinks. You decide.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;900&family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --void: #0b0908; --soot: #14100e; --card: #1c1614; --line: #2e2521;
-    --cream: #f4ece0; --cream-dim: #b3a48f; --faint: #7c6f5e;
-    --ember: #ff4d00; --amber: #ffb200; --good: #43d17c; --bad: #ff5449;
+    --paper: #f2ecdf; --paper-2: #eae2d0; --card: #f9f5eb; --line: #d9cfb8;
+    --ink: #241f18; --ink-dim: #6f6553; --faint: #9a917d;
+    --accent: #b4441c; --ochre: #96690a; --moss: #43682f; --brick: #a03428;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
-    background: var(--void); color: var(--cream);
-    font-family: "Archivo", -apple-system, sans-serif;
+    background: var(--paper); color: var(--ink);
+    font-family: "Newsreader", Georgia, serif;
     overflow-x: hidden; cursor: default;
   }
-  ::selection { background: var(--ember); color: #fff; }
-  .mono { font-family: "Space Mono", monospace; }
-  em { font-family: "Instrument Serif", serif; font-style: italic; }
+  ::selection { background: var(--accent); color: var(--paper); }
+  .label { font-family: "Courier Prime", monospace; }
+  em { font-family: "Fraunces", serif; font-style: italic; }
 
   /* ---- film grain ---- */
   .grain {
-    position: fixed; inset: -100%; pointer-events: none; opacity: .05; z-index: 90;
+    position: fixed; inset: -100%; pointer-events: none; opacity: .07; z-index: 90;
+    mix-blend-mode: multiply;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
     animation: grain .9s steps(4) infinite;
   }
   @keyframes grain { 0%{transform:translate(0,0)} 25%{transform:translate(-2%,1%)} 50%{transform:translate(1%,-2%)} 75%{transform:translate(-1%,2%)} 100%{transform:translate(2%,-1%)} }
 
-  /* ---- preloader ---- */
+  /* ---- preloader: film leader ---- */
   #boot {
-    position: fixed; inset: 0; background: var(--void); z-index: 100;
+    position: fixed; inset: 0; background: var(--paper); z-index: 100;
     display: grid; place-items: center; transition: opacity .5s, visibility .5s;
   }
   #boot.gone { opacity: 0; visibility: hidden; }
-  .boot-inner { text-align: center; font-family: "Space Mono", monospace; }
+  .boot-inner { text-align: center; font-family: "Courier Prime", monospace; }
   .boot-inner .t { font-size: 12px; letter-spacing: .3em; color: var(--faint); margin-bottom: 14px; }
-  .boot-inner .pct { font-size: 54px; color: var(--cream); font-weight: 700; }
+  .boot-inner .pct { font-size: 54px; color: var(--ink); font-weight: 700; }
   .boot-bar { width: 180px; height: 2px; background: var(--line); margin: 18px auto 0; overflow: hidden; }
-  .boot-bar i { display: block; height: 100%; width: 0; background: var(--ember); }
+  .boot-bar i { display: block; height: 100%; width: 0; background: var(--accent); }
 
-  /* ---- glows / parallax layers ---- */
+  /* ---- soft washes / parallax layers ---- */
   .blob { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; will-change: transform; }
   .blob.a { width: 75vmax; height: 75vmax; top: -30vmax; right: -25vmax;
-    background: radial-gradient(circle, rgba(255,77,0,.14) 0%, transparent 60%); }
+    background: radial-gradient(circle, rgba(180,68,28,.09) 0%, transparent 60%); }
   .blob.b { width: 60vmax; height: 60vmax; bottom: -35vmax; left: -25vmax;
-    background: radial-gradient(circle, rgba(255,178,0,.08) 0%, transparent 60%); }
+    background: radial-gradient(circle, rgba(150,105,10,.08) 0%, transparent 60%); }
 
   /* ---- nav ---- */
   header {
     position: fixed; top: 0; left: 0; right: 0; z-index: 40;
     display: flex; align-items: center; padding: 20px 40px; gap: 14px;
-    background: linear-gradient(180deg, rgba(11,9,8,.9), transparent);
+    background: linear-gradient(180deg, rgba(242,236,223,.92), transparent);
   }
-  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; }
-  .logo-mark { width: 30px; height: 30px; border-radius: 9px; color: #1a0d00;
-    background: linear-gradient(135deg, var(--amber) -20%, var(--ember) 80%);
-    display: grid; place-items: center; font-size: 15px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: "Fraunces", serif; font-weight: 600; font-size: 19px; }
+  .logo-mark { width: 30px; height: 30px; border-radius: 9px; color: var(--paper);
+    background: var(--accent); display: grid; place-items: center; font-size: 15px; }
   header nav { margin-left: auto; display: flex; gap: 26px; align-items: center; }
-  header nav a { color: var(--cream-dim); text-decoration: none; font-size: 14px; transition: color .2s; }
-  header nav a:hover { color: var(--cream); }
+  header nav a { color: var(--ink-dim); text-decoration: none; font-size: 15px; transition: color .2s; }
+  header nav a:hover { color: var(--ink); }
   .cta-mini {
-    color: var(--cream) !important; border: 1px solid var(--line); padding: 9px 18px; border-radius: 999px;
-    transition: border-color .2s, background .2s, transform .15s !important;
+    font-family: "Courier Prime", monospace; font-size: 13px !important; letter-spacing: .08em;
+    color: var(--ink) !important; border: 1px solid var(--ink); padding: 9px 18px; border-radius: 999px;
+    transition: background .2s, color .2s !important;
   }
-  .cta-mini:hover { border-color: var(--ember); background: rgba(255,77,0,.1); }
+  .cta-mini:hover { background: var(--ink); color: var(--paper) !important; }
 
   section { position: relative; z-index: 1; }
 
@@ -76,52 +77,52 @@
     min-height: 100vh; display: grid; grid-template-columns: 1.25fr 1fr; align-items: center;
     max-width: 1200px; margin: 0 auto; padding: 120px 40px 60px; gap: 40px;
   }
-  .eyebrow { font-family:"Space Mono",monospace; font-size: 11.5px; letter-spacing: .3em; color: var(--ember); margin-bottom: 22px; }
-  h1 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: clamp(52px, 7.2vw, 104px); line-height: .98; letter-spacing: -.01em; }
+  .eyebrow { font-family: "Courier Prime", monospace; font-size: 12px; letter-spacing: .3em; color: var(--accent); margin-bottom: 22px; }
+  h1 { font-family: "Fraunces", serif; font-weight: 380; font-size: clamp(52px, 7.2vw, 104px); line-height: .98; letter-spacing: -.015em; }
   h1 .w { display: inline-block; overflow: hidden; vertical-align: bottom; }
   h1 .w span { display: inline-block; transform: translateY(110%); transition: transform .9s cubic-bezier(.2,.85,.25,1); }
   h1.in .w span { transform: translateY(0); }
-  h1 .accent { color: var(--amber); font-style: italic; }
-  .hero-sub { color: var(--cream-dim); font-size: 17.5px; line-height: 1.65; max-width: 480px; margin: 28px 0 36px;
+  h1 .accent { color: var(--accent); font-style: italic; }
+  .hero-sub { color: var(--ink-dim); font-size: 19px; line-height: 1.6; max-width: 480px; margin: 28px 0 36px;
     opacity: 0; transform: translateY(16px); transition: all .7s ease .55s; }
   .hero.in .hero-sub { opacity: 1; transform: none; }
   .hero-ctas { display: flex; gap: 16px; opacity: 0; transform: translateY(16px); transition: all .7s ease .7s; }
   .hero.in .hero-ctas { opacity: 1; transform: none; }
   .btn {
-    display: inline-block; text-decoration: none; border-radius: 12px; padding: 15px 28px;
-    font-weight: 600; font-size: 15px; transition: transform .15s, box-shadow .25s, background .2s;
-    will-change: transform;
+    display: inline-block; text-decoration: none; border-radius: 999px; padding: 15px 28px;
+    font-family: "Courier Prime", monospace; font-weight: 700; font-size: 14px; letter-spacing: .06em;
+    transition: transform .15s, box-shadow .25s, background .2s, color .2s; will-change: transform;
   }
-  .btn.primary { background: var(--ember); color: #fff; }
-  .btn.primary:hover { box-shadow: 0 14px 40px rgba(255,77,0,.4); }
-  .btn.ghost { color: var(--cream); border: 1px solid var(--line); }
-  .btn.ghost:hover { border-color: var(--cream-dim); }
+  .btn.primary { background: var(--accent); color: var(--paper); }
+  .btn.primary:hover { box-shadow: 0 14px 36px rgba(180,68,28,.35); }
+  .btn.ghost { color: var(--ink); border: 1px solid var(--line); }
+  .btn.ghost:hover { border-color: var(--ink); }
 
   /* ---- vending machine ---- */
   .machine-wrap { position: relative; display: grid; place-items: center;
     opacity: 0; transform: translateY(30px) rotate(1deg); transition: all 1s cubic-bezier(.2,.85,.25,1) .45s; }
   .hero.in .machine-wrap { opacity: 1; transform: none; }
-  .machine-wrap svg { width: min(330px, 80vw); filter: drop-shadow(0 30px 60px rgba(0,0,0,.55)); }
+  .machine-wrap svg { width: min(330px, 80vw); filter: drop-shadow(0 30px 50px rgba(36,31,24,.28)); }
   .can { transition: transform .1s; transform-box: fill-box; transform-origin: center; }
   .can.drop { animation: candrop .8s cubic-bezier(.5,0,.8,.4) forwards; }
   @keyframes candrop { 0% { transform: translateY(0); opacity: 1; } 85% { transform: translateY(150px); opacity: 1; } 100% { transform: translateY(150px); opacity: 0; } }
   .tray-glow { opacity: 0; transition: opacity .15s; }
   .tray-glow.on { opacity: 1; }
-  .press-hint { position: absolute; bottom: -34px; font-family:"Space Mono",monospace; font-size: 11px;
-    letter-spacing: .2em; color: var(--faint); }
-  .press-hint b { color: var(--amber); }
+  .press-hint { position: absolute; bottom: -34px; font-family: "Courier Prime", monospace; font-size: 12px;
+    letter-spacing: .18em; color: var(--faint); }
+  .press-hint b { color: var(--accent); }
 
   /* ---- ticker ---- */
   .ticker { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-    overflow: hidden; padding: 15px 0; background: rgba(20,16,14,.6); position: relative; z-index: 1; }
+    overflow: hidden; padding: 15px 0; background: var(--paper-2); position: relative; z-index: 1; }
   .ticker-track { display: flex; gap: 48px; width: max-content; animation: tick 36s linear infinite; }
   .ticker:hover .ticker-track { animation-play-state: paused; }
   @keyframes tick { to { transform: translateX(-50%); } }
-  .tick-item { font-family: "Space Mono", monospace; font-size: 12.5px; letter-spacing: .06em;
-    color: var(--cream-dim); white-space: nowrap; display: flex; gap: 10px; align-items: center; }
+  .tick-item { font-family: "Courier Prime", monospace; font-size: 13px; letter-spacing: .05em;
+    color: var(--ink-dim); white-space: nowrap; display: flex; gap: 10px; align-items: center; }
   .tick-item::before { content: "●"; font-size: 8px; }
-  .tick-item.red::before { color: var(--bad); } .tick-item.amber::before { color: var(--amber); }
-  .tick-item.green::before { color: var(--good); } .tick-item.ember::before { color: var(--ember); }
+  .tick-item.red::before { color: var(--brick); } .tick-item.amber::before { color: var(--ochre); }
+  .tick-item.green::before { color: var(--moss); } .tick-item.ember::before { color: var(--accent); }
 
   /* ---- generic section shell ---- */
   .shell { max-width: 1100px; margin: 0 auto; padding: 130px 40px; }
@@ -131,97 +132,99 @@
 
   /* ---- problem ---- */
   .problem { text-align: center; padding: 170px 40px; }
-  .problem h2 { font-family: "Instrument Serif", serif; font-weight: 400;
+  .problem h2 { font-family: "Fraunces", serif; font-weight: 380;
     font-size: clamp(38px, 5.5vw, 72px); line-height: 1.12; max-width: 850px; margin: 0 auto 26px; }
-  .problem h2 .bad { color: var(--bad); }
-  .problem p { color: var(--cream-dim); font-size: 17px; max-width: 560px; margin: 0 auto; line-height: 1.7; }
+  .problem h2 .bad { color: var(--brick); font-style: italic; }
+  .problem p { color: var(--ink-dim); font-size: 18px; max-width: 560px; margin: 0 auto; line-height: 1.7; }
 
   /* ---- acts ---- */
   .act { display: grid; grid-template-columns: auto 1fr; gap: 46px; align-items: start;
     padding: 70px 0; border-top: 1px solid var(--line); }
-  .act-num { font-family: "Space Mono", monospace; font-size: 15px; color: var(--ember);
+  .act-num { font-family: "Courier Prime", monospace; font-size: 14px; color: var(--accent);
     padding-top: 14px; letter-spacing: .2em; }
-  .act h3 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: clamp(30px, 3.6vw, 46px); margin-bottom: 14px; }
-  .act p { color: var(--cream-dim); font-size: 16.5px; line-height: 1.7; max-width: 560px; }
-  .act .kicker { font-family:"Space Mono",monospace; font-size: 11px; letter-spacing: .25em; color: var(--faint); margin-bottom: 10px; }
+  .act h3 { font-family: "Fraunces", serif; font-weight: 420; font-size: clamp(30px, 3.6vw, 46px); margin-bottom: 14px; }
+  .act p { color: var(--ink-dim); font-size: 17.5px; line-height: 1.7; max-width: 560px; }
+  .act .kicker { font-family: "Courier Prime", monospace; font-size: 11.5px; letter-spacing: .25em; color: var(--faint); margin-bottom: 10px; }
 
   /* ---- guardrails ---- */
   .rails-head { text-align: center; margin-bottom: 64px; }
-  .rails-head h2 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: clamp(36px, 4.6vw, 60px); margin-bottom: 14px; }
-  .rails-head p { color: var(--cream-dim); font-size: 16.5px; }
+  .rails-head h2 { font-family: "Fraunces", serif; font-weight: 380; font-size: clamp(36px, 4.6vw, 60px); margin-bottom: 14px; }
+  .rails-head p { color: var(--ink-dim); font-size: 17.5px; }
   .rails { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
   .rail {
-    background: linear-gradient(180deg, var(--card), var(--soot));
+    background: var(--card);
     border: 1px solid var(--line); border-radius: 18px; padding: 28px; min-height: 240px;
-    transition: transform .25s, border-color .25s; position: relative; overflow: hidden;
+    transition: transform .25s, box-shadow .25s; position: relative; overflow: hidden;
+    box-shadow: 0 2px 10px rgba(36,31,24,.05);
   }
-  .rail:hover { transform: translateY(-6px); border-color: #453329; }
-  .rail .tag { font-family:"Space Mono",monospace; font-size: 10.5px; letter-spacing: .25em; color: var(--ember); margin-bottom: 14px; }
-  .rail h4 { font-size: 19px; margin-bottom: 8px; }
-  .rail p { color: var(--cream-dim); font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+  .rail:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(36,31,24,.1); }
+  .rail .tag { font-family: "Courier Prime", monospace; font-size: 11px; letter-spacing: .25em; color: var(--accent); margin-bottom: 14px; }
+  .rail h4 { font-family: "Fraunces", serif; font-weight: 500; font-size: 21px; margin-bottom: 8px; }
+  .rail p { color: var(--ink-dim); font-size: 15.5px; line-height: 1.6; margin-bottom: 20px; }
 
-  .capdemo .bar { height: 10px; background: var(--void); border-radius: 999px; overflow: hidden; }
+  .capdemo .bar { height: 10px; background: var(--paper-2); border-radius: 999px; overflow: hidden; border: 1px solid var(--line); }
   .capdemo .fill { height: 100%; width: 0%; border-radius: 999px;
-    background: linear-gradient(90deg, var(--amber), var(--ember)); transition: width 1.6s cubic-bezier(.6,0,.3,1); }
-  .capdemo .lbl { display: flex; justify-content: space-between; font-family:"Space Mono",monospace; font-size: 11px; color: var(--faint); margin-top: 8px; }
+    background: var(--ochre); transition: width 1.6s cubic-bezier(.6,0,.3,1); }
+  .capdemo .lbl { display: flex; justify-content: space-between; font-family: "Courier Prime", monospace; font-size: 11.5px; color: var(--faint); margin-top: 8px; }
   .stamp {
-    position: absolute; right: 22px; bottom: 20px; font-family:"Space Mono",monospace; font-weight: 700;
-    color: var(--bad); border: 2px solid var(--bad); border-radius: 8px; padding: 5px 12px; font-size: 14px;
+    position: absolute; right: 22px; bottom: 20px; font-family: "Courier Prime", monospace; font-weight: 700;
+    color: var(--brick); border: 2px solid var(--brick); border-radius: 8px; padding: 5px 12px; font-size: 14px;
     letter-spacing: .15em; transform: rotate(-8deg) scale(3); opacity: 0; transition: all .3s cubic-bezier(.4,1.6,.5,1);
   }
   .stamp.on { opacity: 1; transform: rotate(-8deg) scale(1); }
 
-  .pricetag { display: inline-flex; align-items: center; gap: 10px; background: var(--void);
-    border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-family:"Space Mono",monospace; font-size: 13px; }
-  .pricetag .old { color: var(--cream); }
-  .floorflag { display: inline-block; margin-top: 12px; color: var(--amber); background: rgba(255,178,0,.12);
-    font-size: 12px; font-weight: 600; border-radius: 8px; padding: 5px 10px;
+  .pricetag { display: inline-flex; align-items: center; gap: 10px; background: var(--paper-2);
+    border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-family: "Courier Prime", monospace; font-size: 13px; }
+  .pricetag .old { color: var(--ink); }
+  .floorflag { display: inline-block; margin-top: 12px; color: var(--ochre); background: rgba(150,105,10,.1);
+    font-size: 13px; font-weight: 600; border-radius: 8px; padding: 5px 10px;
     opacity: 0; transform: translateY(8px); transition: all .4s ease .8s; }
   .rail.in .floorflag { opacity: 1; transform: none; }
 
-  .auditdemo { font-family: "Space Mono", monospace; font-size: 11.5px; color: var(--cream-dim);
-    background: var(--void); border-radius: 10px; padding: 14px; min-height: 110px; line-height: 1.9; }
+  .auditdemo { font-family: "Courier Prime", monospace; font-size: 12px; color: var(--ink-dim);
+    background: var(--paper-2); border: 1px solid var(--line); border-radius: 10px; padding: 14px; min-height: 110px; line-height: 1.9; }
   .auditdemo .ln { opacity: 0; transform: translateX(-6px); transition: all .4s ease; display: block; }
   .auditdemo .ln.on { opacity: 1; transform: none; }
-  .auditdemo .ok { color: var(--good); }
+  .auditdemo .ok { color: var(--moss); font-weight: 700; }
 
   /* ---- stats ---- */
   .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; text-align: center; }
-  .stat .n { font-family: "Instrument Serif", serif; font-size: clamp(48px, 6vw, 84px); color: var(--cream); line-height: 1; }
-  .stat .n b { color: var(--ember); font-weight: 400; }
-  .stat .l { font-family:"Space Mono",monospace; font-size: 11px; letter-spacing: .22em; color: var(--faint); margin-top: 10px; }
+  .stat .n { font-family: "Fraunces", serif; font-weight: 380; font-size: clamp(48px, 6vw, 84px); color: var(--ink); line-height: 1; }
+  .stat .n b { color: var(--accent); font-weight: 380; }
+  .stat .l { font-family: "Courier Prime", monospace; font-size: 11.5px; letter-spacing: .22em; color: var(--faint); margin-top: 10px; }
 
   /* ---- vend story ---- */
-  .vend { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(20,16,14,.5); }
+  .vend { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--paper-2); }
   .vend .shell { display: grid; grid-template-columns: auto 1fr; gap: 40px; align-items: center; padding: 90px 40px; }
   .vend .cube { font-size: 58px; filter: grayscale(.2); animation: floaty 4s ease-in-out infinite alternate; }
   @keyframes floaty { to { transform: translateY(-12px) rotate(6deg); } }
-  .vend h2 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: clamp(26px, 3vw, 38px); margin-bottom: 12px; }
-  .vend p { color: var(--cream-dim); line-height: 1.7; max-width: 640px; font-size: 15.5px; }
+  .vend h2 { font-family: "Fraunces", serif; font-weight: 420; font-size: clamp(26px, 3vw, 38px); margin-bottom: 12px; }
+  .vend p { color: var(--ink-dim); line-height: 1.7; max-width: 640px; font-size: 17px; }
 
   /* ---- final cta ---- */
   .final { text-align: center; padding: 170px 40px 130px; }
-  .final h2 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: clamp(44px, 6vw, 84px); line-height: 1.05; margin-bottom: 20px; }
-  .final p { color: var(--cream-dim); font-size: 17px; margin-bottom: 42px; }
+  .final h2 { font-family: "Fraunces", serif; font-weight: 380; font-size: clamp(44px, 6vw, 84px); line-height: 1.05; margin-bottom: 20px; }
+  .final p { color: var(--ink-dim); font-size: 18px; margin-bottom: 42px; }
   .big-cta {
-    display: inline-block; text-decoration: none; background: var(--ember); color: #fff;
-    font-size: 18px; font-weight: 700; padding: 20px 46px; border-radius: 16px;
+    display: inline-block; text-decoration: none; background: var(--accent); color: var(--paper);
+    font-family: "Courier Prime", monospace; font-size: 16px; font-weight: 700; letter-spacing: .06em;
+    padding: 20px 46px; border-radius: 999px;
     transition: transform .15s, box-shadow .3s; will-change: transform;
   }
-  .big-cta:hover { box-shadow: 0 20px 60px rgba(255,77,0,.45); }
+  .big-cta:hover { box-shadow: 0 20px 50px rgba(180,68,28,.4); }
 
   footer { border-top: 1px solid var(--line); padding: 34px 40px; display: flex; gap: 24px; align-items: center;
-    color: var(--faint); font-size: 13px; position: relative; z-index: 1; flex-wrap: wrap; }
-  footer a { color: var(--cream-dim); text-decoration: none; }
-  footer a:hover { color: var(--amber); }
-  footer .right { margin-left: auto; font-family:"Space Mono",monospace; font-size: 11px; letter-spacing: .15em; }
+    color: var(--faint); font-size: 14px; position: relative; z-index: 1; flex-wrap: wrap; }
+  footer a { color: var(--ink-dim); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+  footer .right { margin-left: auto; font-family: "Courier Prime", monospace; font-size: 11px; letter-spacing: .15em; }
 
   /* ---- cursor ---- */
   @media (pointer: fine) {
-    .cursor { position: fixed; width: 22px; height: 22px; border: 1.5px solid rgba(244,236,224,.55);
+    .cursor { position: fixed; width: 22px; height: 22px; border: 1.5px solid rgba(36,31,24,.45);
       border-radius: 50%; pointer-events: none; z-index: 95; transform: translate(-50%,-50%);
       transition: width .2s, height .2s, border-color .2s, background .2s; left: -100px; top: -100px; }
-    .cursor.hot { width: 46px; height: 46px; border-color: var(--ember); background: rgba(255,77,0,.08); }
+    .cursor.hot { width: 46px; height: 46px; border-color: var(--accent); background: rgba(180,68,28,.07); }
   }
   @media (max-width: 880px) {
     .hero { grid-template-columns: 1fr; padding-top: 130px; text-align: center; }
@@ -237,7 +240,7 @@
 </head>
 <body>
 <div id="boot"><div class="boot-inner">
-  <div class="t">RESTOCK OS · v0.9</div>
+  <div class="t">RESTOCK · REEL 01</div>
   <div class="pct" id="boot-pct">0%</div>
   <div class="boot-bar"><i id="boot-bar"></i></div>
 </div></div>
@@ -251,83 +254,84 @@
   <div class="logo"><div class="logo-mark">⟳</div>Restock</div>
   <nav>
     <a href="#how">How it works</a>
-    <a href="#rails">Guardrails</a>
+    <a href="#rails">House rules</a>
     <a href="#story">Why</a>
-    <a class="cta-mini" href="login.html">Owner login</a>
+    <a class="cta-mini" href="login.html">OWNER LOGIN</a>
   </nav>
 </header>
 
 <!-- HERO -->
 <section class="hero" id="hero">
   <div>
-    <div class="eyebrow">AUTONOMOUS VENDING OPS · FLEET 010</div>
+    <div class="eyebrow">RESTOCK · A FLEET OF TEN</div>
     <h1 id="headline">
       <span class="w"><span>The</span></span> <span class="w"><span>fleet</span></span> <span class="w"><span class="accent">thinks.</span></span><br>
       <span class="w"><span>You</span></span> <span class="w"><span class="accent">decide.</span></span>
     </h1>
-    <p class="hero-sub">Restock watches every machine you own, forecasts what sells out and when,
-      and drafts the purchase order — then waits for your tap. It never spends a cent on its own.</p>
+    <p class="hero-sub">Restock reads the sales from every machine you own, works out what will
+      run dry and when, then writes the purchase order and waits. Not a cent moves without
+      your approval.</p>
     <div class="hero-ctas">
-      <a class="btn primary magnetic" href="login.html">Enter the console</a>
-      <a class="btn ghost magnetic" href="#how">See how it works</a>
+      <a class="btn primary magnetic" href="login.html">ENTER THE CONSOLE</a>
+      <a class="btn ghost magnetic" href="#how">SEE HOW IT WORKS</a>
     </div>
   </div>
   <div class="machine-wrap">
     <svg viewBox="0 0 300 460" id="vm" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#231b17"/><stop offset="1" stop-color="#140f0d"/>
+          <stop offset="0" stop-color="#33291f"/><stop offset="1" stop-color="#211a13"/>
         </linearGradient>
         <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#0e0b0a"/><stop offset="1" stop-color="#070505"/>
+          <stop offset="0" stop-color="#171208"/><stop offset="1" stop-color="#0d0a05"/>
         </linearGradient>
       </defs>
-      <rect x="10" y="10" width="280" height="440" rx="22" fill="url(#body)" stroke="#3a2d26" stroke-width="2"/>
-      <rect x="30" y="34" width="180" height="290" rx="12" fill="url(#glass)" stroke="#2e2521"/>
+      <rect x="10" y="10" width="280" height="440" rx="22" fill="url(#body)" stroke="#4a3c2c" stroke-width="2"/>
+      <rect x="30" y="34" width="180" height="290" rx="12" fill="url(#glass)" stroke="#3a2f22"/>
       <!-- shelves & cans -->
       <g id="cans"></g>
-      <line x1="34" y1="128" x2="206" y2="128" stroke="#2e2521" stroke-width="2"/>
-      <line x1="34" y1="222" x2="206" y2="222" stroke="#2e2521" stroke-width="2"/>
-      <line x1="34" y1="316" x2="206" y2="316" stroke="#2e2521" stroke-width="2"/>
+      <line x1="34" y1="128" x2="206" y2="128" stroke="#3a2f22" stroke-width="2"/>
+      <line x1="34" y1="222" x2="206" y2="222" stroke="#3a2f22" stroke-width="2"/>
+      <line x1="34" y1="316" x2="206" y2="316" stroke="#3a2f22" stroke-width="2"/>
       <!-- side panel -->
-      <rect x="224" y="34" width="52" height="130" rx="10" fill="#0e0b0a" stroke="#2e2521"/>
-      <text x="250" y="66" text-anchor="middle" font-family="Space Mono" font-size="15" fill="#ffb200" id="vm-price">$2.00</text>
-      <g font-family="Space Mono" font-size="9" fill="#7c6f5e" text-anchor="middle">
+      <rect x="224" y="34" width="52" height="130" rx="10" fill="#171208" stroke="#3a2f22"/>
+      <text x="250" y="66" text-anchor="middle" font-family="Courier Prime" font-size="15" fill="#d9a54a" id="vm-price">$2.00</text>
+      <g font-family="Courier Prime" font-size="9" fill="#8a7a60" text-anchor="middle">
         <text x="250" y="92">A1 B2</text><text x="250" y="110">C3 B4</text>
       </g>
-      <rect x="232" y="122" width="36" height="26" rx="6" fill="#1c1614" stroke="#3a2d26" id="vm-btn" style="cursor:pointer"/>
-      <text x="250" y="139" text-anchor="middle" font-family="Space Mono" font-size="10" fill="#ff4d00" style="pointer-events:none">B4</text>
+      <rect x="232" y="122" width="36" height="26" rx="6" fill="#2b2218" stroke="#4a3c2c" id="vm-btn" style="cursor:pointer"/>
+      <text x="250" y="139" text-anchor="middle" font-family="Courier Prime" font-size="10" fill="#e06a3a" style="pointer-events:none">B4</text>
       <!-- coin slot -->
-      <rect x="243" y="180" width="14" height="3" rx="1.5" fill="#3a2d26"/>
+      <rect x="243" y="180" width="14" height="3" rx="1.5" fill="#4a3c2c"/>
       <!-- dispense tray -->
-      <rect x="30" y="348" width="180" height="58" rx="10" fill="#0a0807" stroke="#2e2521"/>
-      <rect class="tray-glow" id="tray-glow" x="30" y="348" width="180" height="58" rx="10" fill="rgba(255,77,0,.22)"/>
-      <text x="120" y="382" text-anchor="middle" font-family="Space Mono" font-size="10" fill="#54483c">PUSH</text>
+      <rect x="30" y="348" width="180" height="58" rx="10" fill="#100c06" stroke="#3a2f22"/>
+      <rect class="tray-glow" id="tray-glow" x="30" y="348" width="180" height="58" rx="10" fill="rgba(224,106,58,.25)"/>
+      <text x="120" y="382" text-anchor="middle" font-family="Courier Prime" font-size="10" fill="#6b5b44">PUSH</text>
       <!-- feet -->
-      <rect x="34" y="450" width="30" height="8" rx="3" fill="#0a0807"/>
-      <rect x="236" y="450" width="30" height="8" rx="3" fill="#0a0807"/>
+      <rect x="34" y="450" width="30" height="8" rx="3" fill="#100c06"/>
+      <rect x="236" y="450" width="30" height="8" rx="3" fill="#100c06"/>
     </svg>
-    <div class="press-hint">PRESS <b>B4</b> — FIRST ONE'S FREE · <span id="dispensed">0</span> DISPENSED</div>
+    <div class="press-hint">PRESS <b>B4</b>, FIRST ONE'S FREE · <span id="dispensed">0</span> DISPENSED</div>
   </div>
 </section>
 
 <!-- TICKER -->
 <div class="ticker"><div class="ticker-track" id="ticker">
-  <span class="tick-item red">M03 RIVERSIDE GYM — ENERGY DRINK STOCKS OUT IN 2 DAYS</span>
-  <span class="tick-item ember">DRAFT PO #0147 — $158.05 · 3 SKUS · AWAITING OWNER</span>
-  <span class="tick-item amber">M07 CENTRAL STATION — ORDER $208.50 BLOCKED BY $200 CAP</span>
-  <span class="tick-item green">M04 CITY HOSPITAL — ALL 8 SKUS HEALTHY</span>
-  <span class="tick-item amber">PROTEIN BAR FLAGGED — PRICED BELOW COST × 1.3</span>
-  <span class="tick-item green">AUDIT LOG — 100% OF SPEND OWNER-APPROVED</span>
-  <span class="tick-item ember">FORECAST REFRESHED — 90 DAYS · 7,200 SALES ROWS</span>
+  <span class="tick-item red">M03 RIVERSIDE GYM: ENERGY DRINK RUNS DRY IN 2 DAYS</span>
+  <span class="tick-item ember">DRAFT ORDER 0147: $158.05, 3 SKUS, AWAITING OWNER</span>
+  <span class="tick-item amber">M07 CENTRAL STATION: $208.50 ORDER HELD AT THE $200 CAP</span>
+  <span class="tick-item green">M04 CITY HOSPITAL: ALL 8 SKUS HEALTHY</span>
+  <span class="tick-item amber">PROTEIN BAR FLAGGED: PRICED UNDER COST × 1.3</span>
+  <span class="tick-item green">AUDIT LOG: EVERY DOLLAR OWNER-APPROVED</span>
+  <span class="tick-item ember">FORECAST REFRESHED: 90 DAYS, 7,200 ROWS</span>
 </div></div>
 
 <!-- PROBLEM -->
 <section class="problem">
   <h2 class="reveal">It's 2 a.m. and Machine 7 <br><span class="bad">sold out again.</span></h2>
-  <p class="reveal">Every empty coil is a sale you didn't make. Operators either drive routes to eyeball
-    stock, or babysit spreadsheets that stop scaling at machine number three. Meanwhile the machines
-    already know exactly what happened — nobody's listening.</p>
+  <p class="reveal">An empty coil is a sale that never happens. Most operators find out days
+    later, on a drive-by, or in a spreadsheet that stopped scaling at machine number three.
+    The whole story is already sitting in the sales data. Restock reads it.</p>
 </section>
 
 <!-- HOW -->
@@ -336,30 +340,29 @@
     <div class="act-num">ACT 01</div>
     <div>
       <div class="kicker">FORECAST</div>
-      <h3>It watches every <em>column.</em></h3>
-      <p>Ninety days of sales per machine, per SKU. A moving average tuned by day-of-week rhythm —
-        gyms spike on Saturday, offices die on weekends. No black box, no "trust the model."
-        You can read the math in one sitting.</p>
+      <h3>It learns each machine's <em>rhythm.</em></h3>
+      <p>Ninety days of sales for every machine and every product. A moving average, adjusted
+        for the day of the week, because gyms spike on Saturdays and offices go quiet.
+        Plain arithmetic you can check by hand.</p>
     </div>
   </div>
   <div class="act reveal">
     <div class="act-num">ACT 02</div>
     <div>
       <div class="kicker">PROPOSE</div>
-      <h3>It drafts the order, <em>not the invoice.</em></h3>
-      <p>When a SKU is on course to stock out inside a week, Restock writes the purchase order —
-        quantities to reach 14 days of cover, unit costs, one clean total. Ready before you knew
-        there was a problem.</p>
+      <h3>It writes the order <em>before you ask.</em></h3>
+      <p>When something is on course to run out inside a week, Restock drafts the purchase
+        order for you: quantities to reach fourteen days of cover, unit costs, one clean total.
+        Ready before you knew there was a problem.</p>
     </div>
   </div>
   <div class="act reveal">
     <div class="act-num">ACT 03</div>
     <div>
       <div class="kicker">DECIDE</div>
-      <h3>One tap. <em>Or none.</em></h3>
-      <p>Nothing ships until the owner says so. Approve in a tap, or walk away — the AI can
-        propose all it wants, it holds no wallet. Every approval lands in the audit log,
-        timestamped and cap-checked.</p>
+      <h3>You approve it, <em>or you don't.</em></h3>
+      <p>Nothing is bought until the owner taps approve. Every approval lands in the audit
+        log with a timestamp and a cap check, so the books always explain themselves.</p>
     </div>
   </div>
 </section>
@@ -367,33 +370,33 @@
 <!-- GUARDRAILS -->
 <section class="shell" id="rails">
   <div class="rails-head reveal">
-    <h2>An AI with a <em>leash.</em></h2>
-    <p>Autonomy is only useful if it can't hurt you. Three guardrails, always on.</p>
+    <h2>The rules of the <em>house.</em></h2>
+    <p>Software that touches money needs limits it cannot talk its way around. Restock has three.</p>
   </div>
   <div class="rails">
     <div class="rail reveal capdemo" id="capdemo">
-      <div class="tag">GUARDRAIL 01</div>
+      <div class="tag">RULE 01</div>
       <h4>The $200 spend cap</h4>
-      <p>A hard ceiling per order. Over it, the approve button is dead — no override, no "just this once."</p>
+      <p>A hard ceiling on any single order. Past it, the approve button simply will not work.</p>
       <div class="bar"><div class="fill" id="capfill"></div></div>
       <div class="lbl"><span id="capnum">$0.00</span><span>CAP $200.00</span></div>
-      <div class="stamp" id="capstamp">BLOCKED</div>
+      <div class="stamp" id="capstamp">HELD</div>
     </div>
     <div class="rail reveal" id="floordemo">
-      <div class="tag">GUARDRAIL 02</div>
+      <div class="tag">RULE 02</div>
       <h4>The margin floor</h4>
-      <p>Any SKU selling below cost × 1.3 gets flagged before you reorder it. Charm doesn't pay rent.</p>
-      <div class="pricetag"><span class="old">PROTEIN BAR · $1.75</span><span style="color:#7c6f5e">COST $1.40</span></div><br>
-      <span class="floorflag">⚠ below margin floor — review price</span>
+      <p>Anything selling for less than 1.3 times its cost gets flagged before you buy more of it.</p>
+      <div class="pricetag"><span class="old">PROTEIN BAR · $1.75</span><span style="color:var(--faint)">COST $1.40</span></div><br>
+      <span class="floorflag">⚠ under the margin floor, review the price</span>
     </div>
     <div class="rail reveal" id="auditdemo-card">
-      <div class="tag">GUARDRAIL 03</div>
+      <div class="tag">RULE 03</div>
       <h4>The audit log</h4>
-      <p>Every dollar traces to a human tap. The log writes itself; it never forgets.</p>
+      <p>Every approval is written down: who, when, and how much. The log keeps itself.</p>
       <div class="auditdemo" id="auditdemo">
-        <span class="ln">14:11:37 · M03 · $158.05 · <span class="ok">CAP PASS</span> · OWNER</span>
-        <span class="ln">09:42:03 · M02 · $10.80 · <span class="ok">CAP PASS</span> · OWNER</span>
-        <span class="ln">08:15:56 · M07 · $208.50 · <span style="color:var(--bad)">BLOCKED</span> · —</span>
+        <span class="ln">14:11 · M03 · $158.05 · <span class="ok">PASS</span> · OWNER</span>
+        <span class="ln">09:42 · M02 · $10.80 · <span class="ok">PASS</span> · OWNER</span>
+        <span class="ln">08:15 · M07 · $208.50 · <span style="color:var(--brick);font-weight:700">HELD AT CAP</span></span>
       </div>
     </div>
   </div>
@@ -415,10 +418,10 @@
     <div class="cube reveal">🧊</div>
     <div class="reveal">
       <h2>Inspired by the AI that ran a real shop.</h2>
-      <p>In Anthropic's Project Vend, an AI managed an actual office store — and, memorably, got talked into
-        discounts and a small fortune in tungsten cubes. The lesson wasn't "AI can't run a shop."
-        It was "AI shouldn't hold the wallet." Restock keeps the initiative and gives the money
-        decisions back to you: forecast freely, propose boldly, spend never.</p>
+      <p>In Anthropic's Project Vend, a model ran an actual office store. It kept the shelves
+        interesting, gave discounts away too easily, and famously bought a stack of tungsten
+        cubes. We took a simple lesson from it: let software do the watching and the drafting,
+        and keep the wallet in human hands. Restock is that lesson, built small.</p>
     </div>
   </div>
 </section>
@@ -427,20 +430,20 @@
 <section class="final">
   <h2 class="reveal">Stop counting <em>cans.</em></h2>
   <p class="reveal">Your fleet already knows what it needs. Go approve it.</p>
-  <a class="big-cta magnetic reveal" href="login.html">Open the owner console →</a>
+  <a class="big-cta magnetic reveal" href="login.html">OPEN THE OWNER CONSOLE →</a>
 </section>
 
 <footer>
   <span>© 2026 Restock</span>
   <a href="login.html">Owner login</a>
   <a href="https://github.com/rickbyang/restock">GitHub</a>
-  <span class="right">A CLASS-PITCH DEMO · NO REAL MONEY WAS HARMED</span>
+  <span class="right">A STUDENT BUILD · SHOT ON LOCALHOST</span>
 </footer>
 
 <script>
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* ---- boot ---- */
+/* boot */
 (function boot() {
   const pct = document.getElementById('boot-pct'), bar = document.getElementById('boot-bar');
   const t0 = performance.now(), DUR = reduced ? 50 : 950;
@@ -459,8 +462,8 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   requestAnimationFrame(tick);
 })();
 
-/* ---- vending machine: build cans + dispense ---- */
-const CAN_COLORS = ['#ff4d00', '#ffb200', '#f4ece0', '#43d17c', '#ff5449'];
+/* vending machine: build cans + dispense */
+const CAN_COLORS = ['#b4441c', '#96690a', '#e9dfc8', '#43682f', '#31556b'];
 const cansG = document.getElementById('cans');
 const rows = [92, 186, 280];
 rows.forEach((y, r) => {
@@ -469,7 +472,7 @@ rows.forEach((y, r) => {
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     g.classList.add('can');
     const col = CAN_COLORS[(r * 4 + c) % CAN_COLORS.length];
-    g.innerHTML = `<rect x="${x}" y="${y}" width="26" height="34" rx="6" fill="${col}" opacity="0.92"/>
+    g.innerHTML = `<rect x="${x}" y="${y}" width="26" height="34" rx="6" fill="${col}" opacity="0.95"/>
       <rect x="${x}" y="${y + 6}" width="26" height="4" fill="rgba(0,0,0,.25)"/>`;
     cansG.appendChild(g);
   }
@@ -486,11 +489,11 @@ document.getElementById('vm-btn').addEventListener('click', () => {
   setTimeout(() => can.classList.remove('drop'), 2600);
 });
 
-/* ---- ticker: duplicate track for seamless loop ---- */
+/* ticker: duplicate track for a seamless loop */
 const track = document.getElementById('ticker');
 track.innerHTML += track.innerHTML;
 
-/* ---- reveals ---- */
+/* reveals */
 const io = new IntersectionObserver(es => es.forEach(e => {
   if (!e.isIntersecting) return;
   e.target.classList.add('in');
@@ -501,7 +504,7 @@ const io = new IntersectionObserver(es => es.forEach(e => {
 }), { threshold: 0.25 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-/* ---- cap demo: fill past the cap, stamp BLOCKED ---- */
+/* cap demo: fill past the cap, then hold */
 function runCapDemo() {
   const fill = document.getElementById('capfill'), num = document.getElementById('capnum');
   const TARGET = 208.50, t0 = performance.now(), DUR = reduced ? 50 : 1600;
@@ -511,13 +514,13 @@ function runCapDemo() {
     num.textContent = '$' + (TARGET * (1 - Math.pow(1 - p, 2))).toFixed(2);
     if (p < 1) requestAnimationFrame(step);
     else {
-      fill.style.background = 'linear-gradient(90deg, var(--ember), var(--bad))';
+      fill.style.background = 'var(--brick)';
       document.getElementById('capstamp').classList.add('on');
     }
   })(t0);
 }
 
-/* ---- audit demo: lines appear in sequence, loop ---- */
+/* audit demo: lines appear in sequence */
 function runAuditDemo() {
   const lines = document.querySelectorAll('#auditdemo .ln');
   let i = 0;
@@ -526,7 +529,7 @@ function runAuditDemo() {
   })();
 }
 
-/* ---- counters ---- */
+/* counters */
 function runCount(el) {
   const end = +el.dataset.count, t0 = performance.now(), DUR = reduced ? 50 : 1400;
   (function step(t) {
@@ -535,10 +538,9 @@ function runCount(el) {
     if (p < 1) requestAnimationFrame(step);
   })(t0);
 }
-// counters may share one .reveal each; observe any missed
 document.querySelectorAll('.stat').forEach(s => io.observe(s));
 
-/* ---- parallax blobs ---- */
+/* parallax washes */
 if (!reduced) {
   const blobs = document.querySelectorAll('.blob');
   addEventListener('scroll', () => {
@@ -547,7 +549,7 @@ if (!reduced) {
   }, { passive: true });
 }
 
-/* ---- magnetic buttons ---- */
+/* magnetic buttons */
 if (!reduced && matchMedia('(pointer: fine)').matches) {
   document.querySelectorAll('.magnetic').forEach(el => {
     el.addEventListener('mousemove', e => {
@@ -558,7 +560,7 @@ if (!reduced && matchMedia('(pointer: fine)').matches) {
   });
 }
 
-/* ---- custom cursor ---- */
+/* custom cursor */
 if (matchMedia('(pointer: fine)').matches) {
   const cur = document.getElementById('cursor');
   addEventListener('mousemove', e => { cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px'; });

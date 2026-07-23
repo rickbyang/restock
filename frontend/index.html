@@ -235,6 +235,15 @@
   .decide-log.on { opacity: 1; }
 
   /* ---- guardrails: colored cards on snow ---- */
+  .rails-stage { position: relative; z-index: 2; }
+  .rails-pin { max-width: 1100px; margin: 0 auto; padding: 120px 40px; }
+  .rails-stage.stacked { height: 320vh; }
+  .rails-stage.stacked .rails-pin { position: sticky; top: 0; height: 100vh; padding: 0 40px;
+    display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+  .rails-stage.stacked .rails-head { margin-bottom: 26px; will-change: transform, opacity; }
+  .rails-stage.stacked .rails { position: relative; display: block; height: 380px; width: min(560px, 100%); margin: 0 auto; }
+  .rails-stage.stacked .rail { position: absolute; left: 0; right: 0; top: 0; margin: 0 auto; width: 100%; max-width: 560px;
+    will-change: transform; box-shadow: 0 24px 50px rgba(22,20,15,.22); }
   .rails-head { text-align: center; margin-bottom: 64px; }
   .rails-head h2 { font-family: "Archivo Black", sans-serif; font-weight: 400; text-transform: uppercase;
     font-size: clamp(32px, 4.2vw, 54px); margin-bottom: 14px; }
@@ -288,7 +297,8 @@
   .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; text-align: center; }
   .stat { transition: transform .2s; }
   .stat:hover { transform: translateY(-5px) rotate(-1deg); }
-  .stat .n { font-family: "Archivo Black", sans-serif; font-size: clamp(48px, 6vw, 88px); line-height: 1; }
+  .stat .n { font-family: "Archivo Black", sans-serif; font-size: clamp(48px, 6vw, 88px); line-height: 1;
+    transform-origin: center bottom; will-change: transform, opacity; }
   .stat:nth-child(1) .n { color: var(--red); }
   .stat:nth-child(2) .n { color: var(--cobalt); }
   .stat:nth-child(3) .n { color: var(--mustard-text); }
@@ -306,7 +316,8 @@
   /* ---- final (INK) ---- */
   .final { text-align: center; padding: 170px 40px 130px; background: var(--ink); color: var(--snow); overflow: hidden; }
   .final h2 { font-family: "Archivo Black", sans-serif; font-weight: 400; text-transform: uppercase;
-    font-size: clamp(40px, 5.6vw, 80px); line-height: 1.02; margin-bottom: 20px; position: relative; z-index: 2; }
+    font-size: clamp(40px, 5.6vw, 80px); line-height: 1.02; margin-bottom: 20px; position: relative; z-index: 2;
+    will-change: transform, filter, opacity; }
   .final h2 .fr { color: var(--mustard); font-size: 1.08em; }
   .final p { color: rgba(245,243,239,.75); font-size: 17px; margin-bottom: 42px; position: relative; z-index: 2; }
   .big-cta {
@@ -536,8 +547,9 @@
 </section>
 
 <!-- GUARDRAILS -->
-<section class="shell" id="rails">
-  <div class="rails-head reveal">
+<section class="rails-stage" id="rails">
+  <div class="rails-pin">
+  <div class="rails-head reveal" id="rails-head">
     <h2>The rules of the <span class="fr">house.</span></h2>
     <p>Software that touches money needs limits it cannot talk its way around. Restock has three.</p>
   </div>
@@ -568,6 +580,7 @@
       </div>
     </div>
   </div>
+  </div>
 </section>
 
 <!-- MARQUEE 2 -->
@@ -578,10 +591,10 @@
 <!-- STATS -->
 <section class="shell">
   <div class="stats">
-    <div class="stat reveal"><div class="n"><span data-count="10">0</span></div><div class="l">MACHINES WATCHED</div></div>
-    <div class="stat reveal"><div class="n"><span data-count="8">0</span></div><div class="l">SKUS PER MACHINE</div></div>
-    <div class="stat reveal"><div class="n"><span data-count="90">0</span></div><div class="l">DAYS OF SIGNAL</div></div>
-    <div class="stat reveal"><div class="n">$<span data-count="200">0</span></div><div class="l">HARD SPEND CAP</div></div>
+    <div class="stat"><div class="n"><span data-count="10">0</span></div><div class="l">MACHINES WATCHED</div></div>
+    <div class="stat"><div class="n"><span data-count="8">0</span></div><div class="l">SKUS PER MACHINE</div></div>
+    <div class="stat"><div class="n"><span data-count="90">0</span></div><div class="l">DAYS OF SIGNAL</div></div>
+    <div class="stat"><div class="n">$<span data-count="200">0</span></div><div class="l">HARD SPEND CAP</div></div>
   </div>
 </section>
 
@@ -605,7 +618,7 @@
 <section class="final">
   <div class="deco circle" data-par="-0.1" style="width:160px;height:160px;background:rgba(226,59,46,.35);left:6%;top:80px"></div>
   <div class="deco ring" data-par="0.08" style="width:110px;height:110px;border:13px solid rgba(37,71,208,.5);right:8%;bottom:100px"></div>
-  <h2 class="reveal">Stop counting <span class="fr">cans.</span></h2>
+  <h2 id="final-h">Stop counting <span class="fr">cans.</span></h2>
   <p class="reveal">Your fleet already knows what it needs. Go approve it.</p>
   <a class="big-cta magnetic reveal" href="login.html">OPEN THE OWNER CONSOLE →</a>
 </section>
@@ -697,7 +710,9 @@ const io = new IntersectionObserver(es => es.forEach(e => {
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 document.querySelectorAll('.stat').forEach(s => io.observe(s));
 
+let capFired = false, auditFired = false;
 function runCapDemo() {
+  if (capFired) return; capFired = true;
   const fill = document.getElementById('capfill'), num = document.getElementById('capnum');
   const TARGET = 208.50, t0 = performance.now(), DUR = reduced ? 50 : 1600;
   fill.style.width = '104%';
@@ -712,6 +727,7 @@ function runCapDemo() {
   })(t0);
 }
 function runAuditDemo() {
+  if (auditFired) return; auditFired = true;
   const lines = document.querySelectorAll('#auditdemo .ln');
   let i = 0;
   (function next() {
@@ -766,18 +782,101 @@ const dStamp = document.getElementById('decide-stamp');
 const dLog = document.getElementById('decide-log');
 const decos = [...document.querySelectorAll('.deco')];
 const mobile = () => innerWidth <= 880;
+const ease3 = p => 1 - Math.pow(1 - p, 3);
+
+/* stacked guardrail cards (Apple-style card pin) */
+const railsStage = document.getElementById('rails');
+const railsHead = document.getElementById('rails-head');
+const railCards = [...document.querySelectorAll('.rail')];
+const floorCard = document.getElementById('floordemo');
+const statNs = [...document.querySelectorAll('.stat .n')];
+const finalH = document.getElementById('final-h');
+function setStacked() {
+  const on = !mobile() && !reduced;
+  railsStage.classList.toggle('stacked', on);
+  railCards.forEach(c => {
+    if (on) { c.classList.add('in'); c.style.transition = 'none'; }
+    else { c.style.transition = ''; c.style.transform = ''; c.style.opacity = ''; c.style.zIndex = ''; }
+  });
+  if (on) { railsHead.classList.add('in'); railsHead.style.transition = 'none'; }
+  else { railsHead.style.transition = ''; railsHead.style.transform = ''; railsHead.style.opacity = ''; }
+}
+setStacked(); addEventListener('resize', setStacked);
+
+/* marquees driven by scroll velocity */
+const mqs = [
+  { el: document.getElementById('mq1'), dir: -1, off: 0, period: 0 },
+  { el: document.getElementById('mq2'), dir: 1, off: 0, period: 0 },
+];
+function mqMeasure() { mqs.forEach(m => m.period = m.el.scrollWidth / 8); }
+if (!reduced) {
+  mqs.forEach(m => m.el.style.animation = 'none');
+  mqMeasure();
+  addEventListener('load', mqMeasure);
+  addEventListener('resize', mqMeasure);
+}
+let lastY = scrollY, vel = 0;
 
 function frame() {
   const y = scrollY, vh = innerHeight;
+  const dy = y - lastY; lastY = y; vel = vel * .88 + dy * .12;
 
+  const hp = clamp(y / (vh * .9), 0, 1);
   if (!mobile()) {
-    const p = clamp(y / (vh * .9), 0, 1);
-    heroCopy.style.transform = `translateY(${-p * 60}px)`;
-    heroCopy.style.opacity = 1 - p * .9;
-    machineWrap.style.transform = `translateY(${-p * 20}px) rotate(${p * -1.5}deg)`;
+    heroCopy.style.transform = `translateY(${-hp * 60}px)`;
+    heroCopy.style.opacity = 1 - hp * .9;
+    machineWrap.style.transform = `translateY(${-hp * 20}px) rotate(${hp * -1.5}deg)`;
+    cansG.setAttribute('transform', `translate(0 ${hp * 12})`);
   } else {
     heroCopy.style.transform = ''; heroCopy.style.opacity = '';
     machineWrap.style.transform = '';
+    cansG.removeAttribute('transform');
+  }
+
+  /* marquees: cruise speed plus scroll velocity, with a skew lean */
+  mqs.forEach(m => {
+    if (!m.period) return;
+    m.off = (m.off + 1.0 + Math.min(Math.abs(vel) * .5, 12)) % m.period;
+    const x = m.dir < 0 ? -m.off : m.off - m.period;
+    m.el.style.transform = `translateX(${x}px) skewX(${clamp(-vel * .35, -7, 7)}deg)`;
+  });
+
+  /* stat numbers scale up as they arrive */
+  statNs.forEach(el => {
+    const r = el.getBoundingClientRect();
+    const p = clamp((vh * .92 - r.top) / (vh * .45), 0, 1);
+    el.style.transform = `scale(${.55 + .45 * ease3(p)})`;
+    el.style.opacity = p;
+  });
+
+  /* finale headline: blur-zoom into place */
+  {
+    const r = finalH.getBoundingClientRect();
+    const p = clamp((vh * .96 - r.top) / (vh * .55), 0, 1);
+    const e = ease3(p);
+    finalH.style.transform = `scale(${1.9 - .9 * e})`;
+    finalH.style.opacity = p;
+    finalH.style.filter = `blur(${(1 - e) * 10}px)`;
+  }
+
+  /* guardrail cards: slide in and stack while pinned */
+  if (railsStage.classList.contains('stacked')) {
+    const r = railsStage.getBoundingClientRect();
+    const p = clamp(-r.top / (r.height - vh), 0, 1);
+    const hpp = clamp(p / .16, 0, 1);
+    railsHead.style.opacity = hpp;
+    railsHead.style.transform = `scale(${1.55 - .55 * ease3(hpp)})`;
+    const enters = railCards.map((c, i) => ease3(clamp((p - .16 - i * .26) / .2, 0, 1)));
+    railCards.forEach((c, i) => {
+      const laterS = enters.slice(i + 1).reduce((a, b) => a + b, 0);
+      const yv = (1 - enters[i]) * vh * 1.05 + i * 26 - laterS * 20;
+      c.style.transform = `translateY(${yv}px) scale(${1 - .05 * laterS}) rotate(${(1 - enters[i]) * (i % 2 ? 3 : -3)}deg)`;
+      c.style.opacity = enters[i] > 0 ? 1 : 0;
+      c.style.zIndex = i + 1;
+    });
+    if (enters[0] > .5) runCapDemo();
+    if (enters[1] > .5) floorCard.classList.add('in');
+    if (enters[2] > .5) runAuditDemo();
   }
 
   /* parallax deco shapes inside their sections */

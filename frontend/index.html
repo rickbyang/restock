@@ -20,7 +20,6 @@
     overflow-x: hidden; cursor: default;
   }
   ::selection { background: var(--accent); color: var(--paper); }
-  .label { font-family: "Courier Prime", monospace; }
   em { font-family: "Fraunces", serif; font-style: italic; }
 
   /* ---- film grain ---- */
@@ -32,7 +31,16 @@
   }
   @keyframes grain { 0%{transform:translate(0,0)} 25%{transform:translate(-2%,1%)} 50%{transform:translate(1%,-2%)} 75%{transform:translate(-1%,2%)} 100%{transform:translate(2%,-1%)} }
 
-  /* ---- preloader: film leader ---- */
+  /* ---- idle ambience: dust motes + light sweep ---- */
+  #motes { position: fixed; inset: 0; pointer-events: none; z-index: 60; }
+  .beam {
+    position: fixed; inset: -30%; pointer-events: none; z-index: 1;
+    background: linear-gradient(115deg, transparent 42%, rgba(255,252,240,.55) 50%, transparent 58%);
+    mix-blend-mode: soft-light; animation: sweep 75s linear infinite alternate;
+  }
+  @keyframes sweep { from { transform: translateX(-45%); } to { transform: translateX(45%); } }
+
+  /* ---- preloader ---- */
   #boot {
     position: fixed; inset: 0; background: var(--paper); z-index: 100;
     display: grid; place-items: center; transition: opacity .5s, visibility .5s;
@@ -44,7 +52,6 @@
   .boot-bar { width: 180px; height: 2px; background: var(--line); margin: 18px auto 0; overflow: hidden; }
   .boot-bar i { display: block; height: 100%; width: 0; background: var(--accent); }
 
-  /* ---- soft washes / parallax layers ---- */
   .blob { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; will-change: transform; }
   .blob.a { width: 75vmax; height: 75vmax; top: -30vmax; right: -25vmax;
     background: radial-gradient(circle, rgba(180,68,28,.09) 0%, transparent 60%); }
@@ -70,13 +77,14 @@
   }
   .cta-mini:hover { background: var(--ink); color: var(--paper) !important; }
 
-  section { position: relative; z-index: 1; }
+  section { position: relative; z-index: 2; }
 
   /* ---- hero ---- */
   .hero {
     min-height: 100vh; display: grid; grid-template-columns: 1.25fr 1fr; align-items: center;
     max-width: 1200px; margin: 0 auto; padding: 120px 40px 60px; gap: 40px;
   }
+  .hero-copy { will-change: transform, opacity; }
   .eyebrow { font-family: "Courier Prime", monospace; font-size: 12px; letter-spacing: .3em; color: var(--accent); margin-bottom: 22px; }
   h1 { font-family: "Fraunces", serif; font-weight: 380; font-size: clamp(52px, 7.2vw, 104px); line-height: .98; letter-spacing: -.015em; }
   h1 .w { display: inline-block; overflow: hidden; vertical-align: bottom; }
@@ -99,9 +107,9 @@
   .btn.ghost:hover { border-color: var(--ink); }
 
   /* ---- vending machine ---- */
-  .machine-wrap { position: relative; display: grid; place-items: center;
-    opacity: 0; transform: translateY(30px) rotate(1deg); transition: all 1s cubic-bezier(.2,.85,.25,1) .45s; }
-  .hero.in .machine-wrap { opacity: 1; transform: none; }
+  .machine-wrap { position: relative; display: grid; place-items: center; will-change: transform;
+    opacity: 0; transform: translateY(30px) rotate(1deg); transition: opacity 1s cubic-bezier(.2,.85,.25,1) .45s; }
+  .hero.in .machine-wrap { opacity: 1; }
   .machine-wrap svg { width: min(330px, 80vw); filter: drop-shadow(0 30px 50px rgba(36,31,24,.28)); }
   .can { transition: transform .1s; transform-box: fill-box; transform-origin: center; }
   .can.drop { animation: candrop .8s cubic-bezier(.5,0,.8,.4) forwards; }
@@ -109,12 +117,12 @@
   .tray-glow { opacity: 0; transition: opacity .15s; }
   .tray-glow.on { opacity: 1; }
   .press-hint { position: absolute; bottom: -34px; font-family: "Courier Prime", monospace; font-size: 12px;
-    letter-spacing: .18em; color: var(--faint); }
+    letter-spacing: .18em; color: var(--faint); white-space: nowrap; }
   .press-hint b { color: var(--accent); }
 
   /* ---- ticker ---- */
   .ticker { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-    overflow: hidden; padding: 15px 0; background: var(--paper-2); position: relative; z-index: 1; }
+    overflow: hidden; padding: 15px 0; background: var(--paper-2); position: relative; z-index: 2; }
   .ticker-track { display: flex; gap: 48px; width: max-content; animation: tick 36s linear infinite; }
   .ticker:hover .ticker-track { animation-play-state: paused; }
   @keyframes tick { to { transform: translateX(-50%); } }
@@ -124,27 +132,71 @@
   .tick-item.red::before { color: var(--brick); } .tick-item.amber::before { color: var(--ochre); }
   .tick-item.green::before { color: var(--moss); } .tick-item.ember::before { color: var(--accent); }
 
-  /* ---- generic section shell ---- */
   .shell { max-width: 1100px; margin: 0 auto; padding: 130px 40px; }
   .reveal { opacity: 0; transform: translateY(38px); filter: blur(6px);
     transition: opacity .9s ease, transform .9s cubic-bezier(.2,.85,.25,1), filter .9s ease; }
   .reveal.in { opacity: 1; transform: none; filter: none; }
 
-  /* ---- problem ---- */
-  .problem { text-align: center; padding: 170px 40px; }
+  /* ---- problem: scroll-scrubbed ink ---- */
+  .problem { text-align: center; padding: 190px 40px; }
   .problem h2 { font-family: "Fraunces", serif; font-weight: 380;
     font-size: clamp(38px, 5.5vw, 72px); line-height: 1.12; max-width: 850px; margin: 0 auto 26px; }
-  .problem h2 .bad { color: var(--brick); font-style: italic; }
   .problem p { color: var(--ink-dim); font-size: 18px; max-width: 560px; margin: 0 auto; line-height: 1.7; }
+  .scrub .sw { color: rgba(36,31,24,.16); transition: color .25s linear; }
+  .scrub .sw.lit { color: inherit; }
+  .scrub .sw.lit.bad { color: var(--brick); font-style: italic; }
+  .problem p.scrub .sw { color: rgba(111,101,83,.25); }
+  .problem p.scrub .sw.lit { color: var(--ink-dim); }
 
-  /* ---- acts ---- */
-  .act { display: grid; grid-template-columns: auto 1fr; gap: 46px; align-items: start;
-    padding: 70px 0; border-top: 1px solid var(--line); }
-  .act-num { font-family: "Courier Prime", monospace; font-size: 14px; color: var(--accent);
-    padding-top: 14px; letter-spacing: .2em; }
-  .act h3 { font-family: "Fraunces", serif; font-weight: 420; font-size: clamp(30px, 3.6vw, 46px); margin-bottom: 14px; }
-  .act p { color: var(--ink-dim); font-size: 17.5px; line-height: 1.7; max-width: 560px; }
-  .act .kicker { font-family: "Courier Prime", monospace; font-size: 11.5px; letter-spacing: .25em; color: var(--faint); margin-bottom: 10px; }
+  /* ---- chapters: pinned scrollytelling ---- */
+  .chapters { height: 340vh; position: relative; z-index: 2; }
+  .chapters-pin {
+    position: sticky; top: 0; height: 100vh; overflow: hidden;
+    display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px;
+    max-width: 1100px; margin: 0 auto; padding: 0 40px;
+  }
+  .ch-left { position: relative; height: 100%; }
+  .ch-text { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center;
+    opacity: 0; will-change: transform, opacity; }
+  .ch-text .kicker { font-family: "Courier Prime", monospace; font-size: 11.5px; letter-spacing: .25em; color: var(--faint); margin-bottom: 10px; }
+  .ch-text .actno { font-family: "Courier Prime", monospace; font-size: 13px; letter-spacing: .2em; color: var(--accent); margin-bottom: 18px; }
+  .ch-text h3 { font-family: "Fraunces", serif; font-weight: 420; font-size: clamp(30px, 3.4vw, 46px); margin-bottom: 14px; }
+  .ch-text p { color: var(--ink-dim); font-size: 17.5px; line-height: 1.7; max-width: 480px; }
+  .ch-progress { position: absolute; left: 40px; bottom: 40px; display: flex; gap: 8px; z-index: 3; }
+  .ch-dot { width: 26px; height: 3px; border-radius: 2px; background: var(--line); overflow: hidden; }
+  .ch-dot i { display: block; height: 100%; width: 0%; background: var(--accent); }
+
+  .ch-right { position: relative; height: 100%; display: grid; place-items: center; }
+  .ch-visual {
+    width: min(400px, 100%); background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(36,31,24,.12); padding: 28px; position: relative; min-height: 300px;
+  }
+  .ch-visual .vhead { font-family: "Courier Prime", monospace; font-size: 11px; letter-spacing: .2em; color: var(--faint);
+    border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 18px; }
+  .vstate { position: absolute; inset: 70px 28px 28px; opacity: 0; will-change: opacity, transform; }
+
+  .spark-label { font-family: "Courier Prime", monospace; font-size: 12px; color: var(--ink-dim); margin-bottom: 14px; }
+  .spark-label b { color: var(--accent); }
+  #spark path { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+  #spark .axis { stroke: var(--line); stroke-width: 1; }
+  .spark-note { font-family: "Courier Prime", monospace; font-size: 11px; color: var(--faint); margin-top: 12px; }
+
+  .receipt { font-family: "Courier Prime", monospace; font-size: 12.5px; color: var(--ink); line-height: 2.05;
+    background: #fbf8f0; border: 1px solid var(--line); border-radius: 4px; padding: 14px 16px; }
+  .receipt .rline { display: flex; justify-content: space-between; opacity: 0; transform: translateY(4px);
+    transition: opacity .3s, transform .3s; }
+  .receipt .rline.on { opacity: 1; transform: none; }
+  .receipt .rtotal { border-top: 1px dashed var(--line); font-weight: 700; margin-top: 4px; padding-top: 4px; }
+
+  .decide-wrap { text-align: center; padding-top: 12px; }
+  .decide-btn { display: inline-block; font-family: "Courier Prime", monospace; font-weight: 700; font-size: 13px;
+    letter-spacing: .06em; background: var(--accent); color: var(--paper); border-radius: 999px; padding: 13px 26px; }
+  .decide-stamp { margin: 26px auto 0; width: max-content; font-family: "Courier Prime", monospace; font-weight: 700;
+    color: var(--moss); border: 2px solid var(--moss); border-radius: 8px; padding: 6px 14px; font-size: 15px;
+    letter-spacing: .12em; transform: rotate(-7deg) scale(3); opacity: 0; will-change: transform, opacity; }
+  .decide-log { font-family: "Courier Prime", monospace; font-size: 11px; color: var(--faint); margin-top: 18px;
+    opacity: 0; transition: opacity .3s; }
+  .decide-log.on { opacity: 1; }
 
   /* ---- guardrails ---- */
   .rails-head { text-align: center; margin-bottom: 64px; }
@@ -210,16 +262,17 @@
     font-family: "Courier Prime", monospace; font-size: 16px; font-weight: 700; letter-spacing: .06em;
     padding: 20px 46px; border-radius: 999px;
     transition: transform .15s, box-shadow .3s; will-change: transform;
+    animation: bob 3.2s ease-in-out infinite alternate;
   }
-  .big-cta:hover { box-shadow: 0 20px 50px rgba(180,68,28,.4); }
+  @keyframes bob { to { transform: translateY(-6px); } }
+  .big-cta:hover { box-shadow: 0 20px 50px rgba(180,68,28,.4); animation-play-state: paused; }
 
   footer { border-top: 1px solid var(--line); padding: 34px 40px; display: flex; gap: 24px; align-items: center;
-    color: var(--faint); font-size: 14px; position: relative; z-index: 1; flex-wrap: wrap; }
+    color: var(--faint); font-size: 14px; position: relative; z-index: 2; flex-wrap: wrap; }
   footer a { color: var(--ink-dim); text-decoration: none; }
   footer a:hover { color: var(--accent); }
   footer .right { margin-left: auto; font-family: "Courier Prime", monospace; font-size: 11px; letter-spacing: .15em; }
 
-  /* ---- cursor ---- */
   @media (pointer: fine) {
     .cursor { position: fixed; width: 22px; height: 22px; border: 1.5px solid rgba(36,31,24,.45);
       border-radius: 50%; pointer-events: none; z-index: 95; transform: translate(-50%,-50%);
@@ -231,10 +284,28 @@
     .hero-sub, .hero-ctas { margin-left: auto; margin-right: auto; justify-content: center; }
     .vend .shell { grid-template-columns: 1fr; text-align: center; }
     header { padding: 16px 20px; } header nav a:not(.cta-mini) { display: none; }
+    .chapters { height: auto; }
+    .chapters-pin { position: static; height: auto; display: block; padding: 60px 24px; }
+    .ch-left { height: auto; }
+    .ch-text { position: static; opacity: 1 !important; transform: none !important; margin: 70px 0; }
+    .ch-right { height: auto; margin-top: 20px; }
+    .vstate { position: static; opacity: 1 !important; transform: none !important; margin-bottom: 30px; }
+    .ch-progress, .ch-visual .vhead { display: none; }
+    .ch-visual { min-height: 0; }
+    .receipt .rline { opacity: 1; transform: none; }
+    .decide-stamp { opacity: 1; transform: rotate(-7deg) scale(1); }
+    .decide-log { opacity: 1; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
     html { scroll-behavior: auto; }
+    .chapters { height: auto; }
+    .chapters-pin { position: static; height: auto; display: block; padding: 60px 24px; }
+    .ch-text { position: static; opacity: 1 !important; transform: none !important; margin: 70px 0; }
+    .vstate { position: static; opacity: 1 !important; margin-bottom: 30px; }
+    .scrub .sw { color: inherit !important; }
+    .receipt .rline { opacity: 1; transform: none; }
+    .decide-stamp { opacity: 1; transform: rotate(-7deg) scale(1); }
   }
 </style>
 </head>
@@ -246,6 +317,8 @@
 </div></div>
 
 <div class="grain"></div>
+<canvas id="motes"></canvas>
+<div class="beam"></div>
 <div class="cursor" id="cursor"></div>
 <div class="blob a" data-speed="-0.06"></div>
 <div class="blob b" data-speed="0.05"></div>
@@ -262,7 +335,7 @@
 
 <!-- HERO -->
 <section class="hero" id="hero">
-  <div>
+  <div class="hero-copy" id="hero-copy">
     <div class="eyebrow">RESTOCK · A FLEET OF TEN</div>
     <h1 id="headline">
       <span class="w"><span>The</span></span> <span class="w"><span>fleet</span></span> <span class="w"><span class="accent">thinks.</span></span><br>
@@ -276,7 +349,7 @@
       <a class="btn ghost magnetic" href="#how">SEE HOW IT WORKS</a>
     </div>
   </div>
-  <div class="machine-wrap">
+  <div class="machine-wrap" id="machine-wrap">
     <svg viewBox="0 0 300 460" id="vm" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
@@ -288,12 +361,10 @@
       </defs>
       <rect x="10" y="10" width="280" height="440" rx="22" fill="url(#body)" stroke="#4a3c2c" stroke-width="2"/>
       <rect x="30" y="34" width="180" height="290" rx="12" fill="url(#glass)" stroke="#3a2f22"/>
-      <!-- shelves & cans -->
       <g id="cans"></g>
       <line x1="34" y1="128" x2="206" y2="128" stroke="#3a2f22" stroke-width="2"/>
       <line x1="34" y1="222" x2="206" y2="222" stroke="#3a2f22" stroke-width="2"/>
       <line x1="34" y1="316" x2="206" y2="316" stroke="#3a2f22" stroke-width="2"/>
-      <!-- side panel -->
       <rect x="224" y="34" width="52" height="130" rx="10" fill="#171208" stroke="#3a2f22"/>
       <text x="250" y="66" text-anchor="middle" font-family="Courier Prime" font-size="15" fill="#d9a54a" id="vm-price">$2.00</text>
       <g font-family="Courier Prime" font-size="9" fill="#8a7a60" text-anchor="middle">
@@ -301,13 +372,10 @@
       </g>
       <rect x="232" y="122" width="36" height="26" rx="6" fill="#2b2218" stroke="#4a3c2c" id="vm-btn" style="cursor:pointer"/>
       <text x="250" y="139" text-anchor="middle" font-family="Courier Prime" font-size="10" fill="#e06a3a" style="pointer-events:none">B4</text>
-      <!-- coin slot -->
       <rect x="243" y="180" width="14" height="3" rx="1.5" fill="#4a3c2c"/>
-      <!-- dispense tray -->
       <rect x="30" y="348" width="180" height="58" rx="10" fill="#100c06" stroke="#3a2f22"/>
       <rect class="tray-glow" id="tray-glow" x="30" y="348" width="180" height="58" rx="10" fill="rgba(224,106,58,.25)"/>
       <text x="120" y="382" text-anchor="middle" font-family="Courier Prime" font-size="10" fill="#6b5b44">PUSH</text>
-      <!-- feet -->
       <rect x="34" y="450" width="30" height="8" rx="3" fill="#100c06"/>
       <rect x="236" y="450" width="30" height="8" rx="3" fill="#100c06"/>
     </svg>
@@ -326,43 +394,74 @@
   <span class="tick-item ember">FORECAST REFRESHED: 90 DAYS, 7,200 ROWS</span>
 </div></div>
 
-<!-- PROBLEM -->
+<!-- PROBLEM (scroll-scrubbed) -->
 <section class="problem">
-  <h2 class="reveal">It's 2 a.m. and Machine 7 <br><span class="bad">sold out again.</span></h2>
-  <p class="reveal">An empty coil is a sale that never happens. Most operators find out days
+  <h2 class="scrub" id="scrub-h">It's 2 a.m. and Machine 7 <span class="b">sold out again.</span></h2>
+  <p class="scrub" id="scrub-p">An empty coil is a sale that never happens. Most operators find out days
     later, on a drive-by, or in a spreadsheet that stopped scaling at machine number three.
     The whole story is already sitting in the sales data. Restock reads it.</p>
 </section>
 
-<!-- HOW -->
-<section class="shell" id="how">
-  <div class="act reveal">
-    <div class="act-num">ACT 01</div>
-    <div>
-      <div class="kicker">FORECAST</div>
-      <h3>It learns each machine's <em>rhythm.</em></h3>
-      <p>Ninety days of sales for every machine and every product. A moving average, adjusted
-        for the day of the week, because gyms spike on Saturdays and offices go quiet.
-        Plain arithmetic you can check by hand.</p>
+<!-- CHAPTERS (pinned scrollytelling) -->
+<section class="chapters" id="how">
+  <div class="chapters-pin" id="ch-pin">
+    <div class="ch-left">
+      <div class="ch-text" data-ch="0">
+        <div class="kicker">HOW IT WORKS</div>
+        <div class="actno">ACT 01 · FORECAST</div>
+        <h3>It learns each machine's <em>rhythm.</em></h3>
+        <p>Ninety days of sales for every machine and every product. A moving average, adjusted
+          for the day of the week, because gyms spike on Saturdays and offices go quiet.
+          Plain arithmetic you can check by hand.</p>
+      </div>
+      <div class="ch-text" data-ch="1">
+        <div class="kicker">HOW IT WORKS</div>
+        <div class="actno">ACT 02 · PROPOSE</div>
+        <h3>It writes the order <em>before you ask.</em></h3>
+        <p>When something is on course to run out inside a week, Restock drafts the purchase
+          order for you: quantities to reach fourteen days of cover, unit costs, one clean total.</p>
+      </div>
+      <div class="ch-text" data-ch="2">
+        <div class="kicker">HOW IT WORKS</div>
+        <div class="actno">ACT 03 · DECIDE</div>
+        <h3>You approve it, <em>or you don't.</em></h3>
+        <p>Nothing is bought until the owner taps approve. Every approval lands in the audit
+          log with a timestamp and a cap check, so the books always explain themselves.</p>
+      </div>
     </div>
-  </div>
-  <div class="act reveal">
-    <div class="act-num">ACT 02</div>
-    <div>
-      <div class="kicker">PROPOSE</div>
-      <h3>It writes the order <em>before you ask.</em></h3>
-      <p>When something is on course to run out inside a week, Restock drafts the purchase
-        order for you: quantities to reach fourteen days of cover, unit costs, one clean total.
-        Ready before you knew there was a problem.</p>
+    <div class="ch-right">
+      <div class="ch-visual">
+        <div class="vhead">M03 · RIVERSIDE GYM · CONSOLE</div>
+        <div class="vstate" data-vs="0">
+          <div class="spark-label"><b>ENERGY DRINK</b> · 5.9 SOLD / DAY</div>
+          <svg id="spark" viewBox="0 0 340 120" xmlns="http://www.w3.org/2000/svg">
+            <line class="axis" x1="0" y1="110" x2="340" y2="110"/>
+            <path id="spark-path" d="M0,95 C12,92 20,80 32,84 C44,88 52,70 64,74 C76,78 84,60 96,66 C108,72 116,52 128,58 C140,64 148,44 160,50 C172,56 180,40 192,44 C204,48 212,30 224,36 C236,42 244,26 256,30 C268,34 276,18 288,24 C300,30 308,14 320,18 C328,21 334,12 340,14"/>
+          </svg>
+          <div class="spark-note">90 DAYS, SMOOTHED BY WEEKDAY</div>
+        </div>
+        <div class="vstate" data-vs="1">
+          <div class="receipt" id="receipt">
+            <div class="rline"><span>SEA SALT CHIPS</span><span>27 × $0.55</span></div>
+            <div class="rline"><span>PROTEIN BAR</span><span>20 × $1.40</span></div>
+            <div class="rline"><span>ENERGY DRINK</span><span>72 × $1.60</span></div>
+            <div class="rline"><span>COVER</span><span>14 DAYS</span></div>
+            <div class="rline rtotal"><span>TOTAL</span><span>$158.05</span></div>
+          </div>
+        </div>
+        <div class="vstate" data-vs="2">
+          <div class="decide-wrap">
+            <span class="decide-btn">APPROVE ORDER · $158.05</span>
+            <div class="decide-stamp" id="decide-stamp">APPROVED</div>
+            <div class="decide-log" id="decide-log">LOGGED 14:11 · CAP PASS · OWNER</div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="act reveal">
-    <div class="act-num">ACT 03</div>
-    <div>
-      <div class="kicker">DECIDE</div>
-      <h3>You approve it, <em>or you don't.</em></h3>
-      <p>Nothing is bought until the owner taps approve. Every approval lands in the audit
-        log with a timestamp and a cap check, so the books always explain themselves.</p>
+    <div class="ch-progress">
+      <div class="ch-dot"><i data-dot="0"></i></div>
+      <div class="ch-dot"><i data-dot="1"></i></div>
+      <div class="ch-dot"><i data-dot="2"></i></div>
     </div>
   </div>
 </section>
@@ -442,8 +541,9 @@
 
 <script>
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
-/* boot */
+/* ---- boot ---- */
 (function boot() {
   const pct = document.getElementById('boot-pct'), bar = document.getElementById('boot-bar');
   const t0 = performance.now(), DUR = reduced ? 50 : 950;
@@ -462,11 +562,10 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   requestAnimationFrame(tick);
 })();
 
-/* vending machine: build cans + dispense */
+/* ---- vending machine: cans, click dispense, idle dispense ---- */
 const CAN_COLORS = ['#b4441c', '#96690a', '#e9dfc8', '#43682f', '#31556b'];
 const cansG = document.getElementById('cans');
-const rows = [92, 186, 280];
-rows.forEach((y, r) => {
+[92, 186, 280].forEach((y, r) => {
   for (let c = 0; c < 4; c++) {
     const x = 44 + c * 42;
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -478,22 +577,31 @@ rows.forEach((y, r) => {
   }
 });
 let dispensed = 0;
-document.getElementById('vm-btn').addEventListener('click', () => {
+function dispense(countIt) {
   const avail = [...document.querySelectorAll('.can')].filter(c => !c.classList.contains('drop'));
   if (!avail.length) return;
   const can = avail[Math.floor(Math.random() * avail.length)];
   can.classList.add('drop');
   const tray = document.getElementById('tray-glow');
   setTimeout(() => { tray.classList.add('on'); setTimeout(() => tray.classList.remove('on'), 260); }, 600);
-  document.getElementById('dispensed').textContent = ++dispensed;
+  if (countIt) document.getElementById('dispensed').textContent = ++dispensed;
   setTimeout(() => can.classList.remove('drop'), 2600);
-});
+}
+document.getElementById('vm-btn').addEventListener('click', () => dispense(true));
 
-/* ticker: duplicate track for a seamless loop */
+/* idle: the machine quietly serves a customer every so often, while visible */
+let heroVisible = true;
+new IntersectionObserver(es => es.forEach(e => heroVisible = e.isIntersecting), { threshold: .2 })
+  .observe(document.getElementById('machine-wrap'));
+if (!reduced) setInterval(() => {
+  if (heroVisible && !document.hidden) dispense(false);
+}, 8500);
+
+/* ---- ticker ---- */
 const track = document.getElementById('ticker');
 track.innerHTML += track.innerHTML;
 
-/* reveals */
+/* ---- reveals ---- */
 const io = new IntersectionObserver(es => es.forEach(e => {
   if (!e.isIntersecting) return;
   e.target.classList.add('in');
@@ -503,8 +611,8 @@ const io = new IntersectionObserver(es => es.forEach(e => {
   if (e.target.querySelector?.('[data-count]')) runCount(e.target.querySelector('[data-count]'));
 }), { threshold: 0.25 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+document.querySelectorAll('.stat').forEach(s => io.observe(s));
 
-/* cap demo: fill past the cap, then hold */
 function runCapDemo() {
   const fill = document.getElementById('capfill'), num = document.getElementById('capnum');
   const TARGET = 208.50, t0 = performance.now(), DUR = reduced ? 50 : 1600;
@@ -519,8 +627,6 @@ function runCapDemo() {
     }
   })(t0);
 }
-
-/* audit demo: lines appear in sequence */
 function runAuditDemo() {
   const lines = document.querySelectorAll('#auditdemo .ln');
   let i = 0;
@@ -528,8 +634,6 @@ function runAuditDemo() {
     if (i < lines.length) { lines[i++].classList.add('on'); setTimeout(next, reduced ? 30 : 650); }
   })();
 }
-
-/* counters */
 function runCount(el) {
   const end = +el.dataset.count, t0 = performance.now(), DUR = reduced ? 50 : 1400;
   (function step(t) {
@@ -538,18 +642,156 @@ function runCount(el) {
     if (p < 1) requestAnimationFrame(step);
   })(t0);
 }
-document.querySelectorAll('.stat').forEach(s => io.observe(s));
 
-/* parallax washes */
-if (!reduced) {
-  const blobs = document.querySelectorAll('.blob');
-  addEventListener('scroll', () => {
-    const y = scrollY;
-    blobs.forEach(b => b.style.transform = `translateY(${y * +b.dataset.speed}px)`);
-  }, { passive: true });
+/* ---- scrub words: wrap words in spans ---- */
+function wrapWords(el) {
+  const frag = document.createDocumentFragment();
+  [...el.childNodes].forEach(node => {
+    if (node.nodeType === 3) {
+      node.textContent.split(/(\s+)/).forEach(tok => {
+        if (/^\s+$/.test(tok) || tok === '') frag.appendChild(document.createTextNode(tok));
+        else { const s = document.createElement('span'); s.className = 'sw'; s.textContent = tok; frag.appendChild(s); }
+      });
+    } else if (node.nodeType === 1) {
+      const isBad = node.classList.contains('b');
+      node.textContent.split(/(\s+)/).forEach(tok => {
+        if (/^\s+$/.test(tok) || tok === '') frag.appendChild(document.createTextNode(tok));
+        else { const s = document.createElement('span'); s.className = 'sw' + (isBad ? ' bad' : ''); s.textContent = tok; frag.appendChild(s); }
+      });
+    }
+  });
+  el.innerHTML = ''; el.appendChild(frag);
+  return [...el.querySelectorAll('.sw')];
+}
+const scrubEls = reduced ? [] : [document.getElementById('scrub-h'), document.getElementById('scrub-p')]
+  .map(el => ({ el, words: wrapWords(el) }));
+
+/* ---- main scroll-driven loop (Apple-style scrub) ---- */
+const heroCopy = document.getElementById('hero-copy');
+const machineWrap = document.getElementById('machine-wrap');
+const chapters = document.getElementById('how');
+const chTexts = [...document.querySelectorAll('.ch-text')];
+const vStates = [...document.querySelectorAll('.vstate')];
+const chDots = [...document.querySelectorAll('[data-dot]')];
+const sparkPath = document.getElementById('spark-path');
+const sparkLen = sparkPath.getTotalLength();
+sparkPath.style.strokeDasharray = sparkLen;
+sparkPath.style.strokeDashoffset = sparkLen;
+const rLines = [...document.querySelectorAll('#receipt .rline')];
+const dStamp = document.getElementById('decide-stamp');
+const dLog = document.getElementById('decide-log');
+const blobs = [...document.querySelectorAll('.blob')];
+const mobile = () => innerWidth <= 880;
+
+function frame() {
+  const y = scrollY, vh = innerHeight;
+
+  /* parallax washes */
+  blobs.forEach(b => b.style.transform = `translateY(${y * +b.dataset.speed}px)`);
+
+  /* hero exit: copy drifts up and fades, machine lags behind */
+  if (!mobile()) {
+    const p = clamp(y / (vh * .9), 0, 1);
+    heroCopy.style.transform = `translateY(${-p * 60}px)`;
+    heroCopy.style.opacity = 1 - p * .9;
+    machineWrap.style.transform = `translateY(${-p * 20}px) rotate(${p * -1.5}deg)`;
+  } else {
+    heroCopy.style.transform = ''; heroCopy.style.opacity = '';
+    machineWrap.style.transform = '';
+  }
+
+  /* scrub words: ink up as the block passes through the viewport */
+  scrubEls.forEach(({ el, words }) => {
+    const r = el.getBoundingClientRect();
+    const p = clamp((vh * .82 - r.top) / (vh * .55), 0, 1);
+    const lit = Math.floor(p * words.length);
+    words.forEach((w, i) => w.classList.toggle('lit', i < lit));
+  });
+
+  /* chapters pin */
+  if (!mobile() && !reduced) {
+    const r = chapters.getBoundingClientRect();
+    const total = r.height - vh;
+    const p = clamp(-r.top / total, 0, 1);
+    const N = 3, seg = 1 / N;
+    chTexts.forEach((el, i) => {
+      const c = (i + .5) * seg;
+      let o = clamp(1 - Math.abs(p - c) / (seg * .58), 0, 1);
+      if (i === 0 && p < c) o = 1;
+      if (i === N - 1 && p > c) o = 1;
+      el.style.opacity = o;
+      el.style.transform = `translateY(${(p - c) * -70}px)`;
+      el.style.pointerEvents = o > .5 ? 'auto' : 'none';
+    });
+    vStates.forEach((el, i) => {
+      const c = (i + .5) * seg;
+      let o = clamp(1 - Math.abs(p - c) / (seg * .5), 0, 1);
+      if (i === 0 && p < c) o = 1;
+      if (i === N - 1 && p > c) o = 1;
+      el.style.opacity = o;
+      el.style.transform = `scale(${.96 + o * .04})`;
+    });
+    chDots.forEach((d, i) => {
+      d.style.width = (clamp((p - i * seg) / seg, 0, 1) * 100) + '%';
+    });
+    /* local progress per chapter */
+    const lp = i => clamp((p - i * seg) / seg, 0, 1);
+    sparkPath.style.strokeDashoffset = sparkLen * (1 - clamp(lp(0) * 1.35, 0, 1));
+    const shown = Math.floor(clamp(lp(1) * 1.25, 0, 1) * rLines.length);
+    rLines.forEach((l, i) => l.classList.toggle('on', i < shown));
+    const sp = clamp((lp(2) - .25) / .3, 0, 1);
+    dStamp.style.opacity = sp;
+    dStamp.style.transform = `rotate(-7deg) scale(${3 - sp * 2})`;
+    dLog.classList.toggle('on', lp(2) > .65);
+  }
+
+  requestAnimationFrame(frame);
+}
+if (!reduced) requestAnimationFrame(frame);
+else {
+  /* reduced motion: show everything in its final state */
+  rLines.forEach(l => l.classList.add('on'));
+  sparkPath.style.strokeDashoffset = 0;
 }
 
-/* magnetic buttons */
+/* ---- dust motes: the idle petals ---- */
+(function motes() {
+  if (reduced) { document.getElementById('motes').remove(); return; }
+  const cv = document.getElementById('motes'), ctx = cv.getContext('2d');
+  let W, H, P = [];
+  function size() {
+    W = cv.width = innerWidth * devicePixelRatio;
+    H = cv.height = innerHeight * devicePixelRatio;
+    cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+  }
+  size(); addEventListener('resize', size);
+  const N = Math.min(34, Math.floor(innerWidth / 40));
+  for (let i = 0; i < N; i++) P.push({
+    x: Math.random(), y: Math.random(),
+    r: (Math.random() * 1.6 + .8) * devicePixelRatio,
+    v: Math.random() * .00016 + .00006,           /* fall speed */
+    sway: Math.random() * .0009 + .0004,          /* sway amount */
+    ph: Math.random() * Math.PI * 2,              /* sway phase */
+    o: Math.random() * .22 + .08,                 /* opacity */
+  });
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
+    P.forEach(p => {
+      p.y += p.v; p.ph += .008;
+      if (p.y > 1.02) { p.y = -.02; p.x = Math.random(); }
+      const x = (p.x + Math.sin(p.ph) * p.sway * 30) * W;
+      ctx.beginPath();
+      ctx.arc(x, p.y * H, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(111, 101, 83, ${p.o * (0.75 + 0.25 * Math.sin(p.ph * 1.7))})`;
+      ctx.fill();
+    });
+    if (!document.hidden) requestAnimationFrame(draw);
+    else setTimeout(() => requestAnimationFrame(draw), 500);
+  }
+  requestAnimationFrame(draw);
+})();
+
+/* ---- magnetic buttons ---- */
 if (!reduced && matchMedia('(pointer: fine)').matches) {
   document.querySelectorAll('.magnetic').forEach(el => {
     el.addEventListener('mousemove', e => {
@@ -560,7 +802,7 @@ if (!reduced && matchMedia('(pointer: fine)').matches) {
   });
 }
 
-/* custom cursor */
+/* ---- custom cursor ---- */
 if (matchMedia('(pointer: fine)').matches) {
   const cur = document.getElementById('cursor');
   addEventListener('mousemove', e => { cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px'; });

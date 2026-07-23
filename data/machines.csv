@@ -1,0 +1,11 @@
+machine_id,name,location,location_type
+M01,Acme HQ Lobby,412 Market St,office
+M02,TechPark Tower 2,88 Innovation Way,office
+M03,Riverside Gym,230 River Rd,gym
+M04,City Hospital ER Wing,1 Hospital Dr,hospital
+M05,State U Library,500 Campus Loop,campus
+M06,State U Dorm West,512 Campus Loop,campus
+M07,Central Station Concourse,1 Station Plaza,transit
+M08,Airport Gate B12,Terminal B,transit
+M09,Downtown Fitness Club,77 2nd Ave,gym
+M10,Northside Office Park,9600 North Blvd,office

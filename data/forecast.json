@@ -1,0 +1,1687 @@
+{
+  "generated_at": "2026-07-23T14:08:16",
+  "as_of": "2026-07-23",
+  "horizon_days": 60,
+  "machines": [
+    {
+      "machine_id": "M01",
+      "name": "Acme HQ Lobby",
+      "location": "412 Market St",
+      "location_type": "office",
+      "skus": [
+        {
+          "sku_id": "S1",
+          "name": "Cola Classic",
+          "category": "beverage",
+          "unit_cost": 0.75,
+          "unit_price": 2.0,
+          "current_stock": 85,
+          "avg_daily_sales": 2.93,
+          "dow_factor": [
+            1.39,
+            1.491,
+            1.061,
+            1.314,
+            1.188,
+            0.303,
+            0.278
+          ],
+          "stockout_date": "2026-08-21",
+          "days_until_stockout": 29
+        },
+        {
+          "sku_id": "S2",
+          "name": "Sparkling Water",
+          "category": "beverage",
+          "unit_cost": 0.6,
+          "unit_price": 1.75,
+          "current_stock": 30,
+          "avg_daily_sales": 2.21,
+          "dow_factor": [
+            1.43,
+            1.58,
+            1.279,
+            1.304,
+            0.828,
+            0.188,
+            0.414
+          ],
+          "stockout_date": "2026-08-06",
+          "days_until_stockout": 14
+        },
+        {
+          "sku_id": "S3",
+          "name": "Sea Salt Chips",
+          "category": "snack",
+          "unit_cost": 0.55,
+          "unit_price": 1.5,
+          "current_stock": 51,
+          "avg_daily_sales": 2.21,
+          "dow_factor": [
+            1.04,
+            1.542,
+            1.471,
+            1.127,
+            1.184,
+            0.359,
+            0.287
+          ],
+          "stockout_date": "2026-08-17",
+          "days_until_stockout": 25
+        },
+        {
+          "sku_id": "S4",
+          "name": "Chocolate Bar",
+          "category": "snack",
+          "unit_cost": 0.9,
+          "unit_price": 2.25,
+          "current_stock": 33,
+          "avg_daily_sales": 1.86,
+          "dow_factor": [
+            1.079,
+            1.34,
+            1.34,
+            1.331,
+            1.452,
+            0.298,
+            0.186
+          ],
+          "stockout_date": "2026-08-11",
+          "days_until_stockout": 19
+        },
+        {
+          "sku_id": "S5",
+          "name": "Protein Bar",
+          "category": "snack",
+          "unit_cost": 1.4,
+          "unit_price": 1.75,
+          "current_stock": 21,
+          "avg_daily_sales": 1.18,
+          "dow_factor": [
+            1.352,
+            1.298,
+            1.19,
+            1.758,
+            0.919,
+            0.216,
+            0.325
+          ],
+          "stockout_date": "2026-08-11",
+          "days_until_stockout": 19
+        },
+        {
+          "sku_id": "S6",
+          "name": "Trail Mix",
+          "category": "snack",
+          "unit_cost": 1.1,
+          "unit_price": 2.5,
+          "current_stock": 26,
+          "avg_daily_sales": 1.25,
+          "dow_factor": [
+            1.587,
+            1.659,
+            1.514,
+            0.547,
+            0.938,
+            0.361,
+            0.361
+          ],
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 21
+        },
+        {
+          "sku_id": "S7",
+          "name": "Energy Drink",
+          "category": "beverage",
+          "unit_cost": 1.6,
+          "unit_price": 3.5,
+          "current_stock": 34,
+          "avg_daily_sales": 2.11,
+          "dow_factor": [
+            1.554,
+            1.307,
+            1.166,
+            0.995,
+            1.201,
+            0.459,
+            0.318
+          ],
+          "stockout_date": "2026-08-10",
+          "days_until_stockout": 18
+        },
+        {
+          "sku_id": "S8",
+          "name": "Instant Noodles",
+          "category": "meal",
+          "unit_cost": 0.8,
+          "unit_price": 2.0,
+          "current_stock": 19,
+          "avg_daily_sales": 1.39,
+          "dow_factor": [
+            0.751,
+            1.664,
+            1.288,
+            1.57,
+            1.181,
+            0.322,
+            0.268
+          ],
+          "stockout_date": "2026-08-06",
+          "days_until_stockout": 14
+        }
+      ]
+    },
+    {
+      "machine_id": "M02",
+      "name": "TechPark Tower 2",
+      "location": "88 Innovation Way",
+      "location_type": "office",
+      "skus": [
+        {
+          "sku_id": "S1",
+          "name": "Cola Classic",
+          "category": "beverage",
+          "unit_cost": 0.75,
+          "unit_price": 2.0,
+          "current_stock": 78,
+          "avg_daily_sales": 2.93,
+          "dow_factor": [
+            1.349,
+            1.199,
+            1.259,
+            1.201,
+            1.379,
+            0.36,
+            0.27
+          ],
+          "stockout_date": "2026-08-19",
+          "days_until_stockout": 27
+        },
+        {
+          "sku_id": "S2",
+          "name": "Sparkling Water",
+          "category": "beverage",
+          "unit_cost": 0.6,
+          "unit_price": 1.75,
+          "current_stock": 27,
+          "avg_daily_sales": 1.75,
+          "dow_factor": [
+            1.492,
+            1.036,
+            1.244,
+            1.482,
+            1.036,
+            0.373,
+            0.373
+          ],
+          "stockout_date": "2026-08-08",
+          "days_until_stockout": 16
+        },
+        {
+          "sku_id": "S3",
+          "name": "Sea Salt Chips",
+          "category": "snack",
+          "unit_cost": 0.55,
+          "unit_price": 1.5,
+          "current_stock": 38,
+          "avg_daily_sales": 2.04,
+          "dow_factor": [
+            1.312,
+            1.312,
+            1.421,
+            1.184,
+            1.239,
+            0.401,
+            0.146
+          ],
+          "stockout_date": "2026-08-12",
+          "days_until_stockout": 20
+        },
+        {
+          "sku_id": "S4",
+          "name": "Chocolate Bar",
+          "category": "snack",
+          "unit_cost": 0.9,
+          "unit_price": 2.25,
+          "current_stock": 11,
+          "avg_daily_sales": 1.64,
+          "dow_factor": [
+            1.349,
+            1.169,
+            0.899,
+            1.412,
+            1.259,
+            0.584,
+            0.36
+          ],
+          "stockout_date": "2026-07-30",
+          "days_until_stockout": 7
+        },
+        {
+          "sku_id": "S5",
+          "name": "Protein Bar",
+          "category": "snack",
+          "unit_cost": 1.4,
+          "unit_price": 1.75,
+          "current_stock": 14,
+          "avg_daily_sales": 1.32,
+          "dow_factor": [
+            1.538,
+            1.374,
+            1.099,
+            1.369,
+            0.989,
+            0.44,
+            0.22
+          ],
+          "stockout_date": "2026-08-04",
+          "days_until_stockout": 12
+        },
+        {
+          "sku_id": "S6",
+          "name": "Trail Mix",
+          "category": "snack",
+          "unit_cost": 1.1,
+          "unit_price": 2.5,
+          "current_stock": 22,
+          "avg_daily_sales": 1.11,
+          "dow_factor": [
+            1.592,
+            1.177,
+            1.246,
+            1.2,
+            1.038,
+            0.554,
+            0.208
+          ],
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 21
+        },
+        {
+          "sku_id": "S7",
+          "name": "Energy Drink",
+          "category": "beverage",
+          "unit_cost": 1.6,
+          "unit_price": 3.5,
+          "current_stock": 35,
+          "avg_daily_sales": 1.43,
+          "dow_factor": [
+            1.91,
+            1.432,
+            1.194,
+            1.086,
+            0.859,
+            0.286,
+            0.239
+          ],
+          "stockout_date": "2026-08-18",
+          "days_until_stockout": 26
+        },
+        {
+          "sku_id": "S8",
+          "name": "Instant Noodles",
+          "category": "meal",
+          "unit_cost": 0.8,
+          "unit_price": 2.0,
+          "current_stock": 13,
+          "avg_daily_sales": 1.32,
+          "dow_factor": [
+            1.099,
+            1.484,
+            1.593,
+            1.429,
+            0.934,
+            0.22,
+            0.275
+          ],
+          "stockout_date": "2026-08-04",
+          "days_until_stockout": 12
+        }
+      ]
+    },
+    {
+      "machine_id": "M03",
+      "name": "Riverside Gym",
+      "location": "230 River Rd",
+      "location_type": "gym",
+      "skus": [
+        {
+          "sku_id": "S1",
+          "name": "Cola Classic",
+          "category": "beverage",
+          "unit_cost": 0.75,
+          "unit_price": 2.0,
+          "current_stock": 66,
+          "avg_daily_sales": 4.32,
+          "dow_factor": [
+            1.151,
+            0.785,
+            0.913,
+            0.752,
+            0.804,
+            1.388,
+            1.187
+          ],
+          "stockout_date": "2026-08-08",
+          "days_until_stockout": 16
+        },
+        {
+          "sku_id": "S2",
+          "name": "Sparkling Water",
+          "category": "beverage",
+          "unit_cost": 0.6,
+          "unit_price": 1.75,
+          "current_stock": 52,
+          "avg_daily_sales": 2.39,
+          "dow_factor": [
+            0.952,
+            1.067,
+            0.865,
+            0.875,
+            0.865,
+            1.327,
+            1.038
+          ],
+          "stockout_date": "2026-08-14",
+          "days_until_stockout": 22
+        },
+        {
+          "sku_id": "S3",
+          "name": "Sea Salt Chips",
+          "category": "snack",
+          "unit_cost": 0.55,
+          "unit_price": 1.5,
+          "current_stock": 16,
+          "avg_daily_sales": 3.04,
+          "dow_factor": [
+            1.076,
+            0.69,
+            0.91,
+            0.986,
+            0.772,
+            1.324,
+            1.241
+          ],
+          "stockout_date": "2026-07-29",
+          "days_until_stockout": 6
+        },
+        {
+          "sku_id": "S4",
+          "name": "Chocolate Bar",
+          "category": "snack",
+          "unit_cost": 0.9,
+          "unit_price": 2.25,
+          "current_stock": 39,
+          "avg_daily_sales": 2.82,
+          "dow_factor": [
+            0.782,
+            1.005,
+            1.033,
+            0.817,
+            0.893,
+            1.145,
+            1.312
+          ],
+          "stockout_date": "2026-08-06",
+          "days_until_stockout": 14
+        },
+        {
+          "sku_id": "S5",
+          "name": "Protein Bar",
+          "category": "snack",
+          "unit_cost": 1.4,
+          "unit_price": 1.75,
+          "current_stock": 8,
+          "avg_daily_sales": 2.0,
+          "dow_factor": [
+            0.929,
+            0.802,
+            0.971,
+            0.823,
+            1.055,
+            1.224,
+            1.182
+          ],
+          "stockout_date": "2026-07-27",
+          "days_until_stockout": 4
+        },
+        {
+          "sku_id": "S6",
+          "name": "Trail Mix",
+          "category": "snack",
+          "unit_cost": 1.1,
+          "unit_price": 2.5,
+          "current_stock": 27,
+          "avg_daily_sales": 1.39,
+          "dow_factor": [
+            1.202,
+            1.43,
+            1.03,
+            0.806,
+            0.572,
+            0.973,
+            0.973
+          ],
+          "stockout_date": "2026-08-12",
+          "days_until_stockout": 20
+        },
+        {
+          "sku_id": "S7",
+          "name": "Energy Drink",
+          "category": "beverage",
+          "unit_cost": 1.6,
+          "unit_price": 3.5,
+          "current_stock": 11,
+          "avg_daily_sales": 5.89,
+          "dow_factor": [
+            1.023,
+            0.998,
+            0.985,
+            0.905,
+            0.636,
+            1.31,
+            1.135
+          ],
+          "stockout_date": "2026-07-25",
+          "days_until_stockout": 2
+        },
+        {
+          "sku_id": "S8",
+          "name": "Instant Noodles",
+          "category": "meal",
+          "unit_cost": 0.8,
+          "unit_price": 2.0,
+          "current_stock": 28,
+          "avg_daily_sales": 1.61,
+          "dow_factor": [
+            0.854,
+            0.948,
+            1.091,
+            1.233,
+            0.948,
+            0.616,
+            1.328
+          ],
+          "stockout_date": "2026-08-10",
+          "days_until_stockout": 18
+        }
+      ]
+    },
+    {
+      "machine_id": "M04",
+      "name": "City Hospital ER Wing",
+      "location": "1 Hospital Dr",
+      "location_type": "hospital",
+      "skus": [
+        {
+          "sku_id": "S1",
+          "name": "Cola Classic",
+          "category": "beverage",
+          "unit_cost": 0.75,
+          "unit_price": 2.0,
+          "current_stock": 61,
+          "avg_daily_sales": 2.82,
+          "dow_factor": [
+            1.214,
+            1.021,
+            0.634,
+            1.016,
+            1.021,
+            1.048,
+            1.048
+          ],
+          "stockout_date": "2026-08-14",
+          "days_until_stockout": 22
+        },
+        {
+          "sku_id": "S2",
+          "name": "Sparkling Water",
+          "category": "beverage",
+          "unit_cost": 0.6,
+          "unit_price": 1.75,
+          "current_stock": 32,
+          "avg_daily_sales": 1.43,
+          "dow_factor": [
+            0.865,
+            1.139,
+            0.683,
+            1.036,
+            1.275,
+            0.911,
+            1.093
+          ],
+          "stockout_date": "2026-08-15",
+          "days_until_stockout": 23
+        },
+        {
+          "sku_id": "S3",
+          "name": "Sea Salt Chips",
+          "category": "snack",
+          "unit_cost": 0.55,
+          "unit_price": 1.5,
+          "current_stock": 22,
+          "avg_daily_sales": 2.18,
+          "dow_factor": [
+            0.941,
+            1.054,
+            0.978,
+            0.774,
+            0.941,
+            1.279,
+            1.016
+          ],
+          "stockout_date": "2026-08-02",
+          "days_until_stockout": 10
+        },
+        {
+          "sku_id": "S4",
+          "name": "Chocolate Bar",
+          "category": "snack",
+          "unit_cost": 0.9,
+          "unit_price": 2.25,
+          "current_stock": 18,
+          "avg_daily_sales": 1.86,
+          "dow_factor": [
+            1.05,
+            0.955,
+            1.05,
+            1.397,
+            0.668,
+            0.668,
+            1.241
+          ],
+          "stockout_date": "2026-08-03",
+          "days_until_stockout": 11
+        },
+        {
+          "sku_id": "S5",
+          "name": "Protein Bar",
+          "category": "snack",
+          "unit_cost": 1.4,
+          "unit_price": 1.75,
+          "current_stock": 27,
+          "avg_daily_sales": 1.32,
+          "dow_factor": [
+            1.36,
+            0.989,
+            1.113,
+            1.004,
+            0.989,
+            0.618,
+            0.927
+          ],
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 21
+        },
+        {
+          "sku_id": "S6",
+          "name": "Trail Mix",
+          "category": "snack",
+          "unit_cost": 1.1,
+          "unit_price": 2.5,
+          "current_stock": 19,
+          "avg_daily_sales": 0.86,
+          "dow_factor": [
+            1.042,
+            0.596,
+            0.819,
+            1.371,
+            0.968,
+            1.266,
+            0.968
+          ],
+          "stockout_date": "2026-08-15",
+          "days_until_stockout": 23
+        },
+        {
+          "sku_id": "S7",
+          "name": "Energy Drink",
+          "category": "beverage",
+          "unit_cost": 1.6,
+          "unit_price": 3.5,
+          "current_stock": 32,
+          "avg_daily_sales": 1.57,
+          "dow_factor": [
+            1.108,
+            1.052,
+            1.218,
+            0.72,
+            0.886,
+            0.775,
+            1.218
+          ],
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 21
+        },
+        {
+          "sku_id": "S8",
+          "name": "Instant Noodles",
+          "category": "meal",
+          "unit_cost": 0.8,
+          "unit_price": 2.0,
+          "current_stock": 17,
+          "avg_daily_sales": 1.11,
+          "dow_factor": [
+            0.732,
+            0.732,
+            1.531,
+            1.082,
+            1.065,
+            0.599,
+            1.265
+          ],
+          "stockout_date": "2026-08-08",
+          "days_until_stockout": 16
+        }
+      ]
+    },
+    {
+      "machine_id": "M05",
+      "name": "State U Library",
+      "location": "500 Campus Loop",
+      "location_type": "campus",
+      "skus": [
+        {
+          "sku_id": "S1",
+          "name": "Cola Classic",
+          "category": "beverage",
+          "unit_cost": 0.75,
+          "unit_price": 2.0,
+          "current_stock": 78,
+          "avg_daily_sales": 2.61,
+          "dow_factor": [
+            1.445,
+            1.172,
+            1.199,
+            1.24,
+            1.09,
+            0.382,
+            0.491
+          ],
+          "stockout_date": "2026-08-23",
+          "days_until_stockout": 31
+        },
+        {
+          "sku_id": "S2",
+          "name": "Sparkling Water",
+          "category": "beverage",
+          "unit_cost": 0.6,
+          "unit_price": 1.75,
+          "current_stock": 45,
+          "avg_daily_sales": 2.18,
+          "dow_factor": [
+            1.007,
+            1.133,
+            1.343,
+            0.909,
+            1.385,
+            0.462,
+            0.755
+          ],
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 21
+        },
+        {
+          "sku_id": "S3",
+          "name": "Sea Salt Chips",
+          "category": "snack",
+          "unit_cost": 0.55,
+          "unit_price": 1.5,
+          "current_stock": 38,
+          "avg_daily_sales": 2.96,
+          "dow_factor": [
+            1.133,
+            0.881,
+            1.29,
+            1.091,
+            1.227,
+            0.629,
+            0.755
+          ],
+          "stockout_date": "2026-08-05",
+          "days_until_stockout": 13
+        },
+        {
+          "sku_id": "S4",
+          "name": "Chocolate Bar",
+          "category": "snack",
+          "unit_cost": 0.9,
+          "unit_price": 2.25,
+          "current_stock": 28,
+          "avg_daily_sales": 2.46,
+          "dow_factor": [
+            1.165,
+            1.028,
+            1.2,
+            1.3,
+            1.371,
+            0.411,
+            0.548
+          ],
+          "stockout_date": "2026-08-04",
+          "days_until_stockout": 12
+        },
+        {
+          "sku_id": "S5",
+          "name": "Protein Bar",
+          "category": "snack",
+          "unit_cost": 1.4,
+          "unit_price": 1.75,
+          "current_stock": 32,
+          "avg_daily_sales": 1.64,
+          "dow_factor": [
+            1.442,
+            1.25,
+            1.202,
+            0.885,
+            1.154,
+            0.577,
+            0.481
+          ],
+          "stockout_date": "2026-08-12",
+          "days_until_stockout": 20
+        },
+        {
+          "sku_id": "S6",
+          "name": "Trail Mix",
+          "category": "snack",
+          "unit_cost": 1.1,
+          "unit_price": 2.5,
+          "current_stock": 25,
+          "avg_daily_sales": 1.14,
+          "dow_factor": [
+            1.207,
+            0.889,
+            1.27,
+            1.307,
+            1.207,
+            0.635,
+            0.508
+          ],
+          "stockout_date": "2026-08-14",
+          "days_until_stockout": 22
+        },
+        {
+          "sku_id": "S7",
+          "name": "Energy Drink",
+          "category": "beverage",
+          "unit_cost": 1.6,
+          "unit_price": 3.5,
+          "current_stock": 20,
+          "avg_daily_sales": 1.93,
+          "dow_factor": [
+            1.012,
+            1.215,
+            0.81,
+            1.447,
+            1.296,
+            0.567,
+            0.688
+          ],
+          "stockout_date": "2026-08-03",
+          "days_until_stockout": 11
+        },
+        {
+          "sku_id": "S8",
+          "name": "Instant Noodles",
+          "category": "meal",
+          "unit_cost": 0.8,
+          "unit_price": 2.0,
+          "current_stock": 24,
+          "avg_daily_sales": 1.32,
+          "dow_factor": [
+            1.099,
+            0.989,
+            1.484,
+            1.131,
+            0.824,
+            0.769,
+            0.714
+          ],
+          "stockout_date": "2026-08-11",
+          "days_until_stockout": 19
+        }
+      ]
+    },
+    {
+      "machine_id": "M06",
+      "name": "State U Dorm West",
+      "location": "512 Campus Loop",
+      "location_type": "campus",
+      "skus": [
+        {
+          "sku_id": "S1",
+          "name": "Cola Classic",
+          "category": "beverage",
+          "unit_cost": 0.75,
+          "unit_price": 2.0,
+          "current_stock": 76,
+          "avg_daily_sales": 2.93,
+          "dow_factor": [
+            1.097,
+            0.784,
+            1.385,
+            1.245,
+            1.097,
+            0.653,
+            0.758
+          ],
+          "stockout_date": "2026-08-19",
+          "days_until_stockout": 27
+        },
+        {
+          "sku_id": "S2",
+          "name": "Sparkling Water",
+          "category": "beverage",
+          "unit_cost": 0.6,
+          "unit_price": 1.75,
+          "current_stock": 30,
+          "avg_daily_sales": 1.71,
+          "dow_factor": [
+            1.204,
+            1.247,
+            0.989,
+            1.444,
+            1.204,
+            0.602,
+            0.344
+          ],
+          "stockout_date": "2026-08-11",
+          "days_until_stockout": 19
+        },
+        {
+          "sku_id": "S3",
+          "name": "Sea Salt Chips",
+          "category": "snack",
+          "unit_cost": 0.55,
+          "unit_price": 1.5,
+          "current_stock": 30,
+          "avg_daily_sales": 2.32,
+          "dow_factor": [
+            0.897,
+            1.399,
+            1.255,
+            1.088,
+            1.004,
+            0.717,
+            0.646
+          ],
+          "stockout_date": "2026-08-05",
+          "days_until_stockout": 13
+        },
+        {
+          "sku_id": "S4",
+          "name": "Chocolate Bar",
+          "category": "snack",
+          "unit_cost": 0.9,
+          "unit_price": 2.25,
+          "current_stock": 20,
+          "avg_daily_sales": 1.64,
+          "dow_factor": [
+            0.843,
+            1.065,
+            1.376,
+            1.442,
+            1.198,
+            0.754,
+            0.355
+          ],
+          "stockout_date": "2026-08-05",
+          "days_until_stockout": 13
+        },
+        {
+          "sku_id": "S5",
+          "name": "Protein Bar",
+          "category": "snack",
+          "unit_cost": 1.4,
+          "unit_price": 1.75,
+          "current_stock": 19,
+          "avg_daily_sales": 1.43,
+          "dow_factor": [
+            1.364,
+            0.839,
+            1.311,
+            0.909,
+            0.997,
+            0.997,
+            0.577
+          ],
+          "stockout_date": "2026-08-06",
+          "days_until_stockout": 14
+        },
+        {
+          "sku_id": "S6",
+          "name": "Trail Mix",
+          "category": "snack",
+          "unit_cost": 1.1,
+          "unit_price": 2.5,
+          "current_stock": 26,
+          "avg_daily_sales": 1.14,
+          "dow_factor": [
+            0.823,
+            1.097,
+            1.577,
+            1.262,
+            0.823,
+            0.96,
+            0.48
+          ],
+          "stockout_date": "2026-08-15",
+          "days_until_stockout": 23
+        },
+        {
+          "sku_id": "S7",
+          "name": "Energy Drink",
+          "category": "beverage",
+          "unit_cost": 1.6,
+          "unit_price": 3.5,
+          "current_stock": 28,
+          "avg_daily_sales": 2.07,
+          "dow_factor": [
+            1.146,
+            1.058,
+            1.411,
+            1.099,
+            1.014,
+            0.706,
+            0.573
+          ],
+          "stockout_date": "2026-08-06",
+          "days_until_stockout": 14
+        },
+        {
+          "sku_id": "S8",
+          "name": "Instant Noodles",
+          "category": "meal",
+          "unit_cost": 0.8,
+          "unit_price": 2.0,
+          "current_stock": 8,
+          "avg_daily_sales": 1.07,
+          "dow_factor": [
+            0.841,
+            1.165,
+            0.776,
+            1.472,
+            1.165,
+            0.776,
+            0.841
+          ],
+          "stockout_date": "2026-07-31",
+          "days_until_stockout": 8
+        }
+      ]
+    },
+    {
+      "machine_id": "M07",
+      "name": "Central Station Concourse",
+      "location": "1 Station Plaza",
+      "location_type": "transit",
+      "skus": [
+        {
+          "sku_id": "S1",
+          "name": "Cola Classic",
+          "category": "beverage",
+          "unit_cost": 0.75,
+          "unit_price": 2.0,
+          "current_stock": 29,
+          "avg_daily_sales": 6.86,
+          "dow_factor": [
+            1.014,
+            1.037,
+            1.084,
+            0.997,
+            1.212,
+            0.816,
+            0.839
+          ],
+          "stockout_date": "2026-07-28",
+          "days_until_stockout": 5
+        },
+        {
+          "sku_id": "S2",
+          "name": "Sparkling Water",
+          "category": "beverage",
+          "unit_cost": 0.6,
+          "unit_price": 1.75,
+          "current_stock": 18,
+          "avg_daily_sales": 3.0,
+          "dow_factor": [
+            1.214,
+            1.352,
+            1.131,
+            0.986,
+            0.772,
+            0.634,
+            0.91
+          ],
+          "stockout_date": "2026-07-29",
+          "days_until_stockout": 6
+        },
+        {
+          "sku_id": "S3",
+          "name": "Sea Salt Chips",
+          "category": "snack",
+          "unit_cost": 0.55,
+          "unit_price": 1.5,
+          "current_stock": 67,
+          "avg_daily_sales": 2.86,
+          "dow_factor": [
+            1.114,
+            1.209,
+            1.091,
+            1.182,
+            1.091,
+            0.593,
+            0.735
+          ],
+          "stockout_date": "2026-08-16",
+          "days_until_stockout": 24
+        },
+        {
+          "sku_id": "S4",
+          "name": "Chocolate Bar",
+          "category": "snack",
+          "unit_cost": 0.9,
+          "unit_price": 2.25,
+          "current_stock": 18,
+          "avg_daily_sales": 3.71,
+          "dow_factor": [
+            1.221,
+            1.087,
+            0.935,
+            1.157,
+            0.992,
+            0.896,
+            0.725
+          ],
+          "stockout_date": "2026-07-28",
+          "days_until_stockout": 5
+        },
+        {
+          "sku_id": "S5",
+          "name": "Protein Bar",
+          "category": "snack",
+          "unit_cost": 1.4,
+          "unit_price": 1.75,
+          "current_stock": 34,
+          "avg_daily_sales": 2.0,
+          "dow_factor": [
+            0.918,
+            0.841,
+            1.147,
+            1.285,
+            1.453,
+            0.765,
+            0.612
+          ],
+          "stockout_date": "2026-08-10",
+          "days_until_stockout": 18
+        },
+        {
+          "sku_id": "S6",
+          "name": "Trail Mix",
+          "category": "snack",
+          "unit_cost": 1.1,
+          "unit_price": 2.5,
+          "current_stock": 15,
+          "avg_daily_sales": 3.25,
+          "dow_factor": [
+            1.0,
+            0.872,
+            1.128,
+            1.139,
+            1.333,
+            0.718,
+            0.821
+          ],
+          "stockout_date": "2026-07-28",
+          "days_until_stockout": 5
+        },
+        {
+          "sku_id": "S7",
+          "name": "Energy Drink",
+          "category": "beverage",
+          "unit_cost": 1.6,
+          "unit_price": 3.5,
+          "current_stock": 28,
+          "avg_daily_sales": 5.46,
+          "dow_factor": [
+            1.013,
+            0.901,
+            0.943,
+            1.143,
+            1.168,
+            0.957,
+            0.886
+          ],
+          "stockout_date": "2026-07-29",
+          "days_until_stockout": 6
+        },
+        {
+          "sku_id": "S8",
+          "name": "Instant Noodles",
+          "category": "meal",
+          "unit_cost": 0.8,
+          "unit_price": 2.0,
+          "current_stock": 18,
+          "avg_daily_sales": 2.57,
+          "dow_factor": [
+            1.069,
+            0.942,
+            1.374,
+            0.965,
+            1.044,
+            0.916,
+            0.687
+          ],
+          "stockout_date": "2026-07-31",
+          "days_until_stockout": 8
+        }
+      ]
+    },
+    {
+      "machine_id": "M08",
+      "name": "Airport Gate B12",
+      "location": "Terminal B",
+      "location_type": "transit",
+      "skus": [
+        {
+          "sku_id": "S1",
+          "name": "Cola Classic",
+          "category": "beverage",
+          "unit_cost": 0.75,
+          "unit_price": 2.0,
+          "current_stock": 87,
+          "avg_daily_sales": 4.5,
+          "dow_factor": [
+            0.902,
+            1.11,
+            1.319,
+            1.128,
+            1.076,
+            0.816,
+            0.659
+          ],
+          "stockout_date": "2026-08-12",
+          "days_until_stockout": 20
+        },
+        {
+          "sku_id": "S2",
+          "name": "Sparkling Water",
+          "category": "beverage",
+          "unit_cost": 0.6,
+          "unit_price": 1.75,
+          "current_stock": 32,
+          "avg_daily_sales": 2.25,
+          "dow_factor": [
+            1.113,
+            1.218,
+            1.044,
+            1.055,
+            1.044,
+            0.87,
+            0.661
+          ],
+          "stockout_date": "2026-08-07",
+          "days_until_stockout": 15
+        },
+        {
+          "sku_id": "S3",
+          "name": "Sea Salt Chips",
+          "category": "snack",
+          "unit_cost": 0.55,
+          "unit_price": 1.5,
+          "current_stock": 39,
+          "avg_daily_sales": 3.11,
+          "dow_factor": [
+            1.126,
+            1.054,
+            1.054,
+            1.142,
+            1.054,
+            0.719,
+            0.862
+          ],
+          "stockout_date": "2026-08-05",
+          "days_until_stockout": 13
+        },
+        {
+          "sku_id": "S4",
+          "name": "Chocolate Bar",
+          "category": "snack",
+          "unit_cost": 0.9,
+          "unit_price": 2.25,
+          "current_stock": 59,
+          "avg_daily_sales": 2.89,
+          "dow_factor": [
+            1.087,
+            1.545,
+            1.001,
+            1.023,
+            0.83,
+            0.744,
+            0.772
+          ],
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 21
+        },
+        {
+          "sku_id": "S5",
+          "name": "Protein Bar",
+          "category": "snack",
+          "unit_cost": 1.4,
+          "unit_price": 1.75,
+          "current_stock": 29,
+          "avg_daily_sales": 2.0,
+          "dow_factor": [
+            1.293,
+            1.043,
+            1.46,
+            1.175,
+            0.876,
+            0.667,
+            0.5
+          ],
+          "stockout_date": "2026-08-07",
+          "days_until_stockout": 15
+        },
+        {
+          "sku_id": "S6",
+          "name": "Trail Mix",
+          "category": "snack",
+          "unit_cost": 1.1,
+          "unit_price": 2.5,
+          "current_stock": 33,
+          "avg_daily_sales": 1.46,
+          "dow_factor": [
+            1.374,
+            0.879,
+            1.154,
+            0.952,
+            0.989,
+            0.604,
+            1.044
+          ],
+          "stockout_date": "2026-08-15",
+          "days_until_stockout": 23
+        },
+        {
+          "sku_id": "S7",
+          "name": "Energy Drink",
+          "category": "beverage",
+          "unit_cost": 1.6,
+          "unit_price": 3.5,
+          "current_stock": 44,
+          "avg_daily_sales": 2.43,
+          "dow_factor": [
+            1.016,
+            1.397,
+            0.826,
+            1.101,
+            1.048,
+            0.857,
+            0.762
+          ],
+          "stockout_date": "2026-08-11",
+          "days_until_stockout": 19
+        },
+        {
+          "sku_id": "S8",
+          "name": "Instant Noodles",
+          "category": "meal",
+          "unit_cost": 0.8,
+          "unit_price": 2.0,
+          "current_stock": 29,
+          "avg_daily_sales": 1.36,
+          "dow_factor": [
+            0.962,
+            0.817,
+            0.913,
+            1.667,
+            1.154,
+            0.962,
+            0.577
+          ],
+          "stockout_date": "2026-08-14",
+          "days_until_stockout": 22
+        }
+      ]
+    },
+    {
+      "machine_id": "M09",
+      "name": "Downtown Fitness Club",
+      "location": "77 2nd Ave",
+      "location_type": "gym",
+      "skus": [
+        {
+          "sku_id": "S1",
+          "name": "Cola Classic",
+          "category": "beverage",
+          "unit_cost": 0.75,
+          "unit_price": 2.0,
+          "current_stock": 54,
+          "avg_daily_sales": 3.14,
+          "dow_factor": [
+            1.071,
+            0.833,
+            0.809,
+            0.979,
+            0.738,
+            1.285,
+            1.285
+          ],
+          "stockout_date": "2026-08-09",
+          "days_until_stockout": 17
+        },
+        {
+          "sku_id": "S2",
+          "name": "Sparkling Water",
+          "category": "beverage",
+          "unit_cost": 0.6,
+          "unit_price": 1.75,
+          "current_stock": 34,
+          "avg_daily_sales": 1.5,
+          "dow_factor": [
+            1.024,
+            0.901,
+            0.819,
+            1.065,
+            0.574,
+            1.434,
+            1.188
+          ],
+          "stockout_date": "2026-08-15",
+          "days_until_stockout": 23
+        },
+        {
+          "sku_id": "S3",
+          "name": "Sea Salt Chips",
+          "category": "snack",
+          "unit_cost": 0.55,
+          "unit_price": 1.5,
+          "current_stock": 39,
+          "avg_daily_sales": 2.36,
+          "dow_factor": [
+            0.865,
+            1.082,
+            0.742,
+            0.804,
+            0.927,
+            0.989,
+            1.576
+          ],
+          "stockout_date": "2026-08-09",
+          "days_until_stockout": 17
+        },
+        {
+          "sku_id": "S4",
+          "name": "Chocolate Bar",
+          "category": "snack",
+          "unit_cost": 0.9,
+          "unit_price": 2.25,
+          "current_stock": 38,
+          "avg_daily_sales": 2.21,
+          "dow_factor": [
+            1.178,
+            1.105,
+            0.884,
+            0.758,
+            1.031,
+            0.921,
+            1.105
+          ],
+          "stockout_date": "2026-08-10",
+          "days_until_stockout": 18
+        },
+        {
+          "sku_id": "S5",
+          "name": "Protein Bar",
+          "category": "snack",
+          "unit_cost": 1.4,
+          "unit_price": 1.75,
+          "current_stock": 24,
+          "avg_daily_sales": 1.46,
+          "dow_factor": [
+            1.112,
+            1.213,
+            0.707,
+            0.876,
+            0.809,
+            1.061,
+            1.213
+          ],
+          "stockout_date": "2026-08-09",
+          "days_until_stockout": 17
+        },
+        {
+          "sku_id": "S6",
+          "name": "Trail Mix",
+          "category": "snack",
+          "unit_cost": 1.1,
+          "unit_price": 2.5,
+          "current_stock": 11,
+          "avg_daily_sales": 1.29,
+          "dow_factor": [
+            1.006,
+            0.828,
+            0.888,
+            0.641,
+            0.828,
+            1.302,
+            1.479
+          ],
+          "stockout_date": "2026-08-01",
+          "days_until_stockout": 9
+        },
+        {
+          "sku_id": "S7",
+          "name": "Energy Drink",
+          "category": "beverage",
+          "unit_cost": 1.6,
+          "unit_price": 3.5,
+          "current_stock": 20,
+          "avg_daily_sales": 1.54,
+          "dow_factor": [
+            1.084,
+            0.834,
+            1.043,
+            0.723,
+            1.126,
+            1.126,
+            1.043
+          ],
+          "stockout_date": "2026-08-05",
+          "days_until_stockout": 13
+        },
+        {
+          "sku_id": "S8",
+          "name": "Instant Noodles",
+          "category": "meal",
+          "unit_cost": 0.8,
+          "unit_price": 2.0,
+          "current_stock": 13,
+          "avg_daily_sales": 0.79,
+          "dow_factor": [
+            0.962,
+            0.641,
+            1.09,
+            1.181,
+            0.705,
+            1.41,
+            1.026
+          ],
+          "stockout_date": "2026-08-09",
+          "days_until_stockout": 17
+        }
+      ]
+    },
+    {
+      "machine_id": "M10",
+      "name": "Northside Office Park",
+      "location": "9600 North Blvd",
+      "location_type": "office",
+      "skus": [
+        {
+          "sku_id": "S1",
+          "name": "Cola Classic",
+          "category": "beverage",
+          "unit_cost": 0.75,
+          "unit_price": 2.0,
+          "current_stock": 34,
+          "avg_daily_sales": 2.11,
+          "dow_factor": [
+            0.999,
+            1.298,
+            1.398,
+            1.478,
+            1.032,
+            0.466,
+            0.366
+          ],
+          "stockout_date": "2026-08-10",
+          "days_until_stockout": 18
+        },
+        {
+          "sku_id": "S2",
+          "name": "Sparkling Water",
+          "category": "beverage",
+          "unit_cost": 0.6,
+          "unit_price": 1.75,
+          "current_stock": 26,
+          "avg_daily_sales": 1.36,
+          "dow_factor": [
+            1.445,
+            1.144,
+            1.445,
+            1.239,
+            1.084,
+            0.361,
+            0.301
+          ],
+          "stockout_date": "2026-08-12",
+          "days_until_stockout": 20
+        },
+        {
+          "sku_id": "S3",
+          "name": "Sea Salt Chips",
+          "category": "snack",
+          "unit_cost": 0.55,
+          "unit_price": 1.5,
+          "current_stock": 23,
+          "avg_daily_sales": 1.71,
+          "dow_factor": [
+            1.366,
+            1.13,
+            1.79,
+            1.224,
+            1.036,
+            0.33,
+            0.141
+          ],
+          "stockout_date": "2026-08-06",
+          "days_until_stockout": 14
+        },
+        {
+          "sku_id": "S4",
+          "name": "Chocolate Bar",
+          "category": "snack",
+          "unit_cost": 0.9,
+          "unit_price": 2.25,
+          "current_stock": 27,
+          "avg_daily_sales": 1.39,
+          "dow_factor": [
+            1.138,
+            1.375,
+            0.996,
+            1.284,
+            1.66,
+            0.285,
+            0.285
+          ],
+          "stockout_date": "2026-08-12",
+          "days_until_stockout": 20
+        },
+        {
+          "sku_id": "S5",
+          "name": "Protein Bar",
+          "category": "snack",
+          "unit_cost": 1.4,
+          "unit_price": 1.75,
+          "current_stock": 23,
+          "avg_daily_sales": 0.93,
+          "dow_factor": [
+            1.447,
+            1.447,
+            1.033,
+            1.791,
+            0.827,
+            0.413,
+            0.103
+          ],
+          "stockout_date": "2026-08-18",
+          "days_until_stockout": 26
+        },
+        {
+          "sku_id": "S6",
+          "name": "Trail Mix",
+          "category": "snack",
+          "unit_cost": 1.1,
+          "unit_price": 2.5,
+          "current_stock": 11,
+          "avg_daily_sales": 0.82,
+          "dow_factor": [
+            1.671,
+            1.194,
+            1.114,
+            1.552,
+            0.875,
+            0.398,
+            0.239
+          ],
+          "stockout_date": "2026-08-06",
+          "days_until_stockout": 14
+        },
+        {
+          "sku_id": "S7",
+          "name": "Energy Drink",
+          "category": "beverage",
+          "unit_cost": 1.6,
+          "unit_price": 3.5,
+          "current_stock": 28,
+          "avg_daily_sales": 1.39,
+          "dow_factor": [
+            1.491,
+            1.065,
+            0.905,
+            1.5,
+            1.172,
+            0.533,
+            0.373
+          ],
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 21
+        },
+        {
+          "sku_id": "S8",
+          "name": "Instant Noodles",
+          "category": "meal",
+          "unit_cost": 0.8,
+          "unit_price": 2.0,
+          "current_stock": 24,
+          "avg_daily_sales": 0.96,
+          "dow_factor": [
+            1.522,
+            1.293,
+            1.445,
+            0.824,
+            1.293,
+            0.38,
+            0.228
+          ],
+          "stockout_date": "2026-08-18",
+          "days_until_stockout": 26
+        }
+      ]
+    }
+  ]
+}

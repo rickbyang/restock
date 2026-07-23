@@ -1,0 +1,9 @@
+sku_id,name,category,unit_cost,unit_price
+S1,Cola Classic,beverage,0.75,2.00
+S2,Sparkling Water,beverage,0.60,1.75
+S3,Sea Salt Chips,snack,0.55,1.50
+S4,Chocolate Bar,snack,0.90,2.25
+S5,Protein Bar,snack,1.40,1.75
+S6,Trail Mix,snack,1.10,2.50
+S7,Energy Drink,beverage,1.60,3.50
+S8,Instant Noodles,meal,0.80,2.00

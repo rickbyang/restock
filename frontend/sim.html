@@ -6,6 +6,8 @@
 <title>Vend City SF. A Restock simulation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,300..600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   :root {
     --snow: #f5f3ef; --white: #ffffff; --ink: #16140f;
@@ -26,7 +28,7 @@
   .flagline i:nth-child(3){background:var(--mustard)} .flagline i:nth-child(4){background:var(--forest)}
 
   .hud { display: flex; align-items: center; gap: 13px; padding: 10px 18px; flex-wrap: wrap;
-    border-bottom: 2px solid var(--ink); background: var(--white); flex-shrink: 0; z-index: 20; }
+    border-bottom: 2px solid var(--ink); background: var(--white); flex-shrink: 0; z-index: 700; }
   .logo { display: flex; align-items: center; gap: 8px; font-family: "Archivo Black", sans-serif; font-size: 15px; }
   .logo-mark { width: 26px; height: 26px; border-radius: 7px; background: var(--red); color: var(--white);
     display: grid; place-items: center; font-size: 13px; }
@@ -42,7 +44,7 @@
   .hud-right { margin-left: auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   .seg { display: flex; border: 2px solid var(--ink); border-radius: 999px; overflow: hidden; }
   .seg button { border: none; background: none; font-family: "Courier Prime", monospace; font-weight: 700;
-    font-size: 11px; padding: 7px 12px; cursor: pointer; color: var(--ink); }
+    font-size: 11px; padding: 7px 14px; cursor: pointer; color: var(--ink); }
   .seg button.on { background: var(--ink); color: var(--snow); }
   .hud-btn { border: 2px solid var(--ink); background: none; border-radius: 999px; padding: 7px 13px;
     font-family: "Courier Prime", monospace; font-weight: 700; font-size: 11px; cursor: pointer; color: var(--ink); }
@@ -50,35 +52,60 @@
   a.hud-btn { text-decoration: none; display: inline-block; }
 
   .stage { position: relative; flex: 1; overflow: hidden; }
-  .mapwrap { position: absolute; inset: 0; display: grid; place-items: center; padding: 8px; }
-  .mapbox { position: relative; width: 100%; height: 100%; max-width: 1500px; }
-  svg.map { width: 100%; height: 100%; display: block; }
-  .float-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  #lmap { position: absolute; inset: 0; background: #e8e6e0; }
+  .leaflet-container { font-family: "Archivo", sans-serif; }
+  .leaflet-control-attribution { font-size: 9px !important; background: rgba(245,243,239,.8) !important; }
+
+  /* pins as Leaflet divIcons */
+  .lpin-wrap { background: none; border: none; }
+  .lpin { position: relative; width: 84px; height: 60px; cursor: pointer; }
+  .lpin .ring { position: absolute; left: 50%; top: 16px; width: 34px; height: 34px; margin: -17px;
+    border: 3px solid var(--red); border-radius: 50%; opacity: 0; }
+  .lpin.red .ring { animation: ringpulse 1.1s ease-out infinite; }
+  @keyframes ringpulse { 0% { transform: scale(.35); opacity: .85; } 100% { transform: scale(1.6); opacity: 0; } }
+  .lpin .machine { position: absolute; left: 50%; top: 0; transform: translateX(-50%);
+    width: 22px; height: 32px; background: var(--red); border: 2px solid var(--ink); border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(22,20,15,.35); transition: transform .15s; transform-origin: center bottom; }
+  .lpin:hover .machine { transform: translateX(-50%) scale(1.18); }
+  .lpin .win { position: absolute; left: 3px; top: 3px; width: 9px; height: 17px; background: var(--ink); border-radius: 2px; }
+  .lpin .dot { position: absolute; right: 2.5px; bottom: 3px; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--forest); border: 1.5px solid #fff; }
+  .lpin .flame { position: absolute; left: 60%; top: -10px; font-size: 15px; display: none; }
+  .lpin.rushing .flame { display: block; animation: flame .5s ease-in-out infinite alternate; }
+  @keyframes flame { to { transform: scale(1.25) rotate(-6deg); } }
+  .lpin .lbl { position: absolute; left: 50%; top: 35px; transform: translateX(-50%);
+    font-family: "Courier Prime", monospace; font-size: 9.5px; font-weight: 700; white-space: nowrap;
+    color: var(--ink); background: rgba(245,243,239,.85); border-radius: 4px; padding: 1px 5px; }
+  .ldepot { background: none; border: none; }
+  .ldepot .chip { background: var(--ink); color: var(--snow); font-family: "Courier Prime", monospace;
+    font-size: 10.5px; font-weight: 700; border-radius: 8px; padding: 5px 9px; white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(22,20,15,.35); }
+
+  .float-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 500; }
   .floaty { position: absolute; font-family: "Courier Prime", monospace; font-weight: 700; font-size: 13px;
-    transform: translate(-50%, -50%); animation: floatup 1.4s ease-out forwards; white-space: nowrap; }
+    transform: translate(-50%, -50%); animation: floatup 1.4s ease-out forwards; white-space: nowrap;
+    text-shadow: 0 1px 0 rgba(245,243,239,.9); }
   @keyframes floatup { to { transform: translate(-50%, -230%); opacity: 0; } }
   .confetti-bit { position: absolute; width: 7px; height: 7px; border-radius: 2px;
     transform: translate(-50%,-50%); animation: burst 1s ease-out forwards; }
   @keyframes burst { to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(240deg); opacity: 0; } }
+  .vanicon { position: absolute; font-size: 24px; transform: translate(-50%, -50%);
+    filter: drop-shadow(0 3px 5px rgba(22,20,15,.4)); }
 
-  .pin { cursor: pointer; }
-  .pin .pin-body { transition: transform .15s; transform-box: fill-box; transform-origin: center bottom; }
-  .pin:hover .pin-body { transform: scale(1.15); }
-  .pin .ring { transform-box: fill-box; transform-origin: center; }
-  .pin.red .ring { animation: ringpulse 1.1s ease-out infinite; }
-  @keyframes ringpulse { 0% { transform: scale(.4); opacity: .8; } 100% { transform: scale(1.9); opacity: 0; } }
-  .rush-flame { transform-box: fill-box; transform-origin: center; animation: flame .5s ease-in-out infinite alternate; }
-  @keyframes flame { to { transform: scale(1.25) rotate(-6deg); } }
-  #fogbank { pointer-events: none; opacity: 0; transition: opacity 1.2s; }
-  #fogbank.on { opacity: 1; }
-  .fogpuff { animation: fogdrift 14s ease-in-out infinite alternate; }
-  @keyframes fogdrift { to { transform: translateX(60px); } }
+  /* karl the fog */
+  #fog { position: absolute; inset: 0; z-index: 450; pointer-events: none; opacity: 0; transition: opacity 1.5s; }
+  #fog.on { opacity: 1; }
+  #fog .puff { position: absolute; border-radius: 50%; background: rgba(245,243,239,.75); filter: blur(26px);
+    animation: fogdrift 16s ease-in-out infinite alternate; }
+  @keyframes fogdrift { to { transform: translateX(80px); } }
+  #fog .karl { position: absolute; left: 22%; top: 46%; font-family: "Fraunces", serif; font-style: italic;
+    font-size: 22px; color: rgba(22,20,15,.45); }
 
   .panel {
     position: absolute; top: 12px; right: 12px; bottom: 12px; width: min(360px, calc(100vw - 24px));
     background: var(--white); border-radius: 18px; box-shadow: 0 24px 60px rgba(22,20,15,.3);
     transform: translateX(115%); transition: transform .3s cubic-bezier(.2,.85,.3,1);
-    display: flex; flex-direction: column; z-index: 10; overflow: hidden;
+    display: flex; flex-direction: column; z-index: 600; overflow: hidden;
   }
   .panel.on { transform: none; }
   .panel-head { padding: 16px 20px 12px; border-bottom: 2px solid var(--ink); position: relative; }
@@ -122,7 +149,7 @@
   .btn.ghostb:hover { border-color: var(--ink); transform: none; box-shadow: none; }
   .allgood { text-align: center; color: var(--faint); font-size: 13px; padding: 6px 0 2px; }
 
-  .toasts { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); z-index: 30;
+  .toasts { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); z-index: 750;
     display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
   .toast { background: var(--ink); color: var(--snow); font-family: "Courier Prime", monospace;
     font-weight: 700; font-size: 12px; letter-spacing: .05em; border-radius: 999px; padding: 10px 18px;
@@ -133,7 +160,7 @@
   @keyframes toastin { from { transform: translateY(-20px); opacity: 0; } }
   @keyframes toastout { to { transform: translateY(-14px); opacity: 0; } }
 
-  .gmodal { position: absolute; inset: 0; z-index: 45; background: rgba(22,20,15,.6);
+  .gmodal { position: absolute; inset: 0; z-index: 800; background: rgba(22,20,15,.6);
     display: grid; place-items: center; opacity: 0; visibility: hidden; transition: opacity .3s, visibility .3s; }
   .gmodal.on { opacity: 1; visibility: visible; }
   .gmodal .card { width: min(480px, 94vw); background: var(--white); border-radius: 20px; overflow: hidden;
@@ -164,7 +191,7 @@
   .fin-val { font-family: "Archivo Black", sans-serif; font-size: 14px; min-width: 74px; text-align: right; }
   .fin-verdict { font-family: "Fraunces", serif; font-style: italic; font-size: 16.5px; margin: 14px 0 4px; }
 
-  .intro { position: absolute; inset: 0; z-index: 40; background: rgba(22,20,15,.6);
+  .intro { position: absolute; inset: 0; z-index: 820; background: rgba(22,20,15,.6);
     display: grid; place-items: center; transition: opacity .4s, visibility .4s; }
   .intro.gone { opacity: 0; visibility: hidden; }
   .intro-card { width: min(470px, 92vw); background: var(--white); border-radius: 20px; overflow: hidden;
@@ -192,9 +219,8 @@
   <div class="hud-stat"><div class="v streak" id="hud-streak">0🔥</div><div class="k">STREAK</div></div>
   <div class="hud-right">
     <div class="seg">
-      <button id="sp0" onclick="setSpeed(0)">❚❚</button>
-      <button id="sp1" class="on" onclick="setSpeed(1)">1×</button>
-      <button id="sp4" onclick="setSpeed(4)">4×</button>
+      <button id="sp0" onclick="setSpeed(0)">❚❚ PAUSE</button>
+      <button id="sp4" class="on" onclick="setSpeed(4)">▶ PLAY</button>
     </div>
     <button class="hud-btn" id="sndbtn" onclick="toggleSound()">SOUND OFF</button>
     <a class="hud-btn" href="app.html">CONSOLE</a>
@@ -203,91 +229,14 @@
 </div>
 
 <div class="stage">
-  <div class="mapwrap"><div class="mapbox">
-    <svg class="map" id="map" viewBox="0 0 1000 620" xmlns="http://www.w3.org/2000/svg">
-      <!-- water -->
-      <rect x="0" y="0" width="1000" height="620" fill="#bcd2ee"/>
-      <rect x="0" y="0" width="1000" height="620" fill="rgba(37,71,208,.16)"/>
-      <!-- marin headlands (top left) -->
-      <path d="M0,0 L330,0 C300,30 250,44 210,52 C150,64 90,60 0,90 Z" fill="#dfe8d2"/>
-      <!-- oakland / east bay (right edge) -->
-      <path d="M1000,0 L1000,620 L920,620 C940,480 930,300 900,180 C890,120 910,50 940,0 Z" fill="#e6e0ce"/>
-      <!-- SF peninsula -->
-      <path d="M60,180 C90,130 160,110 240,116 C300,120 330,96 400,92 C470,88 540,110 600,120
-               C660,130 720,128 760,150 C800,172 812,210 806,260 C800,310 820,360 810,420
-               C800,480 760,540 700,580 C640,618 300,620 200,620 C120,620 70,560 64,470
-               C58,380 40,260 60,180 Z" fill="#f5f3ef" stroke="#16140f" stroke-width="2.5"/>
-      <!-- ocean beach edge -->
-      <path d="M64,470 C58,380 40,260 60,180" fill="none" stroke="rgba(37,71,208,.5)" stroke-width="6" stroke-linecap="round"/>
-      <!-- golden gate bridge -->
-      <g stroke="#e23b2e" stroke-width="7" stroke-linecap="round">
-        <line x1="238" y1="60" x2="252" y2="112"/>
-      </g>
-      <g stroke="#e23b2e" stroke-width="2.5" fill="none">
-        <path d="M230,64 C240,80 240,92 244,106"/>
-        <path d="M246,58 C256,74 256,88 260,104"/>
-      </g>
-      <!-- bay bridge -->
-      <line x1="806" y1="255" x2="925" y2="248" stroke="#a3a3a3" stroke-width="6" stroke-linecap="round"/>
-      <line x1="806" y1="255" x2="925" y2="248" stroke="#16140f" stroke-width="1.4" stroke-dasharray="7 7"/>
-      <!-- alcatraz -->
-      <ellipse cx="560" cy="58" rx="20" ry="9" fill="#e6e0ce" stroke="#16140f" stroke-width="1.4"/>
-      <text x="560" y="44" text-anchor="middle" font-family="Courier Prime" font-size="9" font-weight="700" fill="rgba(22,20,15,.5)">ALCATRAZ</text>
-      <!-- presidio -->
-      <path d="M120,170 C170,140 240,130 280,150 C300,180 280,210 240,216 C190,222 130,210 120,170 Z" fill="rgba(29,107,69,.3)"/>
-      <!-- golden gate park -->
-      <rect x="96" y="300" width="240" height="52" rx="18" fill="rgba(29,107,69,.38)"/>
-      <text x="216" y="332" text-anchor="middle" font-family="Courier Prime" font-size="11" font-weight="700" fill="rgba(22,20,15,.45)">GOLDEN GATE PARK</text>
-      <!-- twin peaks -->
-      <circle cx="430" cy="430" r="26" fill="rgba(29,107,69,.25)"/>
-      <circle cx="462" cy="444" r="20" fill="rgba(29,107,69,.25)"/>
-      <!-- streets -->
-      <g stroke="#16140f" stroke-width="5.5" stroke-linecap="round" fill="none" opacity=".8">
-        <path d="M806,262 C700,320 560,420 470,500" />              <!-- market st -->
-        <path d="M300,120 L300,560" />                              <!-- 19th ave / park presidio -->
-        <path d="M96,375 L700,375" opacity=".55"/>                  <!-- fell/oak-ish -->
-        <path d="M470,120 L470,500" opacity=".55"/>                 <!-- van ness -->
-        <path d="M620,140 L620,480" opacity=".55"/>                 <!-- columbus/4th-ish -->
-        <path d="M760,160 C780,240 770,330 740,420 C720,480 700,530 690,570" opacity=".55"/> <!-- embarcadero -->
-      </g>
-      <g stroke="#f5f3ef" stroke-width="1.4" stroke-dasharray="8 8" fill="none" opacity=".9">
-        <path d="M806,262 C700,320 560,420 470,500"/>
-        <path d="M300,120 L300,560"/>
-      </g>
-      <!-- neighborhood labels -->
-      <g font-family="Courier Prime" font-size="11" font-weight="700" fill="rgba(22,20,15,.35)" letter-spacing="1.5">
-        <text x="150" y="255">RICHMOND</text>
-        <text x="150" y="420">SUNSET</text>
-        <text x="385" y="155">MARINA</text>
-        <text x="500" y="215">NOB HILL</text>
-        <text x="600" y="112">NORTH BEACH</text>
-        <text x="690" y="205">FIDI</text>
-        <text x="620" y="330">SOMA</text>
-        <text x="500" y="470">THE MISSION</text>
-        <text x="360" y="510">CASTRO</text>
-        <text x="660" y="470">DOGPATCH</text>
-        <text x="40" y="580" fill="rgba(37,71,208,.55)">PACIFIC</text>
-        <text x="850" y="90" fill="rgba(37,71,208,.55)">THE BAY</text>
-      </g>
-      <!-- ferry building -->
-      <rect x="796" y="244" width="10" height="22" rx="3" fill="#16140f"/>
-      <!-- depot (bayview) -->
-      <g id="depot">
-        <rect x="640" y="588" width="84" height="26" rx="8" fill="#16140f"/>
-        <text x="682" y="606" text-anchor="middle" font-family="Courier Prime" font-size="10.5" font-weight="700" fill="#f5f3ef">DEPOT 🏭</text>
-      </g>
-      <g id="pins"></g>
-      <g id="vans"></g>
-      <!-- karl the fog -->
-      <g id="fogbank">
-        <ellipse class="fogpuff" cx="180" cy="220" rx="190" ry="70" fill="rgba(245,243,239,.75)"/>
-        <ellipse class="fogpuff" cx="330" cy="330" rx="230" ry="80" fill="rgba(245,243,239,.7)" style="animation-delay:-4s"/>
-        <ellipse class="fogpuff" cx="240" cy="450" rx="200" ry="75" fill="rgba(245,243,239,.72)" style="animation-delay:-8s"/>
-        <text x="230" y="340" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="20" fill="rgba(22,20,15,.4)">Karl was here.</text>
-      </g>
-    </svg>
-    <div class="float-layer" id="floats"></div>
-  </div></div>
+  <div id="lmap"></div>
+  <div id="fog">
+    <div class="puff" style="left:-8%;top:10%;width:52%;height:36%"></div>
+    <div class="puff" style="left:-4%;top:40%;width:60%;height:40%;animation-delay:-5s"></div>
+    <div class="puff" style="left:0%;top:66%;width:48%;height:34%;animation-delay:-10s"></div>
+    <div class="karl">Karl was here.</div>
+  </div>
+  <div class="float-layer" id="floats"></div>
 
   <div class="panel" id="panel">
     <div class="panel-head">
@@ -302,7 +251,6 @@
 
   <div class="toasts" id="toasts"></div>
 
-  <!-- event card -->
   <div class="gmodal" id="evmodal">
     <div class="card">
       <div class="flagline" style="height:7px"><i></i><i></i><i></i><i></i></div>
@@ -315,7 +263,6 @@
     </div>
   </div>
 
-  <!-- day summary -->
   <div class="gmodal" id="daymodal">
     <div class="card">
       <div class="flagline" style="height:7px"><i></i><i></i><i></i><i></i></div>
@@ -328,7 +275,6 @@
     </div>
   </div>
 
-  <!-- final scoreboard -->
   <div class="gmodal" id="finalmodal">
     <div class="card">
       <div class="flagline" style="height:7px"><i></i><i></i><i></i><i></i></div>
@@ -344,7 +290,6 @@
     </div>
   </div>
 
-  <!-- intro -->
   <div class="intro" id="intro">
     <div class="intro-card">
       <div class="flagline" style="height:7px"><i></i><i></i><i></i><i></i></div>
@@ -352,7 +297,7 @@
         <h1>Vend City: <span class="fr">San Francisco.</span></h1>
         <div class="sub">15 DAYS · 10 MACHINES · 2 VANS · ONE FOGGY CITY</div>
         <ol>
-          <li>Your machines sell on their own, from the Marina to Dogpatch. <b>Red pins are about to run dry.</b></li>
+          <li>This is the real map. Your machines run from the <b>Marina to Dogpatch</b>, and they are all hungry.</li>
           <li>You only have <b>two vans</b>. When both are out, someone waits. Choose your fires.</li>
           <li>The city will test you: <b>Warriors games, street fairs, Karl the Fog.</b> Every event is a call you make.</li>
           <li>A <b>shadow AI</b> runs the same fleet on the same customers. After 15 days, the books are compared. <b>Out-earn it if you can.</b></li>
@@ -364,7 +309,7 @@
 </div>
 
 <script>
-/* ================= Vend City SF ================= */
+/* ================= Vend City SF, on the real map ================= */
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const fmt$ = n => '$' + n.toFixed(2);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -373,25 +318,70 @@ const GAME_DAYS = 15, START_CASH = 800, VAN_COUNT = 2;
 const DAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
 const MIN_PER_SEC = 36;
 const VAN_TRIP_MIN = 200;
+const DEMAND_MULT = 1.3;             /* the city is thirsty */
 
-/* machines mapped to SF spots */
+/* real SF coordinates */
 const SF = {
-  M01: { x: 705, y: 225, hood: 'FiDi' },
-  M02: { x: 640, y: 345, hood: 'SOMA' },
-  M03: { x: 415, y: 170, hood: 'Marina' },
-  M04: { x: 360, y: 390, hood: 'Cole Valley' },
-  M05: { x: 210, y: 280, hood: 'Richmond' },
-  M06: { x: 210, y: 445, hood: 'Sunset' },
-  M07: { x: 615, y: 275, hood: 'Powell St' },
-  M08: { x: 690, y: 495, hood: 'Dogpatch' },
-  M09: { x: 405, y: 490, hood: 'Castro' },
-  M10: { x: 625, y: 155, hood: 'North Beach' },
+  M01: { ll: [37.7936, -122.3990], hood: 'FiDi' },
+  M02: { ll: [37.7841, -122.4009], hood: 'SOMA' },
+  M03: { ll: [37.8009, -122.4360], hood: 'Marina' },
+  M04: { ll: [37.7659, -122.4497], hood: 'Cole Valley' },
+  M05: { ll: [37.7830, -122.4650], hood: 'Richmond' },
+  M06: { ll: [37.7636, -122.4770], hood: 'Sunset' },
+  M07: { ll: [37.7847, -122.4079], hood: 'Powell St' },
+  M08: { ll: [37.7680, -122.3877], hood: 'Chase Center' },
+  M09: { ll: [37.7609, -122.4350], hood: 'Castro' },
+  M10: { ll: [37.8000, -122.4090], hood: 'North Beach' },
 };
-const DEPOT = [682, 588];
+const DEPOT_LL = [37.7405, -122.3937];
 
-let SIM = null, speed = 1, lastT = null, muted = true, openId = null, audio = null;
-let prevSpeed = 1, vanSeq = 0;
+let SIM = null, speed = 4, lastT = null, muted = true, openId = null, audio = null;
+let prevSpeed = 4, vanSeq = 0, map = null, PX = {}, DEPOT_PX = { x: 0, y: 0 };
+const pinEls = {};
 
+/* ---------- map ---------- */
+function initMap() {
+  map = L.map('lmap', {
+    zoomControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false,
+    boxZoom: false, keyboard: false, touchZoom: false, tapHold: false,
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap · © CARTO',
+    subdomains: 'abcd', maxZoom: 19,
+  }).addTo(map);
+  map.fitBounds([[37.734, -122.494], [37.812, -122.376]]);
+
+  SIM.machines.forEach(m => {
+    const icon = L.divIcon({
+      className: 'lpin-wrap',
+      html: `<div class="lpin" id="pin-${m.id}">
+        <div class="ring"></div>
+        <div class="machine"><div class="win"></div><div class="dot"></div></div>
+        <div class="flame">🔥</div>
+        <div class="lbl">${esc(m.hood.toUpperCase())}</div>
+      </div>`,
+      iconSize: [84, 60], iconAnchor: [42, 30],
+    });
+    L.marker(SF[m.id].ll, { icon }).addTo(map).on('click', () => openMachine(m.id));
+  });
+  L.marker(DEPOT_LL, {
+    icon: L.divIcon({ className: 'ldepot', html: '<div class="chip">DEPOT 🏭</div>', iconSize: [80, 24], iconAnchor: [40, 12] }),
+  }).addTo(map);
+
+  const cachePx = () => {
+    SIM.machines.forEach(m => {
+      const p = map.latLngToContainerPoint(SF[m.id].ll);
+      PX[m.id] = { x: p.x, y: p.y };
+      pinEls[m.id] = document.getElementById('pin-' + m.id);
+    });
+    const dp = map.latLngToContainerPoint(DEPOT_LL);
+    DEPOT_PX = { x: dp.x, y: dp.y };
+  };
+  map.whenReady(() => setTimeout(cachePx, 100));
+  addEventListener('resize', () => { map.invalidateSize(); setTimeout(cachePx, 150); });
+}
+
+/* ---------- data ---------- */
 fetch('../data/forecast.json').then(r => r.json()).then(d => {
   SIM = {
     day: 1, min: 8 * 60, cash: START_CASH, revToday: 0, missed: 0,
@@ -403,23 +393,28 @@ fetch('../data/forecast.json').then(r => r.json()).then(d => {
     eventAt: 9 * 60 + Math.random() * 300, eventFired: false,
     machines: d.machines.map(m => ({
       id: m.machine_id, name: m.name, type: m.location_type, loc: m.location,
-      x: SF[m.machine_id].x, y: SF[m.machine_id].y, hood: SF[m.machine_id].hood,
-      skus: m.skus.map(s => ({
-        id: s.sku_id, name: s.name, cost: s.unit_cost, price: s.unit_price,
-        avg: Math.max(0.3, s.avg_daily_sales), dow: s.dow_factor,
-        stock: s.current_stock, max: Math.max(s.current_stock, Math.ceil(s.avg_daily_sales * TARGET_DAYS)),
-        aiStock: s.current_stock, acc: 0,
-      })),
+      hood: SF[m.machine_id].hood,
+      skus: m.skus.map(s => {
+        const avg = Math.max(0.3, s.avg_daily_sales);
+        /* the whole city starts hungry: 1.5 to 5.5 days of cover */
+        const stock = Math.max(2, Math.ceil(avg * (1.5 + Math.random() * 4)));
+        return {
+          id: s.sku_id, name: s.name, cost: s.unit_cost, price: s.unit_price,
+          avg, dow: s.dow_factor,
+          stock, max: Math.max(stock, Math.ceil(avg * TARGET_DAYS)),
+          aiStock: stock, acc: 0,
+        };
+      }),
     })),
   };
-  buildPins();
+  initMap();
   drawPins();
 });
 
 /* ---------- helpers ---------- */
 const dowIdx = () => (SIM.day - 1) % 7;
 const absMin = () => SIM.day * 1440 + SIM.min;
-function skuDays(s) { return s.avg > 0 ? s.stock / s.avg : 99; }
+function skuDays(s) { return s.avg > 0 ? s.stock / (s.avg * DEMAND_MULT) : 99; }
 function machineDays(m) { return Math.min(...m.skus.map(skuDays)); }
 function machineState(m) {
   const d = machineDays(m);
@@ -427,7 +422,7 @@ function machineState(m) {
 }
 function orderFor(m) {
   const lines = m.skus.filter(s => skuDays(s) <= 7)
-    .map(s => ({ ...s, qty: Math.max(0, Math.ceil(s.avg * TARGET_DAYS - s.stock)) }))
+    .map(s => ({ ...s, qty: Math.max(0, Math.ceil(s.avg * DEMAND_MULT * TARGET_DAYS - s.stock)) }))
     .filter(l => l.qty > 0)
     .map(l => ({ ...l, lineCost: l.qty * l.cost, flag: l.price < l.cost * MARGIN_FLOOR }));
   return { lines, total: lines.reduce((a, l) => a + l.lineCost, 0) };
@@ -437,43 +432,27 @@ const vansFree = () => VAN_COUNT - SIM.deliveries.length;
 const aiVansFree = () => VAN_COUNT - SIM.aiDeliveries.length;
 const rushMultFor = mid => SIM.rushes.reduce((a, r) => r.mid === mid && absMin() < r.until ? a * r.mult : a, 1);
 const foggy = () => absMin() < SIM.fogUntil;
+const pxOf = mid => PX[mid] || { x: -100, y: -100 };
 
-/* ---------- pins ---------- */
-function buildPins() {
-  const g = document.getElementById('pins');
-  g.innerHTML = SIM.machines.map(m => `
-    <g class="pin" id="pin-${m.id}" onclick="openMachine('${m.id}')">
-      <circle class="ring" cx="${m.x}" cy="${m.y - 14}" r="16" fill="none" stroke="#e23b2e" stroke-width="3" opacity="0"/>
-      <g class="pin-body">
-        <rect x="${m.x - 9}" y="${m.y - 28}" width="18" height="26" rx="4" fill="#e23b2e" stroke="#16140f" stroke-width="1.6"/>
-        <rect x="${m.x - 5.5}" y="${m.y - 24}" width="8" height="14" rx="2" fill="#16140f"/>
-        <circle class="dot" cx="${m.x + 4.5}" cy="${m.y - 7.5}" r="3.2" fill="#1d6b45" stroke="#fff" stroke-width="1"/>
-      </g>
-      <text class="rush-ico" x="${m.x + 12}" y="${m.y - 26}" font-size="14" opacity="0">🔥</text>
-      <text x="${m.x}" y="${m.y + 13}" text-anchor="middle" font-family="Courier Prime" font-size="9.5"
-        font-weight="700" fill="rgba(22,20,15,.6)">${esc(m.hood.toUpperCase())}</text>
-    </g>`).join('');
-}
 function drawPins() {
+  if (!SIM) return;
   SIM.machines.forEach(m => {
-    const pin = document.getElementById('pin-' + m.id);
+    const pin = pinEls[m.id] || document.getElementById('pin-' + m.id);
+    if (!pin) return;
     const st = enRoute(m.id) ? 'blue' : machineState(m);
     pin.classList.toggle('red', st === 'red');
-    pin.querySelector('.dot').setAttribute('fill',
-      st === 'red' ? '#e23b2e' : st === 'yellow' ? '#efaf1b' : st === 'blue' ? '#2547d0' : '#1d6b45');
-    pin.querySelector('.ring').setAttribute('opacity', st === 'red' ? '1' : '0');
-    const rushing = rushMultFor(m.id) > 1;
-    pin.querySelector('.rush-ico').setAttribute('opacity', rushing ? '1' : '0');
-    pin.querySelector('.rush-ico').classList.toggle('rush-flame', rushing);
+    pin.querySelector('.dot').style.background =
+      st === 'red' ? '#e23b2e' : st === 'yellow' ? '#efaf1b' : st === 'blue' ? '#2547d0' : '#1d6b45';
+    pin.classList.toggle('rushing', rushMultFor(m.id) > 1);
   });
-  document.getElementById('fogbank').classList.toggle('on', foggy());
+  document.getElementById('fog').classList.toggle('on', foggy());
 }
 
-/* ---------- fx ---------- */
+/* ---------- fx (map container pixels) ---------- */
 function floatAt(x, y, text, color) {
   const el = document.createElement('div');
   el.className = 'floaty'; el.textContent = text; el.style.color = color;
-  el.style.left = (x / 1000 * 100) + '%'; el.style.top = (y / 620 * 100) + '%';
+  el.style.left = x + 'px'; el.style.top = y + 'px';
   document.getElementById('floats').appendChild(el);
   setTimeout(() => el.remove(), 1500);
 }
@@ -484,7 +463,7 @@ function confettiAt(x, y) {
     const el = document.createElement('div');
     el.className = 'confetti-bit';
     el.style.background = colors[i % 4];
-    el.style.left = (x / 1000 * 100) + '%'; el.style.top = (y / 620 * 100) + '%';
+    el.style.left = x + 'px'; el.style.top = y + 'px';
     const a = Math.random() * Math.PI * 2, r = 30 + Math.random() * 40;
     el.style.setProperty('--dx', Math.cos(a) * r + 'px');
     el.style.setProperty('--dy', Math.sin(a) * r - 20 + 'px');
@@ -524,8 +503,8 @@ function toggleSound() {
 /* ---------- controls ---------- */
 function setSpeed(s) {
   speed = s;
-  ['sp0', 'sp1', 'sp4'].forEach(id => document.getElementById(id).classList.remove('on'));
-  document.getElementById(s === 0 ? 'sp0' : s === 1 ? 'sp1' : 'sp4').classList.add('on');
+  document.getElementById('sp0').classList.toggle('on', s === 0);
+  document.getElementById('sp4').classList.toggle('on', s !== 0);
 }
 function startSim() {
   document.getElementById('intro').classList.add('gone');
@@ -534,29 +513,29 @@ function startSim() {
 }
 
 /* ---------- events ---------- */
-function pauseFor(modalId) { prevSpeed = speed || 1; setSpeed(0); document.getElementById(modalId).classList.add('on'); }
+function pauseFor(modalId) { prevSpeed = speed || 4; setSpeed(0); document.getElementById(modalId).classList.add('on'); }
 function closeModal(modalId, resume) {
   document.getElementById(modalId).classList.remove('on');
   if (resume) setSpeed(prevSpeed);
 }
 function bikeCourier(mid, markup) {
-  /* instant restock via courier at a premium, no van needed; the AI does the same */
   const m = SIM.machines.find(x => x.id === mid);
   let cost = 0;
   m.skus.forEach(s => {
-    const q = Math.max(0, Math.ceil(s.avg * TARGET_DAYS - s.stock));
+    const q = Math.max(0, Math.ceil(s.avg * DEMAND_MULT * TARGET_DAYS - s.stock));
     if (q > 0) { s.stock += q; s.max = Math.max(s.max, s.stock); cost += q * s.cost; }
   });
   cost *= markup;
   SIM.cash -= cost; SIM.spendToday += cost; SIM.tot.spend += cost;
-  confettiAt(m.x, m.y - 16);
+  const p = pxOf(mid);
+  confettiAt(p.x, p.y - 16);
   return cost;
 }
 function aiCourier(mid, markup) {
   const m = SIM.machines.find(x => x.id === mid);
   let cost = 0;
   m.skus.forEach(s => {
-    const q = Math.max(0, Math.ceil(s.avg * TARGET_DAYS - s.aiStock));
+    const q = Math.max(0, Math.ceil(s.avg * DEMAND_MULT * TARGET_DAYS - s.aiStock));
     if (q > 0) { s.aiStock += q; cost += q * s.cost; }
   });
   cost *= markup;
@@ -568,7 +547,7 @@ const EVENTS = [
   {
     ico: '🏀', title: () => 'Warriors game tonight.',
     pick: () => 'M08',
-    body: m => `Playoff crowd pouring into Dogpatch after the final buzzer. Demand at <b>${esc(m.name)}</b> will
+    body: m => `Playoff crowd pouring into Chase Center after the final buzzer. Demand at <b>${esc(m.name)}</b> will
       go wild tonight. A bike courier can top the machine up right now for <b>cost + 40%</b>. No van needed.`,
     actions: m => [
       { label: 'SEND THE COURIER', run: () => { const c = bikeCourier(m.id, 1.4); addRush(m.id, 6, 2.8);
@@ -603,7 +582,7 @@ const EVENTS = [
   {
     ico: '📱', title: () => 'Your machine went viral.',
     pick: () => 'M03',
-    body: m => `Someone filmed a sunset haul at <b>${esc(m.name)}</b> and it is everywhere.
+    body: m => `Someone filmed a sunset haul at <b>${esc(m.name)}</b> on Chestnut and it is everywhere.
       <b>Triple demand for the next 5 hours</b>, starting now. There is no time for a courier. Good luck.`,
     actions: m => [{ label: 'FAME IS A CURSE', run: () => { addRush(m.id, 5, 3);
       toast('MARINA IS MOBBED. 3X DEMAND.', 'redt', 3.5); } }],
@@ -623,7 +602,7 @@ const EVENTS = [
   {
     ico: '🚧', title: () => 'Market St is torn up again.',
     pick: () => null,
-    body: () => `Roadworks, orange cones as far as the eye can see. <b>Van trips take half again as long
+    body: () => `Roadworks, orange cones as far as the eye can see. <b>Van trips take twice as long
       until tomorrow</b>. Both fleets suffer. Classic.`,
     actions: () => [{ label: 'OF COURSE IT IS', run: () => { SIM.fogUntil = Math.max(SIM.fogUntil, absMin() + 14 * 60);
       toast('CONES EVERYWHERE. VANS SLOWED.', '', 3.2); } }],
@@ -659,10 +638,8 @@ function tick(t) {
   const dtMin = dtReal * MIN_PER_SEC * speed;
   SIM.min += dtMin;
 
-  /* daily event */
   if (!SIM.eventFired && SIM.min >= SIM.eventAt) { SIM.eventFired = true; fireEvent(); return; }
 
-  /* rollover */
   if (SIM.min >= 1440) {
     SIM.min -= 1440;
     endOfDay();
@@ -673,19 +650,20 @@ function tick(t) {
   const dow = dowIdx();
   SIM.machines.forEach(m => {
     const rm = rushMultFor(m.id);
+    const p = pxOf(m.id);
     m.skus.forEach(s => {
-      s.acc += s.avg * (s.dow[dow] || 1) * rm / 1440 * dtMin;
+      s.acc += s.avg * DEMAND_MULT * (s.dow[dow] || 1) * rm / 1440 * dtMin;
       while (s.acc >= 1) {
         s.acc -= 1;
         if (s.stock > 0) {
           s.stock--;
           SIM.cash += s.price; SIM.revToday += s.price; SIM.tot.rev += s.price; SIM.salesToday++;
-          if (Math.random() < .5) { floatAt(m.x + (Math.random() * 20 - 10), m.y - 30, '+' + fmt$(s.price), '#1d6b45'); sfxSale(); }
+          if (Math.random() < .45) { floatAt(p.x + (Math.random() * 26 - 13), p.y - 26, '+' + fmt$(s.price), '#1d6b45'); sfxSale(); }
         } else {
           SIM.missed++; SIM.missedToday++; SIM.tot.missed++;
           SIM.missedRevToday += s.price;
           SIM.dryToday[m.id] = (SIM.dryToday[m.id] || 0) + 1;
-          floatAt(m.x + (Math.random() * 20 - 10), m.y - 30, '✕ MISSED', '#e23b2e'); sfxMiss();
+          floatAt(p.x + (Math.random() * 26 - 13), p.y - 26, '✕ MISSED', '#e23b2e'); sfxMiss();
         }
         if (s.aiStock > 0) { s.aiStock--; SIM.aiRevToday += s.price; SIM.tot.aiRev += s.price; }
         else SIM.aiMissed++;
@@ -693,17 +671,17 @@ function tick(t) {
     });
   });
 
-  /* AI restocks with its own two vans, lowest cover first */
+  /* AI restocks with its own two vans */
   if (aiVansFree() > 0) {
     const targets = SIM.machines
       .filter(m => !SIM.aiDeliveries.some(v => v.mid === m.id))
-      .map(m => ({ m, cover: Math.min(...m.skus.map(s => s.aiStock / s.avg)) }))
+      .map(m => ({ m, cover: Math.min(...m.skus.map(s => s.aiStock / (s.avg * DEMAND_MULT))) }))
       .filter(x => x.cover <= 7)
       .sort((a, b) => a.cover - b.cover);
     while (aiVansFree() > 0 && targets.length) {
       const { m } = targets.shift();
       const lines = m.skus
-        .map(s => ({ id: s.id, qty: Math.max(0, Math.ceil(s.avg * TARGET_DAYS - s.aiStock)), cost: s.cost }))
+        .map(s => ({ id: s.id, qty: Math.max(0, Math.ceil(s.avg * DEMAND_MULT * TARGET_DAYS - s.aiStock)), cost: s.cost }))
         .filter(l => l.qty > 0);
       if (!lines.length) continue;
       const total = lines.reduce((a, l) => a + l.qty * l.cost, 0);
@@ -719,40 +697,40 @@ function tick(t) {
       const m = SIM.machines.find(x => x.id === v.mid);
       v.lines.forEach(l => { const s = m.skus.find(x => x.id === l.id); if (s) s.aiStock += l.qty; });
     }
-    return v.prog < 2;   /* van drives home before it frees up */
+    return v.prog < 2;
   });
 
-  /* player deliveries: out, drop, and drive home */
-  const vansG = document.getElementById('vans');
+  /* player deliveries */
   SIM.deliveries = SIM.deliveries.filter(v => {
     v.prog += vSpeed;
     if (v.prog >= 1 && !v.dropped) {
       v.dropped = true;
       const m = SIM.machines.find(x => x.id === v.mid);
       v.lines.forEach(l => { const s = m.skus.find(x => x.id === l.id); if (s) { s.stock += l.qty; s.max = Math.max(s.max, s.stock); } });
-      confettiAt(m.x, m.y - 16);
-      floatAt(m.x, m.y - 40, 'RESTOCKED!', '#2547d0');
+      const p = pxOf(m.id);
+      confettiAt(p.x, p.y - 16);
+      floatAt(p.x, p.y - 40, 'RESTOCKED!', '#2547d0');
       toast(`🚚 DELIVERED TO ${m.hood.toUpperCase()}`, 'gold', 3);
       sfxArrive();
       drawPins(); if (openId === v.mid) renderPanel();
     }
     if (v.prog >= 2) { document.getElementById('van-' + v.vid)?.remove(); return false; }
-    const p = v.prog < 1 ? v.prog : 2 - v.prog;   /* there and back again */
-    const q = 1 - p;
-    const x = q * q * v.x0 + 2 * q * p * v.cx + p * p * v.x1;
-    const y = q * q * v.y0 + 2 * q * p * v.cy + p * p * v.y1;
+    const pp = v.prog < 1 ? v.prog : 2 - v.prog;
+    const q = 1 - pp;
+    const tp = pxOf(v.mid);
+    const cx = (DEPOT_PX.x + tp.x) / 2 + v.bend, cy = Math.min(DEPOT_PX.y, tp.y) - 50;
+    const x = q * q * DEPOT_PX.x + 2 * q * pp * cx + pp * pp * tp.x;
+    const y = q * q * DEPOT_PX.y + 2 * q * pp * cy + pp * pp * tp.y;
     let van = document.getElementById('van-' + v.vid);
     if (!van) {
-      van = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      van.id = 'van-' + v.vid;
-      van.setAttribute('font-size', '22'); van.textContent = '🚚';
-      vansG.appendChild(van);
+      van = document.createElement('div');
+      van.id = 'van-' + v.vid; van.className = 'vanicon'; van.textContent = '🚚';
+      document.getElementById('floats').appendChild(van);
     }
-    van.setAttribute('x', x - 11); van.setAttribute('y', y + 8);
+    van.style.left = x + 'px'; van.style.top = y + 'px';
     return true;
   });
 
-  /* housekeeping */
   SIM.rushes = SIM.rushes.filter(r => absMin() < r.until);
   if (!tick.acc) tick.acc = 0;
   tick.acc += dtReal;
@@ -795,7 +773,7 @@ function endOfDay() {
   SIM.eventFired = false;
   SIM.eventAt = 9 * 60 + Math.random() * 330;
 
-  prevSpeed = speed || 1;
+  prevSpeed = speed || 4;
   setSpeed(0);
   if (s.day >= GAME_DAYS) { SIM.over = true; showFinal(); }
   else showDaySummary(s);
@@ -913,13 +891,12 @@ function confirmOrder(mid) {
   SIM.deliveries.push({
     vid: ++vanSeq, mid, prog: 0, dropped: false,
     lines: lines.map(l => ({ id: l.id, qty: l.qty })),
-    x0: DEPOT[0], y0: DEPOT[1], x1: m.x, y1: m.y,
-    cx: (DEPOT[0] + m.x) / 2 + (Math.random() * 160 - 80),
-    cy: Math.min(DEPOT[1], m.y) - 40 - Math.random() * 60,
+    bend: Math.random() * 160 - 80,
   });
   sfxOrder();
   toast(`ORDER CONFIRMED: ${fmt$(total)} TO ${m.hood.toUpperCase()}`, '', 3);
-  floatAt(m.x, m.y - 40, '-' + fmt$(total), '#a87b06');
+  const p = pxOf(mid);
+  floatAt(p.x, p.y - 40, '-' + fmt$(total), '#a87b06');
   drawPins(); renderPanel(); updateHud();
 }
 </script>

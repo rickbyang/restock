@@ -131,6 +131,34 @@
   @keyframes toastin { from { transform: translateY(-20px); opacity: 0; } }
   @keyframes toastout { to { transform: translateY(-14px); opacity: 0; } }
 
+  /* ---- day & final modals ---- */
+  .gmodal { position: absolute; inset: 0; z-index: 45; background: rgba(22,20,15,.6);
+    display: grid; place-items: center; opacity: 0; visibility: hidden; transition: opacity .3s, visibility .3s; }
+  .gmodal.on { opacity: 1; visibility: visible; }
+  .gmodal .card { width: min(480px, 94vw); background: var(--white); border-radius: 20px; overflow: hidden;
+    box-shadow: 0 40px 90px rgba(0,0,0,.45); transform: translateY(16px); transition: transform .3s cubic-bezier(.2,.9,.3,1.2); }
+  .gmodal.on .card { transform: none; }
+  .gcard-pad { padding: 24px 28px 26px; }
+  .gmodal h2 { font-family: "Archivo Black", sans-serif; font-weight: 400; text-transform: uppercase; font-size: 26px; }
+  .gmodal h2 .fr { font-family: "Fraunces", serif; font-style: italic; text-transform: none; color: var(--red); }
+  .dm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0 14px; }
+  .dm-stat { background: var(--snow); border-radius: 12px; padding: 11px 12px; text-align: center; }
+  .dm-stat .v { font-family: "Archivo Black", sans-serif; font-size: 18px; }
+  .dm-stat .v.good { color: var(--forest); } .dm-stat .v.bad { color: var(--red); }
+  .dm-stat .k { font-family: "Courier Prime", monospace; font-size: 8.5px; font-weight: 700; letter-spacing: .1em; color: var(--faint); margin-top: 3px; }
+  .dm-notes { margin: 0 0 4px 18px; font-size: 13.5px; line-height: 1.7; color: var(--dim); }
+
+  .fin-grade { float: right; font-family: "Archivo Black", sans-serif; font-size: 54px; line-height: .9;
+    color: var(--red); margin-left: 14px; }
+  .fin-sub { font-family: "Courier Prime", monospace; font-size: 10px; font-weight: 700; letter-spacing: .12em;
+    color: var(--faint); margin: 6px 0 16px; }
+  .fin-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+  .fin-lab { font-family: "Courier Prime", monospace; font-weight: 700; font-size: 11px; width: 52px; }
+  .fin-track { flex: 1; height: 16px; background: var(--snow); border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+  .fin-track i { display: block; height: 100%; border-radius: 999px; transition: width 1.2s cubic-bezier(.2,.8,.3,1); }
+  .fin-val { font-family: "Archivo Black", sans-serif; font-size: 14px; min-width: 74px; text-align: right; }
+  .fin-verdict { font-family: "Fraunces", serif; font-style: italic; font-size: 16.5px; margin: 14px 0 4px; }
+
   /* ---- intro overlay ---- */
   .intro { position: absolute; inset: 0; z-index: 40; background: rgba(22,20,15,.6);
     display: grid; place-items: center; transition: opacity .4s, visibility .4s; }
@@ -240,6 +268,35 @@
 
   <div class="toasts" id="toasts"></div>
 
+  <!-- day summary -->
+  <div class="gmodal" id="daymodal">
+    <div class="card">
+      <div class="flagline" style="height:7px"><i></i><i></i><i></i><i></i></div>
+      <div class="gcard-pad">
+        <h2 id="dm-title"></h2>
+        <div class="dm-grid" id="dm-grid"></div>
+        <ul class="dm-notes" id="dm-notes"></ul>
+        <button class="btn" onclick="resumeDay()">OPEN THE NEXT DAY →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- final scoreboard -->
+  <div class="gmodal" id="finalmodal">
+    <div class="card">
+      <div class="flagline" style="height:7px"><i></i><i></i><i></i><i></i></div>
+      <div class="gcard-pad">
+        <div class="fin-grade" id="fin-grade"></div>
+        <h2>Closing <span class="fr">time.</span></h2>
+        <div class="fin-sub" id="fin-sub"></div>
+        <div id="fin-bars"></div>
+        <div class="fin-verdict" id="fin-verdict"></div>
+        <button class="btn" onclick="location.reload()">RUN IT BACK</button>
+        <button class="btn blue" onclick="location.href='index.html'">EXIT TO SITE</button>
+      </div>
+    </div>
+  </div>
+
   <!-- intro -->
   <div class="intro" id="intro">
     <div class="intro-card">
@@ -249,9 +306,9 @@
         <div class="sub">YOU OWN EVERY MACHINE ON THIS MAP</div>
         <ol>
           <li>Machines <b>sell on their own</b>, day and night. Watch the coins.</li>
-          <li>When a pin <b>pulses red</b>, it is about to run dry. Click it.</li>
-          <li><b>Confirm the order</b> Restock drafted. The $200 cap still rules.</li>
+          <li>When a pin <b>pulses red</b>, it is about to run dry. Click it and <b>confirm the order</b>.</li>
           <li>A van rolls out from the depot. <b>Empty machines miss sales.</b></li>
+          <li>You have <b>15 days</b>. A shadow AI runs the same fleet on the same customers. <b>Out-earn it if you can.</b></li>
         </ol>
         <button class="btn" onclick="startSim()">OPEN THE CITY →</button>
       </div>
@@ -264,7 +321,8 @@
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const fmt$ = n => '$' + n.toFixed(2);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const SPEND_CAP = 200, MARGIN_FLOOR = 1.3, TARGET_DAYS = 14;
+const MARGIN_FLOOR = 1.3, TARGET_DAYS = 14;
+const GAME_DAYS = 15, START_CASH = 800;
 const DAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
 const MAP_POS = {
   M01: [365, 230], M02: [520, 195], M03: [845, 355], M04: [225, 300],
@@ -281,8 +339,12 @@ let audio = null;
 /* ---------- boot data ---------- */
 fetch('../data/forecast.json').then(r => r.json()).then(d => {
   SIM = {
-    day: 1, min: 8 * 60, cash: 500, revToday: 0, missed: 0,
-    deliveries: [], rush: null, nextRushCheck: 10 * 60,
+    day: 1, min: 8 * 60, cash: START_CASH, revToday: 0, missed: 0,
+    spendToday: 0, salesToday: 0, missedToday: 0, missedRevToday: 0,
+    dryToday: {}, aiRevToday: 0, aiSpendToday: 0, aiMissed: 0,
+    tot: { rev: 0, spend: 0, missed: 0, aiRev: 0, aiSpend: 0 },
+    over: false,
+    deliveries: [], aiDeliveries: [], rush: null, nextRushCheck: 10 * 60,
     machines: d.machines.map(m => ({
       id: m.machine_id, name: m.name, type: m.location_type, loc: m.location,
       x: MAP_POS[m.machine_id][0], y: MAP_POS[m.machine_id][1],
@@ -290,6 +352,7 @@ fetch('../data/forecast.json').then(r => r.json()).then(d => {
         id: s.sku_id, name: s.name, cost: s.unit_cost, price: s.unit_price,
         avg: Math.max(0.3, s.avg_daily_sales), dow: s.dow_factor,
         stock: s.current_stock, max: Math.max(s.current_stock, Math.ceil(s.avg_daily_sales * TARGET_DAYS)),
+        aiStock: s.current_stock,
         acc: 0,
       })),
     })),
@@ -421,12 +484,12 @@ function tick(t) {
 
   /* day rollover */
   if (SIM.min >= 1440) {
-    SIM.min -= 1440; SIM.day++;
-    toast(`DAY ${SIM.day - 1} CLOSED: ${fmt$(SIM.revToday)} SOLD · ${SIM.missed} MISSED ALL-TIME`, '', 4.5);
-    SIM.revToday = 0;
+    SIM.min -= 1440;
+    endOfDay();
+    if (SIM.over) return;
   }
 
-  /* sales */
+  /* shared demand stream: every customer hits the player fleet AND the shadow AI fleet */
   const dow = dowIdx();
   SIM.machines.forEach(m => {
     const rushMult = SIM.rush && SIM.rush.mid === m.id ? 2.4 : 1;
@@ -436,14 +499,40 @@ function tick(t) {
         s.acc -= 1;
         if (s.stock > 0) {
           s.stock--;
-          SIM.cash += s.price; SIM.revToday += s.price;
+          SIM.cash += s.price; SIM.revToday += s.price; SIM.tot.rev += s.price; SIM.salesToday++;
           if (Math.random() < .5) { floatAt(m.x + (Math.random() * 20 - 10), m.y - 30, '+' + fmt$(s.price), '#1d6b45'); sfxSale(); }
         } else {
-          SIM.missed++;
+          SIM.missed++; SIM.missedToday++; SIM.tot.missed++;
+          SIM.missedRevToday += s.price;
+          SIM.dryToday[m.id] = (SIM.dryToday[m.id] || 0) + 1;
           floatAt(m.x + (Math.random() * 20 - 10), m.y - 30, '✕ MISSED', '#e23b2e'); sfxMiss();
         }
+        /* the shadow AI sees the same customer */
+        if (s.aiStock > 0) {
+          s.aiStock--;
+          SIM.aiRevToday += s.price; SIM.tot.aiRev += s.price;
+        } else SIM.aiMissed++;
       }
     });
+  });
+
+  /* the shadow AI restocks itself the moment cover dips (same vans, same prices) */
+  SIM.machines.forEach(m => {
+    if (SIM.aiDeliveries.some(v => v.mid === m.id)) return;
+    const lines = m.skus.filter(s => s.aiStock / s.avg <= 7)
+      .map(s => ({ id: s.id, qty: Math.max(0, Math.ceil(s.avg * TARGET_DAYS - s.aiStock)), cost: s.cost }))
+      .filter(l => l.qty > 0);
+    if (!lines.length) return;
+    const total = lines.reduce((a, l) => a + l.qty * l.cost, 0);
+    SIM.aiSpendToday += total; SIM.tot.aiSpend += total;
+    SIM.aiDeliveries.push({ mid: m.id, prog: 0, lines });
+  });
+  SIM.aiDeliveries = SIM.aiDeliveries.filter(v => {
+    v.prog += dtMin / VAN_TRIP_MIN;
+    if (v.prog < 1) return true;
+    const m = SIM.machines.find(x => x.id === v.mid);
+    v.lines.forEach(l => { const s = m.skus.find(x => x.id === l.id); if (s) s.aiStock += l.qty; });
+    return false;
   });
 
   /* rush hours */
@@ -502,10 +591,87 @@ function updateHud() {
   if (!SIM) return;
   const h = Math.floor(SIM.min / 60), mm = Math.floor(SIM.min % 60);
   document.getElementById('clock').textContent =
-    `${DAYS[dowIdx()]} ${String(h).padStart(2, '0')}:${String(mm).padStart(2, '0')} · DAY ${SIM.day}`;
+    `${DAYS[dowIdx()]} ${String(h).padStart(2, '0')}:${String(mm).padStart(2, '0')} · DAY ${Math.min(SIM.day, GAME_DAYS)}/${GAME_DAYS}`;
   document.getElementById('hud-cash').textContent = fmt$(SIM.cash);
   document.getElementById('hud-rev').textContent = fmt$(SIM.revToday);
   document.getElementById('hud-miss').textContent = SIM.missed;
+}
+
+/* ---------- end of day & final scoreboard ---------- */
+let prevSpeed = 1;
+function endOfDay() {
+  const s = {
+    day: SIM.day,
+    rev: SIM.revToday, spend: SIM.spendToday, profit: SIM.revToday - SIM.spendToday,
+    missed: SIM.missedToday, missedRev: SIM.missedRevToday,
+    fill: SIM.salesToday + SIM.missedToday ? SIM.salesToday / (SIM.salesToday + SIM.missedToday) : 1,
+    dry: Object.entries(SIM.dryToday)
+      .sort((a, b) => b[1] - a[1])
+      .map(([id, n]) => ({ name: SIM.machines.find(m => m.id === id).name, n })),
+    cover: SIM.machines.reduce((a, m) => a + Math.min(30, machineDays(m)), 0) / SIM.machines.length,
+    fat: SIM.machines.filter(m => machineDays(m) > 22).map(m => m.name),
+    aiProfit: SIM.aiRevToday - SIM.aiSpendToday,
+  };
+  SIM.revToday = 0; SIM.spendToday = 0; SIM.salesToday = 0;
+  SIM.missedToday = 0; SIM.missedRevToday = 0; SIM.dryToday = {};
+  SIM.aiRevToday = 0; SIM.aiSpendToday = 0;
+  SIM.day++;
+
+  prevSpeed = speed || 1;
+  setSpeed(0);
+  if (s.day >= GAME_DAYS) { SIM.over = true; showFinal(); }
+  else showDaySummary(s);
+}
+
+function showDaySummary(s) {
+  const notes = [];
+  if (s.dry.length) notes.push(`Biggest leak: ${esc(s.dry[0].name)} missed ${s.dry[0].n} sales while empty.`);
+  else notes.push('No machine ran dry. Clean sheet.');
+  if (s.fat.length) notes.push(`Cash is sleeping in ${esc(s.fat[0])}: over 3 weeks of cover in the coils.`);
+  if (s.missedRev > 0) notes.push(`Stockouts cost you about ${fmt$(s.missedRev)} today.`);
+  const behind = s.aiProfit - s.profit;
+  notes.push(behind > 1 ? `The AI's shadow fleet made ${fmt$(behind)} more than you today.`
+    : `You matched the AI's shadow fleet today. Rare.`);
+
+  document.getElementById('dm-title').innerHTML = `Day ${s.day} <span class="fr">closed.</span>`;
+  document.getElementById('dm-grid').innerHTML = `
+    <div class="dm-stat"><div class="v ${s.profit >= 0 ? 'good' : 'bad'}">${fmt$(s.profit)}</div><div class="k">PROFIT</div></div>
+    <div class="dm-stat"><div class="v">${fmt$(s.rev)}</div><div class="k">SOLD</div></div>
+    <div class="dm-stat"><div class="v">${fmt$(s.spend)}</div><div class="k">RESTOCKING</div></div>
+    <div class="dm-stat"><div class="v ${s.missed ? 'bad' : 'good'}">${s.missed}</div><div class="k">MISSED SALES</div></div>
+    <div class="dm-stat"><div class="v">${(s.fill * 100).toFixed(1)}%</div><div class="k">FILL RATE</div></div>
+    <div class="dm-stat"><div class="v">${s.cover.toFixed(1)}d</div><div class="k">AVG COVER</div></div>`;
+  document.getElementById('dm-notes').innerHTML = notes.map(n => `<li>${n}</li>`).join('');
+  document.getElementById('daymodal').classList.add('on');
+}
+function resumeDay() {
+  document.getElementById('daymodal').classList.remove('on');
+  setSpeed(prevSpeed);
+}
+
+function showFinal() {
+  const you = SIM.tot.rev - SIM.tot.spend;
+  const ai = SIM.tot.aiRev - SIM.tot.aiSpend;
+  const ratio = ai > 0 ? clamp(you / ai, 0, 1.5) : 1;
+  const grade = you >= ai ? 'S+' : ratio >= .95 ? 'S' : ratio >= .85 ? 'A' : ratio >= .7 ? 'B' : ratio >= .5 ? 'C' : 'D';
+  const verdict = you >= ai
+    ? 'You beat the machine. Frame this screen, it will not happen twice.'
+    : ratio >= .9 ? 'The machine wins, barely. You ran this fleet like an operator.'
+    : ratio >= .7 ? 'The machine wins. It never sleeps, never forgets a red pin.'
+    : 'The machine wins by a street. Every empty coil was money it kept.';
+  const maxP = Math.max(you, ai, 1);
+  document.getElementById('fin-grade').textContent = grade;
+  document.getElementById('fin-verdict').textContent = verdict;
+  document.getElementById('fin-bars').innerHTML = `
+    <div class="fin-row"><span class="fin-lab">YOU</span>
+      <div class="fin-track"><i style="width:${clamp(you / maxP * 100, 2, 100)}%;background:var(--cobalt)"></i></div>
+      <span class="fin-val">${fmt$(you)}</span></div>
+    <div class="fin-row"><span class="fin-lab">THE AI</span>
+      <div class="fin-track"><i style="width:${clamp(ai / maxP * 100, 2, 100)}%;background:var(--red)"></i></div>
+      <span class="fin-val">${fmt$(ai)}</span></div>`;
+  document.getElementById('fin-sub').textContent =
+    `${GAME_DAYS} DAYS · ${SIM.tot.missed} MISSED SALES · SAME CUSTOMERS, SAME PRICES, SAME VANS`;
+  document.getElementById('finalmodal').classList.add('on');
 }
 
 /* ---------- machine panel ---------- */
@@ -551,16 +717,13 @@ function renderPanel() {
     box.innerHTML = `<h3>📦 Draft order</h3><div class="allgood">Fully stocked. Nothing to order.</div>`;
     return;
   }
-  const overCap = total > SPEND_CAP;
-  const broke = !overCap && total > SIM.cash;
+  const broke = total > SIM.cash;
   box.innerHTML = `<h3>📦 Draft order · to ${TARGET_DAYS} days cover</h3>
     ${lines.map(l => `<div class="oline"><span>${esc(l.name)} ${l.flag ? '<span class="oflag">⚠ margin</span>' : ''}</span>
       <span>${l.qty} × ${fmt$(l.cost)} = ${fmt$(l.lineCost)}</span></div>`).join('')}
     <div class="oline total"><span>TOTAL</span><span>${fmt$(total)}</span></div>
-    ${overCap ? `<div class="cap-banner"><b>Held at the spend cap.</b> ${fmt$(total)} is over the ${fmt$(SPEND_CAP)}
-      per-order limit. Wait for stock to sell down, or split the order in real life.</div>` : ''}
     ${broke ? `<div class="funds-banner">Not enough cash. You have ${fmt$(SIM.cash)}. Sell a few more cans first.</div>` : ''}
-    <button class="btn" ${overCap || broke ? 'disabled' : ''} onclick="confirmOrder('${m.id}')">
+    <button class="btn" ${broke ? 'disabled' : ''} onclick="confirmOrder('${m.id}')">
       CONFIRM ORDER · ${fmt$(total)}</button>`;
 }
 
@@ -568,8 +731,9 @@ let vanSeq = 0;
 function confirmOrder(mid) {
   const m = SIM.machines.find(x => x.id === mid);
   const { lines, total } = orderFor(m);
-  if (!lines.length || total > SPEND_CAP || total > SIM.cash) return;
+  if (!lines.length || total > SIM.cash) return;
   SIM.cash -= total;
+  SIM.spendToday += total; SIM.tot.spend += total;
   SIM.deliveries.push({
     vid: ++vanSeq, mid, prog: 0,
     lines: lines.map(l => ({ id: l.id, qty: l.qty })),

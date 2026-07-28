@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vend City. A Restock simulation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,300..600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --snow: #f5f3ef; --white: #ffffff; --ink: #16140f;
+    --red: #e23b2e; --red-deep: #c22d22;
+    --cobalt: #2547d0; --cobalt-deep: #1b36a4;
+    --mustard: #efaf1b; --mustard-text: #a87b06; --forest: #1d6b45;
+    --line: #dedbd3; --dim: #6b675e; --faint: #8b877d;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: var(--snow); color: var(--ink); font-family: "Archivo", sans-serif;
+    display: flex; flex-direction: column; overflow: hidden; }
+  .mono { font-family: "Courier Prime", monospace; }
+
+  .flagline { height: 5px; display: flex; flex-shrink: 0; }
+  .flagline i { flex: 1; }
+  .flagline i:nth-child(1){background:var(--red)} .flagline i:nth-child(2){background:var(--cobalt)}
+  .flagline i:nth-child(3){background:var(--mustard)} .flagline i:nth-child(4){background:var(--forest)}
+
+  /* ---- HUD ---- */
+  .hud { display: flex; align-items: center; gap: 14px; padding: 10px 18px; flex-wrap: wrap;
+    border-bottom: 2px solid var(--ink); background: var(--white); flex-shrink: 0; z-index: 20; }
+  .logo { display: flex; align-items: center; gap: 8px; font-family: "Archivo Black", sans-serif; font-size: 15px; }
+  .logo-mark { width: 26px; height: 26px; border-radius: 7px; background: var(--red); color: var(--white);
+    display: grid; place-items: center; font-size: 13px; }
+  .hud-title { font-family: "Courier Prime", monospace; font-size: 10.5px; font-weight: 700; letter-spacing: .16em; color: var(--faint); }
+  .hud-stat { text-align: center; min-width: 74px; }
+  .hud-stat .v { font-family: "Archivo Black", sans-serif; font-size: 16px; line-height: 1.1; }
+  .hud-stat .v.cash { color: var(--forest); }
+  .hud-stat .v.miss { color: var(--red); }
+  .hud-stat .k { font-family: "Courier Prime", monospace; font-size: 8.5px; font-weight: 700; letter-spacing: .12em; color: var(--faint); }
+  .hud-clock { font-family: "Courier Prime", monospace; font-weight: 700; font-size: 14px;
+    background: var(--ink); color: var(--snow); border-radius: 9px; padding: 8px 13px; }
+  .hud-right { margin-left: auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .seg { display: flex; border: 2px solid var(--ink); border-radius: 999px; overflow: hidden; }
+  .seg button { border: none; background: none; font-family: "Courier Prime", monospace; font-weight: 700;
+    font-size: 11px; padding: 7px 12px; cursor: pointer; color: var(--ink); }
+  .seg button.on { background: var(--ink); color: var(--snow); }
+  .hud-btn { border: 2px solid var(--ink); background: none; border-radius: 999px; padding: 7px 13px;
+    font-family: "Courier Prime", monospace; font-weight: 700; font-size: 11px; cursor: pointer; color: var(--ink); }
+  .hud-btn:hover { background: var(--ink); color: var(--snow); }
+  a.hud-btn { text-decoration: none; display: inline-block; }
+
+  /* ---- stage ---- */
+  .stage { position: relative; flex: 1; overflow: hidden; }
+  .mapwrap { position: absolute; inset: 0; display: grid; place-items: center; padding: 10px; }
+  .mapbox { position: relative; width: 100%; height: 100%; max-width: 1400px; }
+  svg.map { width: 100%; height: 100%; display: block; }
+  .float-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .floaty { position: absolute; font-family: "Courier Prime", monospace; font-weight: 700; font-size: 13px;
+    transform: translate(-50%, -50%); animation: floatup 1.4s ease-out forwards; white-space: nowrap; }
+  @keyframes floatup { to { transform: translate(-50%, -230%); opacity: 0; } }
+  .confetti-bit { position: absolute; width: 7px; height: 7px; border-radius: 2px;
+    transform: translate(-50%,-50%); animation: burst 1s ease-out forwards; }
+  @keyframes burst { to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(240deg); opacity: 0; } }
+
+  .pin { cursor: pointer; }
+  .pin .pin-body { transition: transform .15s; transform-box: fill-box; transform-origin: center bottom; }
+  .pin:hover .pin-body { transform: scale(1.15); }
+  .pin .ring { transform-box: fill-box; transform-origin: center; }
+  .pin.red .ring { animation: ringpulse 1.1s ease-out infinite; }
+  @keyframes ringpulse { 0% { transform: scale(.4); opacity: .8; } 100% { transform: scale(1.9); opacity: 0; } }
+  .rush-flame { transform-box: fill-box; transform-origin: center; animation: flame .5s ease-in-out infinite alternate; }
+  @keyframes flame { to { transform: scale(1.25) rotate(-6deg); } }
+  .van { transition: none; }
+
+  /* ---- machine panel ---- */
+  .panel {
+    position: absolute; top: 12px; right: 12px; bottom: 12px; width: min(360px, calc(100vw - 24px));
+    background: var(--white); border-radius: 18px; box-shadow: 0 24px 60px rgba(22,20,15,.3);
+    transform: translateX(115%); transition: transform .3s cubic-bezier(.2,.85,.3,1);
+    display: flex; flex-direction: column; z-index: 10; overflow: hidden;
+  }
+  .panel.on { transform: none; }
+  .panel-head { padding: 16px 20px 12px; border-bottom: 2px solid var(--ink); position: relative; }
+  .panel-head h2 { font-family: "Archivo Black", sans-serif; font-weight: 400; text-transform: uppercase; font-size: 17px; }
+  .panel-head .loc { font-size: 12.5px; color: var(--faint); text-transform: capitalize; }
+  .panel-close { position: absolute; top: 12px; right: 14px; border: none; background: var(--snow);
+    width: 30px; height: 30px; border-radius: 50%; font-size: 15px; cursor: pointer; }
+  .panel-close:hover { background: var(--ink); color: var(--snow); }
+  .badge { display: inline-flex; align-items: center; gap: 5px; font-family: "Courier Prime", monospace;
+    font-size: 10.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px; color: var(--white); margin-top: 8px; }
+  .badge.red { background: var(--red); } .badge.yellow { background: var(--mustard); color: var(--ink); }
+  .badge.green { background: var(--forest); } .badge.blue { background: var(--cobalt); }
+  .panel-scroll { flex: 1; overflow-y: auto; padding: 14px 20px; }
+  .sku-row { padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .sku-row:last-child { border-bottom: none; }
+  .sku-top { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; }
+  .sku-top .d { font-family: "Courier Prime", monospace; font-size: 11.5px; font-weight: 700; }
+  .d.red { color: var(--red); } .d.yellow { color: var(--mustard-text); } .d.green { color: var(--forest); }
+  .stockbar { height: 8px; border-radius: 999px; background: var(--snow); border: 1px solid var(--line);
+    overflow: hidden; margin-top: 5px; }
+  .stockbar i { display: block; height: 100%; border-radius: 999px; transition: width .4s; }
+
+  .order-box { border-top: 2px solid var(--ink); padding: 14px 20px 18px; background: var(--white); }
+  .order-box h3 { font-family: "Archivo Black", sans-serif; font-weight: 400; text-transform: uppercase; font-size: 13px; margin-bottom: 8px; }
+  .oline { display: flex; justify-content: space-between; font-family: "Courier Prime", monospace; font-size: 12px; line-height: 1.85; }
+  .oline.total { border-top: 1px dashed var(--line); font-weight: 700; margin-top: 3px; padding-top: 3px; font-size: 13px; }
+  .oflag { font-size: 11px; font-weight: 700; color: var(--ink); background: var(--mustard); border-radius: 6px; padding: 1px 6px; }
+  .cap-banner { background: var(--red); color: var(--white); font-size: 12.5px; font-weight: 600;
+    border-radius: 10px; padding: 9px 12px; margin-top: 10px; line-height: 1.45; }
+  .funds-banner { background: var(--mustard); color: var(--ink); font-size: 12.5px; font-weight: 600;
+    border-radius: 10px; padding: 9px 12px; margin-top: 10px; }
+  .btn { width: 100%; border: none; border-radius: 999px; padding: 13px; margin-top: 12px;
+    font-family: "Courier Prime", monospace; font-weight: 700; font-size: 13px; letter-spacing: .04em;
+    background: var(--red); color: var(--white); box-shadow: 0 5px 0 var(--red-deep); cursor: pointer;
+    transition: transform .12s, box-shadow .12s; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 7px 0 var(--red-deep); }
+  .btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--red-deep); }
+  .btn:disabled { opacity: .35; cursor: not-allowed; box-shadow: none; }
+  .btn.blue { background: var(--cobalt); box-shadow: 0 5px 0 var(--cobalt-deep); }
+  .allgood { text-align: center; color: var(--faint); font-size: 13px; padding: 6px 0 2px; }
+
+  /* ---- toasts ---- */
+  .toasts { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); z-index: 30;
+    display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+  .toast { background: var(--ink); color: var(--snow); font-family: "Courier Prime", monospace;
+    font-weight: 700; font-size: 12px; letter-spacing: .05em; border-radius: 999px; padding: 10px 18px;
+    animation: toastin .3s cubic-bezier(.2,.9,.3,1.3), toastout .4s ease-in forwards var(--life, 3.4s);
+    box-shadow: 0 10px 26px rgba(22,20,15,.3); }
+  .toast.gold { background: var(--mustard); color: var(--ink); }
+  .toast.redt { background: var(--red); color: var(--white); }
+  @keyframes toastin { from { transform: translateY(-20px); opacity: 0; } }
+  @keyframes toastout { to { transform: translateY(-14px); opacity: 0; } }
+
+  /* ---- intro overlay ---- */
+  .intro { position: absolute; inset: 0; z-index: 40; background: rgba(22,20,15,.6);
+    display: grid; place-items: center; transition: opacity .4s, visibility .4s; }
+  .intro.gone { opacity: 0; visibility: hidden; }
+  .intro-card { width: min(460px, 92vw); background: var(--white); border-radius: 20px; overflow: hidden;
+    box-shadow: 0 40px 90px rgba(0,0,0,.4); }
+  .intro-pad { padding: 28px 30px; }
+  .intro h1 { font-family: "Archivo Black", sans-serif; font-weight: 400; text-transform: uppercase; font-size: 30px; line-height: 1; }
+  .intro h1 .fr { font-family: "Fraunces", serif; font-style: italic; text-transform: none; color: var(--red); }
+  .intro .sub { font-family: "Courier Prime", monospace; font-size: 11px; font-weight: 700;
+    letter-spacing: .2em; color: var(--faint); margin: 6px 0 16px; }
+  .intro ol { margin: 0 0 6px 18px; font-size: 14.5px; line-height: 1.8; color: var(--dim); }
+  .intro ol b { color: var(--ink); }
+  @media (max-width: 700px) {
+    .hud-stat { min-width: 60px; } .hud-title { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="flagline"><i></i><i></i><i></i><i></i></div>
+<div class="hud">
+  <div class="logo"><div class="logo-mark">⟳</div>Vend City</div>
+  <div class="hud-title">OWNER SIMULATION</div>
+  <div class="hud-clock" id="clock">MON 08:00 · DAY 1</div>
+  <div class="hud-stat"><div class="v cash" id="hud-cash">$500.00</div><div class="k">CASH</div></div>
+  <div class="hud-stat"><div class="v" id="hud-rev">$0.00</div><div class="k">SOLD TODAY</div></div>
+  <div class="hud-stat"><div class="v miss" id="hud-miss">0</div><div class="k">MISSED SALES</div></div>
+  <div class="hud-right">
+    <div class="seg">
+      <button id="sp0" onclick="setSpeed(0)">❚❚</button>
+      <button id="sp1" class="on" onclick="setSpeed(1)">1×</button>
+      <button id="sp4" onclick="setSpeed(4)">4×</button>
+    </div>
+    <button class="hud-btn" id="sndbtn" onclick="toggleSound()">SOUND OFF</button>
+    <a class="hud-btn" href="app.html">CONSOLE</a>
+    <a class="hud-btn" href="index.html">EXIT</a>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="mapwrap"><div class="mapbox">
+    <svg class="map" id="map" viewBox="0 0 1000 620" xmlns="http://www.w3.org/2000/svg">
+      <!-- districts -->
+      <rect x="0" y="0" width="1000" height="620" fill="#f5f3ef"/>
+      <rect x="560" y="30" width="330" height="200" rx="26" fill="rgba(29,107,69,.1)"/>
+      <rect x="120" y="90" width="330" height="220" rx="26" fill="rgba(37,71,208,.07)"/>
+      <rect x="140" y="360" width="380" height="200" rx="26" fill="rgba(239,175,27,.12)"/>
+      <path d="M760,620 C740,480 800,420 880,380 C960,340 980,300 990,240 L1000,240 L1000,620 Z" fill="rgba(37,71,208,.22)"/>
+      <ellipse cx="620" cy="330" rx="90" ry="55" fill="rgba(29,107,69,.28)"/>
+      <g font-family="Courier Prime" font-size="12" font-weight="700" fill="rgba(22,20,15,.3)" letter-spacing="2">
+        <text x="640" y="60">CAMPUS QUARTER</text>
+        <text x="150" y="120">NORTH END</text>
+        <text x="170" y="545">TRANSIT DISTRICT</text>
+        <text x="860" y="470" transform="rotate(-55 860 470)">THE RIVER</text>
+        <text x="577" y="334">THE PARK</text>
+      </g>
+      <!-- roads -->
+      <g stroke="#16140f" stroke-width="7" stroke-linecap="round" fill="none" opacity=".82">
+        <path d="M60,80 L60,560 L900,560"/>
+        <path d="M60,300 L470,300 L470,560"/>
+        <path d="M300,80 L300,470"/>
+        <path d="M60,80 L940,80"/>
+        <path d="M700,80 L700,300 L470,300"/>
+        <path d="M700,220 L860,220 L860,80"/>
+        <path d="M300,440 L790,440 L790,560"/>
+      </g>
+      <g stroke="#f5f3ef" stroke-width="1.6" stroke-dasharray="9 9" fill="none" opacity=".9">
+        <path d="M60,80 L60,560 L900,560"/>
+        <path d="M60,300 L470,300 L470,560"/>
+        <path d="M300,80 L300,470"/>
+        <path d="M60,80 L940,80"/>
+        <path d="M700,80 L700,300 L470,300"/>
+        <path d="M700,220 L860,220 L860,80"/>
+        <path d="M300,440 L790,440 L790,560"/>
+      </g>
+      <!-- blocks -->
+      <g fill="rgba(22,20,15,.1)">
+        <rect x="90" y="110" width="60" height="40" rx="7"/><rect x="170" y="110" width="46" height="64" rx="7"/>
+        <rect x="330" y="120" width="70" height="46" rx="7"/><rect x="520" y="110" width="52" height="52" rx="7"/>
+        <rect x="740" y="110" width="60" height="44" rx="7"/><rect x="900" y="120" width="50" height="70" rx="7"/>
+        <rect x="90" y="340" width="56" height="56" rx="7"/><rect x="340" y="330" width="60" height="42" rx="7"/>
+        <rect x="520" y="470" width="66" height="46" rx="7"/><rect x="620" y="480" width="46" height="36" rx="7"/>
+        <rect x="90" y="470" width="70" height="40" rx="7"/><rect x="850" y="300" width="44" height="44" rx="7"/>
+      </g>
+      <!-- depot -->
+      <g id="depot">
+        <rect x="52" y="580" width="76" height="30" rx="8" fill="#16140f"/>
+        <text x="90" y="600" text-anchor="middle" font-family="Courier Prime" font-size="11" font-weight="700" fill="#f5f3ef">DEPOT 🏭</text>
+      </g>
+      <g id="pins"></g>
+      <g id="vans"></g>
+    </svg>
+    <div class="float-layer" id="floats"></div>
+  </div></div>
+
+  <!-- machine panel -->
+  <div class="panel" id="panel">
+    <div class="panel-head">
+      <button class="panel-close" onclick="closePanel()">✕</button>
+      <h2 id="p-name"></h2>
+      <div class="loc" id="p-loc"></div>
+      <span class="badge" id="p-badge"></span>
+    </div>
+    <div class="panel-scroll" id="p-skus"></div>
+    <div class="order-box" id="p-order"></div>
+  </div>
+
+  <div class="toasts" id="toasts"></div>
+
+  <!-- intro -->
+  <div class="intro" id="intro">
+    <div class="intro-card">
+      <div class="flagline" style="height:7px"><i></i><i></i><i></i><i></i></div>
+      <div class="intro-pad">
+        <h1>Welcome to <span class="fr">Vend City.</span></h1>
+        <div class="sub">YOU OWN EVERY MACHINE ON THIS MAP</div>
+        <ol>
+          <li>Machines <b>sell on their own</b>, day and night. Watch the coins.</li>
+          <li>When a pin <b>pulses red</b>, it is about to run dry. Click it.</li>
+          <li><b>Confirm the order</b> Restock drafted. The $200 cap still rules.</li>
+          <li>A van rolls out from the depot. <b>Empty machines miss sales.</b></li>
+        </ol>
+        <button class="btn" onclick="startSim()">OPEN THE CITY →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= Vend City: a toy fleet simulation ================= */
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const fmt$ = n => '$' + n.toFixed(2);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SPEND_CAP = 200, MARGIN_FLOOR = 1.3, TARGET_DAYS = 14;
+const DAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+const MAP_POS = {
+  M01: [365, 230], M02: [520, 195], M03: [845, 355], M04: [225, 300],
+  M05: [645, 130], M06: [795, 175], M07: [470, 505], M08: [140, 435],
+  M09: [335, 385], M10: [740, 505],
+};
+const DEPOT = [90, 580];
+const MIN_PER_SEC = 36;             /* 1x: one sim day ≈ 40 real seconds */
+const VAN_TRIP_MIN = 200;           /* sim minutes from depot to machine */
+
+let SIM = null, speed = 1, lastT = null, muted = true, openId = null;
+let audio = null;
+
+/* ---------- boot data ---------- */
+fetch('../data/forecast.json').then(r => r.json()).then(d => {
+  SIM = {
+    day: 1, min: 8 * 60, cash: 500, revToday: 0, missed: 0,
+    deliveries: [], rush: null, nextRushCheck: 10 * 60,
+    machines: d.machines.map(m => ({
+      id: m.machine_id, name: m.name, type: m.location_type, loc: m.location,
+      x: MAP_POS[m.machine_id][0], y: MAP_POS[m.machine_id][1],
+      skus: m.skus.map(s => ({
+        id: s.sku_id, name: s.name, cost: s.unit_cost, price: s.unit_price,
+        avg: Math.max(0.3, s.avg_daily_sales), dow: s.dow_factor,
+        stock: s.current_stock, max: Math.max(s.current_stock, Math.ceil(s.avg_daily_sales * TARGET_DAYS)),
+        acc: 0,
+      })),
+    })),
+  };
+  buildPins();
+  drawPins();
+});
+
+/* ---------- sim helpers ---------- */
+const dowIdx = () => (SIM.day - 1) % 7;
+function skuDays(s) { return s.avg > 0 ? s.stock / s.avg : 99; }
+function machineDays(m) { return Math.min(...m.skus.map(skuDays)); }
+function machineState(m) {
+  const d = machineDays(m);
+  return d <= 2 ? 'red' : d <= 5 ? 'yellow' : 'green';
+}
+function orderFor(m) {
+  const lines = m.skus.filter(s => skuDays(s) <= 7)
+    .map(s => ({ ...s, qty: Math.max(0, Math.ceil(s.avg * TARGET_DAYS - s.stock)) }))
+    .filter(l => l.qty > 0)
+    .map(l => ({ ...l, lineCost: l.qty * l.cost, flag: l.price < l.cost * MARGIN_FLOOR }));
+  return { lines, total: lines.reduce((a, l) => a + l.lineCost, 0) };
+}
+const enRoute = mid => SIM.deliveries.some(v => v.mid === mid);
+
+/* ---------- pins ---------- */
+function buildPins() {
+  const g = document.getElementById('pins');
+  g.innerHTML = SIM.machines.map(m => `
+    <g class="pin" id="pin-${m.id}" onclick="openMachine('${m.id}')">
+      <circle class="ring" cx="${m.x}" cy="${m.y - 14}" r="16" fill="none" stroke="#e23b2e" stroke-width="3" opacity="0"/>
+      <g class="pin-body">
+        <rect x="${m.x - 9}" y="${m.y - 28}" width="18" height="26" rx="4" fill="#e23b2e" stroke="#16140f" stroke-width="1.6"/>
+        <rect x="${m.x - 5.5}" y="${m.y - 24}" width="8" height="14" rx="2" fill="#16140f"/>
+        <circle class="dot" cx="${m.x + 4.5}" cy="${m.y - 7.5}" r="3.2" fill="#1d6b45" stroke="#fff" stroke-width="1"/>
+      </g>
+      <text class="rush-ico" x="${m.x + 12}" y="${m.y - 26}" font-size="14" opacity="0">🔥</text>
+      <text x="${m.x}" y="${m.y + 14}" text-anchor="middle" font-family="Courier Prime" font-size="9.5"
+        font-weight="700" fill="rgba(22,20,15,.55)">${esc(m.name.toUpperCase().slice(0, 16))}</text>
+    </g>`).join('');
+}
+function drawPins() {
+  SIM.machines.forEach(m => {
+    const pin = document.getElementById('pin-' + m.id);
+    const st = enRoute(m.id) ? 'blue' : machineState(m);
+    pin.classList.toggle('red', st === 'red');
+    pin.querySelector('.dot').setAttribute('fill',
+      st === 'red' ? '#e23b2e' : st === 'yellow' ? '#efaf1b' : st === 'blue' ? '#2547d0' : '#1d6b45');
+    pin.querySelector('.ring').setAttribute('opacity', st === 'red' ? '1' : '0');
+    pin.querySelector('.rush-ico').setAttribute('opacity',
+      SIM.rush && SIM.rush.mid === m.id ? '1' : '0');
+    pin.querySelector('.rush-ico').classList.toggle('rush-flame', !!(SIM.rush && SIM.rush.mid === m.id));
+  });
+}
+
+/* ---------- floating bits ---------- */
+function floatAt(x, y, text, color) {
+  const el = document.createElement('div');
+  el.className = 'floaty'; el.textContent = text; el.style.color = color;
+  el.style.left = (x / 1000 * 100) + '%'; el.style.top = (y / 620 * 100) + '%';
+  document.getElementById('floats').appendChild(el);
+  setTimeout(() => el.remove(), 1500);
+}
+function confettiAt(x, y) {
+  const box = document.getElementById('floats');
+  const colors = ['#e23b2e', '#2547d0', '#efaf1b', '#1d6b45'];
+  for (let i = 0; i < 12; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-bit';
+    el.style.background = colors[i % 4];
+    el.style.left = (x / 1000 * 100) + '%'; el.style.top = (y / 620 * 100) + '%';
+    const a = Math.random() * Math.PI * 2, r = 30 + Math.random() * 40;
+    el.style.setProperty('--dx', Math.cos(a) * r + 'px');
+    el.style.setProperty('--dy', Math.sin(a) * r - 20 + 'px');
+    box.appendChild(el);
+    setTimeout(() => el.remove(), 1100);
+  }
+}
+function toast(text, cls, life) {
+  const el = document.createElement('div');
+  el.className = 'toast ' + (cls || '');
+  el.style.setProperty('--life', (life || 3.4) + 's');
+  el.textContent = text;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(() => el.remove(), (life || 3.4) * 1000 + 500);
+}
+
+/* ---------- sound (tiny WebAudio blips, off by default) ---------- */
+function beep(freq, dur, type, vol) {
+  if (muted || !audio) return;
+  const o = audio.createOscillator(), g = audio.createGain();
+  o.type = type || 'sine'; o.frequency.value = freq;
+  g.gain.setValueAtTime(vol || .08, audio.currentTime);
+  g.gain.exponentialRampToValueAtTime(.0001, audio.currentTime + (dur || .12));
+  o.connect(g); g.connect(audio.destination);
+  o.start(); o.stop(audio.currentTime + (dur || .12));
+}
+const sfxSale = () => beep(880 + Math.random() * 300, .09, 'sine', .05);
+const sfxMiss = () => beep(160, .16, 'square', .05);
+const sfxOrder = () => { beep(620, .1, 'triangle', .09); setTimeout(() => beep(930, .16, 'triangle', .09), 90); };
+const sfxArrive = () => { beep(392, .12, 'square', .07); setTimeout(() => beep(523, .2, 'square', .07), 120); };
+function toggleSound() {
+  muted = !muted;
+  if (!muted && !audio) audio = new (window.AudioContext || window.webkitAudioContext)();
+  document.getElementById('sndbtn').textContent = muted ? 'SOUND OFF' : 'SOUND ON';
+}
+
+/* ---------- controls ---------- */
+function setSpeed(s) {
+  speed = s;
+  ['sp0', 'sp1', 'sp4'].forEach(id => document.getElementById(id).classList.remove('on'));
+  document.getElementById(s === 0 ? 'sp0' : s === 1 ? 'sp1' : 'sp4').classList.add('on');
+}
+function startSim() {
+  document.getElementById('intro').classList.add('gone');
+  if (!audio && !muted) audio = new (window.AudioContext || window.webkitAudioContext)();
+  toast('THE CITY IS OPEN. WATCH THE RED PINS.', 'gold', 4);
+}
+
+/* ---------- the tick ---------- */
+function tick(t) {
+  requestAnimationFrame(tick);
+  if (!SIM) return;
+  if (lastT == null) { lastT = t; return; }
+  const dtReal = Math.min(.1, (t - lastT) / 1000); lastT = t;
+  if (speed === 0 || !document.getElementById('intro').classList.contains('gone')) { updateHud(); return; }
+  const dtMin = dtReal * MIN_PER_SEC * speed;
+  SIM.min += dtMin;
+
+  /* day rollover */
+  if (SIM.min >= 1440) {
+    SIM.min -= 1440; SIM.day++;
+    toast(`DAY ${SIM.day - 1} CLOSED: ${fmt$(SIM.revToday)} SOLD · ${SIM.missed} MISSED ALL-TIME`, '', 4.5);
+    SIM.revToday = 0;
+  }
+
+  /* sales */
+  const dow = dowIdx();
+  SIM.machines.forEach(m => {
+    const rushMult = SIM.rush && SIM.rush.mid === m.id ? 2.4 : 1;
+    m.skus.forEach(s => {
+      s.acc += s.avg * (s.dow[dow] || 1) * rushMult / 1440 * dtMin;
+      while (s.acc >= 1) {
+        s.acc -= 1;
+        if (s.stock > 0) {
+          s.stock--;
+          SIM.cash += s.price; SIM.revToday += s.price;
+          if (Math.random() < .5) { floatAt(m.x + (Math.random() * 20 - 10), m.y - 30, '+' + fmt$(s.price), '#1d6b45'); sfxSale(); }
+        } else {
+          SIM.missed++;
+          floatAt(m.x + (Math.random() * 20 - 10), m.y - 30, '✕ MISSED', '#e23b2e'); sfxMiss();
+        }
+      }
+    });
+  });
+
+  /* rush hours */
+  if (SIM.rush && SIM.min > SIM.rush.until) { SIM.rush = null; drawPins(); }
+  SIM.nextRushCheck -= dtMin;
+  if (SIM.nextRushCheck <= 0) {
+    SIM.nextRushCheck = 240 + Math.random() * 360;
+    if (!SIM.rush && Math.random() < .6) {
+      const m = SIM.machines[Math.floor(Math.random() * SIM.machines.length)];
+      SIM.rush = { mid: m.id, until: SIM.min + 130 };
+      toast(`🔥 RUSH AT ${m.name.toUpperCase()}! DEMAND DOUBLED`, 'redt', 4);
+    }
+  }
+
+  /* deliveries */
+  const vansG = document.getElementById('vans');
+  SIM.deliveries = SIM.deliveries.filter(v => {
+    v.prog += dtMin / VAN_TRIP_MIN;
+    if (v.prog >= 1) {
+      const m = SIM.machines.find(x => x.id === v.mid);
+      v.lines.forEach(l => {
+        const s = m.skus.find(x => x.id === l.id);
+        if (s) { s.stock += l.qty; s.max = Math.max(s.max, s.stock); }
+      });
+      confettiAt(m.x, m.y - 16);
+      floatAt(m.x, m.y - 40, 'RESTOCKED!', '#2547d0');
+      toast(`🚚 DELIVERED TO ${m.name.toUpperCase()}`, 'gold', 3);
+      sfxArrive();
+      document.getElementById('van-' + v.vid)?.remove();
+      drawPins(); if (openId === v.mid) renderPanel();
+      return false;
+    }
+    const p = v.prog, q = 1 - p;
+    const x = q * q * v.x0 + 2 * q * p * v.cx + p * p * v.x1;
+    const y = q * q * v.y0 + 2 * q * p * v.cy + p * p * v.y1;
+    let van = document.getElementById('van-' + v.vid);
+    if (!van) {
+      van = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      van.id = 'van-' + v.vid; van.classList.add('van');
+      van.setAttribute('font-size', '22'); van.textContent = '🚚';
+      vansG.appendChild(van);
+    }
+    van.setAttribute('x', x - 11); van.setAttribute('y', y + 8);
+    return true;
+  });
+
+  /* periodic redraws */
+  if (!tick.acc) tick.acc = 0;
+  tick.acc += dtReal;
+  if (tick.acc > .5) { tick.acc = 0; drawPins(); if (openId) renderPanel(); }
+  updateHud();
+}
+requestAnimationFrame(tick);
+
+function updateHud() {
+  if (!SIM) return;
+  const h = Math.floor(SIM.min / 60), mm = Math.floor(SIM.min % 60);
+  document.getElementById('clock').textContent =
+    `${DAYS[dowIdx()]} ${String(h).padStart(2, '0')}:${String(mm).padStart(2, '0')} · DAY ${SIM.day}`;
+  document.getElementById('hud-cash').textContent = fmt$(SIM.cash);
+  document.getElementById('hud-rev').textContent = fmt$(SIM.revToday);
+  document.getElementById('hud-miss').textContent = SIM.missed;
+}
+
+/* ---------- machine panel ---------- */
+function openMachine(mid) {
+  openId = mid;
+  document.getElementById('panel').classList.add('on');
+  renderPanel();
+}
+function closePanel() { openId = null; document.getElementById('panel').classList.remove('on'); }
+
+function renderPanel() {
+  const m = SIM.machines.find(x => x.id === openId);
+  if (!m) return;
+  document.getElementById('p-name').textContent = m.name;
+  document.getElementById('p-loc').textContent = `${m.type} · ${m.loc}`;
+  const st = enRoute(m.id) ? 'blue' : machineState(m);
+  const badge = document.getElementById('p-badge');
+  badge.className = 'badge ' + st;
+  badge.textContent = st === 'blue' ? 'VAN EN ROUTE' :
+    st === 'red' ? 'RUNS DRY SOON' : st === 'yellow' ? 'GETTING LOW' : 'HEALTHY';
+
+  document.getElementById('p-skus').innerHTML = [...m.skus]
+    .sort((a, b) => skuDays(a) - skuDays(b))
+    .map(s => {
+      const d = skuDays(s);
+      const cls = d <= 2 ? 'red' : d <= 5 ? 'yellow' : 'green';
+      const col = d <= 2 ? '#e23b2e' : d <= 5 ? '#efaf1b' : '#1d6b45';
+      return `<div class="sku-row">
+        <div class="sku-top"><span>${esc(s.name)}</span>
+          <span class="d ${cls}">${s.stock} LEFT · ${d > 30 ? '30+' : d.toFixed(1)}D</span></div>
+        <div class="stockbar"><i style="width:${clamp(s.stock / s.max * 100, 0, 100)}%;background:${col}"></i></div>
+      </div>`;
+    }).join('');
+
+  const box = document.getElementById('p-order');
+  if (enRoute(m.id)) {
+    box.innerHTML = `<h3>🚚 Van en route</h3>
+      <div class="allgood">Hold tight, the restock is on the road.</div>`;
+    return;
+  }
+  const { lines, total } = orderFor(m);
+  if (!lines.length) {
+    box.innerHTML = `<h3>📦 Draft order</h3><div class="allgood">Fully stocked. Nothing to order.</div>`;
+    return;
+  }
+  const overCap = total > SPEND_CAP;
+  const broke = !overCap && total > SIM.cash;
+  box.innerHTML = `<h3>📦 Draft order · to ${TARGET_DAYS} days cover</h3>
+    ${lines.map(l => `<div class="oline"><span>${esc(l.name)} ${l.flag ? '<span class="oflag">⚠ margin</span>' : ''}</span>
+      <span>${l.qty} × ${fmt$(l.cost)} = ${fmt$(l.lineCost)}</span></div>`).join('')}
+    <div class="oline total"><span>TOTAL</span><span>${fmt$(total)}</span></div>
+    ${overCap ? `<div class="cap-banner"><b>Held at the spend cap.</b> ${fmt$(total)} is over the ${fmt$(SPEND_CAP)}
+      per-order limit. Wait for stock to sell down, or split the order in real life.</div>` : ''}
+    ${broke ? `<div class="funds-banner">Not enough cash. You have ${fmt$(SIM.cash)}. Sell a few more cans first.</div>` : ''}
+    <button class="btn" ${overCap || broke ? 'disabled' : ''} onclick="confirmOrder('${m.id}')">
+      CONFIRM ORDER · ${fmt$(total)}</button>`;
+}
+
+let vanSeq = 0;
+function confirmOrder(mid) {
+  const m = SIM.machines.find(x => x.id === mid);
+  const { lines, total } = orderFor(m);
+  if (!lines.length || total > SPEND_CAP || total > SIM.cash) return;
+  SIM.cash -= total;
+  SIM.deliveries.push({
+    vid: ++vanSeq, mid, prog: 0,
+    lines: lines.map(l => ({ id: l.id, qty: l.qty })),
+    x0: DEPOT[0], y0: DEPOT[1], x1: m.x, y1: m.y,
+    cx: (DEPOT[0] + m.x) / 2 + (Math.random() * 160 - 80),
+    cy: Math.min(DEPOT[1], m.y) - 60 - Math.random() * 60,
+  });
+  sfxOrder();
+  toast(`ORDER CONFIRMED: ${fmt$(total)} TO ${m.name.toUpperCase()}`, '', 3);
+  floatAt(m.x, m.y - 40, '-' + fmt$(total), '#a87b06');
+  drawPins(); renderPanel(); updateHud();
+}
+</script>
+</body>
+</html>

@@ -224,6 +224,10 @@
   .fin-track i { display: block; height: 100%; border-radius: 999px; transition: width 1.2s cubic-bezier(.2,.8,.3,1); }
   .fin-val { font-family: "Archivo Black", sans-serif; font-size: 14px; min-width: 74px; text-align: right; }
   .fin-verdict { font-family: "Fraunces", serif; font-style: italic; font-size: 16.5px; margin: 14px 0 4px; }
+  .fin-payback { background: var(--snow); border-radius: 12px; padding: 12px 14px; margin-top: 12px;
+    font-family: "Courier Prime", monospace; font-size: 11.5px; font-weight: 700; line-height: 1.7; color: var(--dim); }
+  .fin-payback b { color: var(--ink); }
+  .fin-payback .ai-b { color: var(--red); }
 
   .intro { position: absolute; inset: 0; z-index: 820; background: rgba(22,20,15,.6);
     display: grid; place-items: center; transition: opacity .4s, visibility .4s; }
@@ -332,6 +336,7 @@
         <div class="fin-sub" id="fin-sub"></div>
         <div id="fin-bars"></div>
         <div class="fin-verdict" id="fin-verdict"></div>
+        <div class="fin-payback" id="fin-payback"></div>
         <button class="btn" onclick="location.reload()">RUN IT BACK</button>
         <button class="btn blue" onclick="location.href='index.html'">EXIT TO SITE</button>
       </div>
@@ -343,12 +348,12 @@
       <div class="flagline" style="height:7px"><i></i><i></i><i></i><i></i></div>
       <div class="intro-pad">
         <h1>Vend City: <span class="fr">San Francisco.</span></h1>
-        <div class="sub">15 DAYS · 10 MACHINES · 2 VANS · ONE FOGGY CITY</div>
+        <div class="sub">10 DAYS · 10 MACHINES · 2 VANS · ONE FOGGY CITY</div>
         <ol>
-          <li>This is the real map. Your machines run from the <b>Marina to Dogpatch</b>, and they are all hungry.</li>
-          <li>You only have <b>two vans</b>. When both are out, someone waits. Choose your fires.</li>
+          <li>Every machine starts <b>full</b>, and a coil only holds 3 to 5 days of demand. The countdown starts now.</li>
+          <li>You have <b>two vans</b>, plus a <b>⚡ rush option</b> for $20 more. When both are out, someone waits.</li>
           <li>The city will test you: <b>Warriors games, street fairs, Karl the Fog.</b> Every event is a call you make.</li>
-          <li>A <b>shadow AI</b> runs the same fleet on the same customers. After 15 days, the books are compared. <b>Out-earn it if you can.</b></li>
+          <li>A <b>shadow AI</b> runs the same fleet on the same customers. After 10 days, the books are compared, down to how fast each of you would pay off the <b>$32,000 fleet</b>.</li>
         </ol>
         <button class="btn" onclick="startSim()">OPEN THE CITY →</button>
       </div>
@@ -361,8 +366,10 @@
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const fmt$ = n => '$' + n.toFixed(2);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const MARGIN_FLOOR = 1.3, TARGET_DAYS = 14;
-const GAME_DAYS = 15, START_CASH = 800, VAN_COUNT = 2;
+const MARGIN_FLOOR = 1.3;
+const GAME_DAYS = 10, START_CASH = 1500, VAN_COUNT = 2;
+const FLEET_COST = 32000;            /* 10 machines x $3,200 each */
+const RUSH_FEE = 20;
 const DAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
 const MIN_PER_SEC = 36;
 const VAN_TRIP_MIN = 240;
@@ -447,13 +454,13 @@ fetch('../data/forecast.json').then(r => r.json()).then(d => {
       hood: SF[m.machine_id].hood,
       skus: m.skus.map(s => {
         const avg = Math.max(0.3, s.avg_daily_sales);
-        /* the whole city starts starving: 1 to 3.5 days of cover */
-        const stock = Math.max(2, Math.ceil(avg * (1 + Math.random() * 2.5)));
+        /* machines start FULL, but a coil only holds 3 to 5 days of demand */
+        const cap = Math.max(4, Math.ceil(avg * DEMAND_MULT * (3 + Math.random() * 2)));
         return {
           id: s.sku_id, name: s.name, cost: s.unit_cost, price: s.unit_price,
           avg, dow: s.dow_factor,
-          stock, max: Math.max(stock, Math.ceil(avg * TARGET_DAYS)),
-          aiStock: stock, acc: 0,
+          stock: cap, cap, max: cap,
+          aiStock: cap, acc: 0,
         };
       }),
     })),
@@ -469,11 +476,11 @@ function skuDays(s) { return s.avg > 0 ? s.stock / (s.avg * DEMAND_MULT) : 99; }
 function machineDays(m) { return Math.min(...m.skus.map(skuDays)); }
 function machineState(m) {
   const d = machineDays(m);
-  return d <= 2 ? 'red' : d <= 5 ? 'yellow' : 'green';
+  return d <= 1.5 ? 'red' : d <= 3.5 ? 'yellow' : 'green';
 }
 function orderFor(m) {
-  const lines = m.skus.filter(s => skuDays(s) <= 7)
-    .map(s => ({ ...s, qty: Math.max(0, Math.ceil(s.avg * DEMAND_MULT * TARGET_DAYS - s.stock)) }))
+  const lines = m.skus.filter(s => s.stock < s.cap && skuDays(s) <= 7)
+    .map(s => ({ ...s, qty: s.cap - s.stock }))
     .filter(l => l.qty > 0)
     .map(l => ({ ...l, lineCost: l.qty * l.cost, flag: l.price < l.cost * MARGIN_FLOOR }));
   return { lines, total: lines.reduce((a, l) => a + l.lineCost, 0) };
@@ -647,8 +654,8 @@ function bikeCourier(mid, markup) {
   const m = SIM.machines.find(x => x.id === mid);
   let cost = 0;
   m.skus.forEach(s => {
-    const q = Math.max(0, Math.ceil(s.avg * DEMAND_MULT * TARGET_DAYS - s.stock));
-    if (q > 0) { s.stock += q; s.max = Math.max(s.max, s.stock); cost += q * s.cost; }
+    const q = s.cap - s.stock;
+    if (q > 0) { s.stock += q; cost += q * s.cost; }
   });
   cost *= markup;
   SIM.cash -= cost; SIM.spendToday += cost; SIM.tot.spend += cost;
@@ -660,7 +667,7 @@ function aiCourier(mid, markup) {
   const m = SIM.machines.find(x => x.id === mid);
   let cost = 0;
   m.skus.forEach(s => {
-    const q = Math.max(0, Math.ceil(s.avg * DEMAND_MULT * TARGET_DAYS - s.aiStock));
+    const q = s.cap - s.aiStock;
     if (q > 0) { s.aiStock += q; cost += q * s.cost; }
   });
   cost *= markup;
@@ -736,7 +743,13 @@ const EVENTS = [
 ];
 
 function fireEvent() {
-  const ev = EVENTS[Math.floor(Math.random() * EVENTS.length)];
+  /* each event type shows up at most twice per run, least-seen first */
+  const avail = EVENTS.filter(e => (e.used || 0) < 2);
+  if (!avail.length) return;
+  const minUsed = Math.min(...avail.map(e => e.used || 0));
+  const pool = avail.filter(e => (e.used || 0) === minUsed);
+  const ev = pool[Math.floor(Math.random() * pool.length)];
+  ev.used = (ev.used || 0) + 1;
   const m = ev.pick() ? SIM.machines.find(x => x.id === ev.pick()) : null;
   document.getElementById('ev-ico').textContent = ev.ico;
   document.getElementById('ev-title').innerHTML = ev.title();
@@ -801,27 +814,28 @@ function tick(t) {
     });
   });
 
-  /* AI restocks with its own two vans */
+  /* AI restocks with its own two vans: waits for the right moment, rushes when critical */
   if (aiVansFree() > 0) {
     const targets = SIM.machines
       .filter(m => !SIM.aiDeliveries.some(v => v.mid === m.id))
       .map(m => ({ m, cover: Math.min(...m.skus.map(s => s.aiStock / (s.avg * DEMAND_MULT))) }))
-      .filter(x => x.cover <= 7)
+      .filter(x => x.cover <= 2.5)
       .sort((a, b) => a.cover - b.cover);
     while (aiVansFree() > 0 && targets.length) {
-      const { m } = targets.shift();
+      const { m, cover } = targets.shift();
       const lines = m.skus
-        .map(s => ({ id: s.id, qty: Math.max(0, Math.ceil(s.avg * DEMAND_MULT * TARGET_DAYS - s.aiStock)), cost: s.cost }))
+        .map(s => ({ id: s.id, qty: s.cap - s.aiStock, cost: s.cost }))
         .filter(l => l.qty > 0);
       if (!lines.length) continue;
-      const total = lines.reduce((a, l) => a + l.qty * l.cost, 0);
+      const rush = cover < .8;
+      const total = lines.reduce((a, l) => a + l.qty * l.cost, 0) + (rush ? RUSH_FEE : 0);
       SIM.aiSpendToday += total; SIM.tot.aiSpend += total;
-      SIM.aiDeliveries.push({ mid: m.id, prog: 0, lines });
+      SIM.aiDeliveries.push({ mid: m.id, prog: 0, lines, rushMul: rush ? 2 : 1 });
     }
   }
   const vSpeed = dtMin / VAN_TRIP_MIN * (foggy() ? .5 : 1);
   SIM.aiDeliveries = SIM.aiDeliveries.filter(v => {
-    v.prog += vSpeed;
+    v.prog += vSpeed * (v.rushMul || 1);
     if (v.prog >= 1 && !v.dropped) {
       v.dropped = true;
       const m = SIM.machines.find(x => x.id === v.mid);
@@ -832,7 +846,7 @@ function tick(t) {
 
   /* player deliveries */
   SIM.deliveries = SIM.deliveries.filter(v => {
-    v.prog += vSpeed;
+    v.prog += vSpeed * (v.rushMul || 1);
     if (v.prog >= 1 && !v.dropped) {
       v.dropped = true;
       const m = SIM.machines.find(x => x.id === v.mid);
@@ -958,6 +972,21 @@ function showFinal() {
       <span class="fin-val">${fmt$(ai)}</span></div>`;
   document.getElementById('fin-sub').textContent =
     `${GAME_DAYS} DAYS · ${SIM.tot.missed} MISSED SALES · BEST STREAK ${SIM.bestStreak} · SAME CITY, SAME CUSTOMERS`;
+
+  /* payback math: fleet cost / (profit per day), from the actual totals */
+  const perDayYou = you / GAME_DAYS, perDayAi = ai / GAME_DAYS;
+  const pbYou = perDayYou > 0 ? Math.ceil(FLEET_COST / perDayYou) : null;
+  const pbAi = perDayAi > 0 ? Math.ceil(FLEET_COST / perDayAi) : null;
+  const yrs = d => (d / 365).toFixed(1);
+  document.getElementById('fin-payback').innerHTML =
+    `THIS FLEET COST <b>$${FLEET_COST.toLocaleString()}</b>.<br>` +
+    (pbYou
+      ? `AT YOUR PACE (${fmt$(perDayYou)}/DAY) IT PAYS FOR ITSELF IN <b>${pbYou.toLocaleString()} DAYS</b> (${yrs(pbYou)} YEARS).`
+      : `AT YOUR PACE (${fmt$(perDayYou)}/DAY) IT <b>NEVER PAYS FOR ITSELF</b>.`) +
+    '<br>' +
+    (pbAi
+      ? `THE AI (${fmt$(perDayAi)}/DAY) GETS THERE IN <span class="ai-b">${pbAi.toLocaleString()} DAYS</span> (${yrs(pbAi)} YEARS).`
+      : `EVEN THE AI COULD NOT PAY IT OFF THIS TIME.`);
   document.getElementById('finalmodal').classList.add('on');
 }
 
@@ -1005,32 +1034,36 @@ function renderPanel() {
     return;
   }
   const broke = total > SIM.cash;
+  const brokeRush = total + RUSH_FEE > SIM.cash;
   const noVans = vansFree() <= 0;
-  box.innerHTML = `<h3>📦 Draft order · to ${TARGET_DAYS} days cover</h3>
+  box.innerHTML = `<h3>📦 Draft order · fill to capacity</h3>
     ${lines.map(l => `<div class="oline"><span>${esc(l.name)} ${l.flag ? '<span class="oflag">⚠ margin</span>' : ''}</span>
       <span>${l.qty} × ${fmt$(l.cost)} = ${fmt$(l.lineCost)}</span></div>`).join('')}
     <div class="oline total"><span>TOTAL</span><span>${fmt$(total)}</span></div>
     ${broke ? `<div class="funds-banner">Not enough cash. You have ${fmt$(SIM.cash)}. Sell a few more cans first.</div>` : ''}
     ${noVans && !broke ? `<div class="vans-banner">🚚 Both vans are out. One frees up when it gets back to the depot.</div>` : ''}
-    <button class="btn" ${broke || noVans ? 'disabled' : ''} onclick="confirmOrder('${m.id}')">
-      CONFIRM ORDER · ${fmt$(total)}</button>`;
+    <button class="btn" ${broke || noVans ? 'disabled' : ''} onclick="confirmOrder('${m.id}', false)">
+      STANDARD VAN · ${fmt$(total)}</button>
+    <button class="btn blue" ${brokeRush || noVans ? 'disabled' : ''} onclick="confirmOrder('${m.id}', true)">
+      ⚡ RUSH VAN, 2X SPEED · ${fmt$(total + RUSH_FEE)}</button>`;
 }
 
-function confirmOrder(mid) {
+function confirmOrder(mid, rush) {
   const m = SIM.machines.find(x => x.id === mid);
   const { lines, total } = orderFor(m);
-  if (!lines.length || total > SIM.cash || vansFree() <= 0) return;
-  SIM.cash -= total;
-  SIM.spendToday += total; SIM.tot.spend += total;
+  const cost = total + (rush ? RUSH_FEE : 0);
+  if (!lines.length || cost > SIM.cash || vansFree() <= 0) return;
+  SIM.cash -= cost;
+  SIM.spendToday += cost; SIM.tot.spend += cost;
   SIM.deliveries.push({
-    vid: ++vanSeq, mid, prog: 0, dropped: false,
+    vid: ++vanSeq, mid, prog: 0, dropped: false, rushMul: rush ? 2 : 1,
     lines: lines.map(l => ({ id: l.id, qty: l.qty })),
     bend: Math.random() * 160 - 80,
   });
   sfxOrder();
-  toast(`ORDER CONFIRMED: ${fmt$(total)} TO ${m.hood.toUpperCase()}`, '', 3);
+  toast(`${rush ? '⚡ RUSH ' : ''}ORDER CONFIRMED: ${fmt$(cost)} TO ${m.hood.toUpperCase()}`, '', 3);
   const p = pxOf(mid);
-  floatAt(p.x, p.y - 40, '-' + fmt$(total), '#a87b06');
+  floatAt(p.x, p.y - 40, '-' + fmt$(cost), '#a87b06');
   drawPins(); renderPanel(); updateHud();
 }
 </script>

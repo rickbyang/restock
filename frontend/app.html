@@ -83,6 +83,16 @@
   @keyframes pulse { 50% { opacity: .3; } }
   .badge.yellow { background: var(--mustard); color: var(--ink); }
   .badge.green { background: var(--forest); }
+  .badge.blue { background: var(--cobalt); }
+
+  .placed { border: 2px solid var(--cobalt); }
+  .placed .truck { font-size: 30px; margin-bottom: 6px; animation: roll 2.6s ease-in-out infinite alternate; display: inline-block; }
+  @keyframes roll { from { transform: translateX(-6px); } to { transform: translateX(6px); } }
+  .placed-total { font-family: "Archivo Black", sans-serif; font-size: 22px; margin: 6px 0 2px; }
+  .placed-eta { font-family: "Courier Prime", monospace; font-size: 11.5px; font-weight: 700; letter-spacing: .1em; color: var(--cobalt); margin-bottom: 12px; }
+  .placed-lines { font-family: "Courier Prime", monospace; font-size: 12.5px; color: var(--ink-dim); line-height: 1.9; }
+  .btn.deliver { background: var(--cobalt); box-shadow: 0 5px 0 #1b36a4; }
+  .btn.deliver:hover:not(:disabled) { box-shadow: 0 7px 0 #1b36a4; }
 
   .back { background: none; border: none; color: var(--cobalt); font-size: 14.5px; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 18px; font-family: "Archivo", sans-serif; }
   .detail-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 4px; }
@@ -255,6 +265,62 @@ function getAudit() {
 }
 function saveAudit(entries) { localStorage.setItem(AUDIT_KEY, JSON.stringify(entries)); }
 
+/* ---------- placed orders & deliveries (persisted) ---------- */
+const ORDERS_KEY = 'restock_orders';
+const DELIV_KEY = 'restock_deliveries';
+function getOrders() { try { return JSON.parse(localStorage.getItem(ORDERS_KEY)) || {}; } catch { return {}; } }
+function saveOrders(o) { localStorage.setItem(ORDERS_KEY, JSON.stringify(o)); }
+function getDeliv() { try { return JSON.parse(localStorage.getItem(DELIV_KEY)) || {}; } catch { return {}; } }
+function saveDeliv(d) { localStorage.setItem(DELIV_KEY, JSON.stringify(d)); }
+const activeOrder = m => getOrders()[m.machine_id];
+
+function recomputeStockout(s) {
+  if (s.avg_daily_sales <= 0.05) { s.days_until_stockout = null; s.stockout_date = null; return; }
+  const days = Math.floor(s.current_stock / s.avg_daily_sales);
+  if (days > DATA.horizon_days) { s.days_until_stockout = null; s.stockout_date = null; }
+  else {
+    s.days_until_stockout = Math.max(1, days);
+    const d = new Date(DATA.as_of + 'T00:00:00');
+    d.setDate(d.getDate() + s.days_until_stockout);
+    s.stockout_date = d.toISOString().slice(0, 10);
+  }
+}
+/* delivered stock survives reloads by re-applying saved adjustments */
+function applyDeliveries() {
+  const dv = getDeliv();
+  DATA.machines.forEach(m => {
+    const adj = dv[m.machine_id]; if (!adj) return;
+    m.skus.forEach(s => {
+      const q = adj[s.sku_id]; if (!q) return;
+      s.current_stock += q;
+      recomputeStockout(s);
+    });
+  });
+}
+function deliverOrder(mid) {
+  const orders = getOrders();
+  const order = orders[mid]; if (!order) return;
+  const m = DATA.machines.find(x => x.machine_id === mid);
+  const dv = getDeliv();
+  dv[mid] = dv[mid] || {};
+  order.lines.forEach(l => {
+    if (!l.sku_id) return;
+    dv[mid][l.sku_id] = (dv[mid][l.sku_id] || 0) + l.qty;
+    const s = m.skus.find(x => x.sku_id === l.sku_id);
+    if (s) { s.current_stock += l.qty; recomputeStockout(s); }
+  });
+  saveDeliv(dv);
+  delete orders[mid];
+  saveOrders(orders);
+  const entries = getAudit();
+  entries.unshift({
+    ts: new Date().toISOString(), machine_id: mid, machine: m.name,
+    total: order.total, cap_check: 'DELIVERED', approved_by: SESSION.role,
+  });
+  saveAudit(entries);
+  render();
+}
+
 function go(view, machine) {
   route = { view, machine: machine || null };
   render();
@@ -275,21 +341,28 @@ function renderFleet() {
   const ms = DATA.machines;
   const rev = ms.reduce((a, m) => a + m.revenue_30d, 0);
   const units = ms.reduce((a, m) => a + m.units_30d, 0);
-  const alerts = ms.filter(m => machineStatus(m) !== 'green').length;
-  const pending = ms.reduce((a, m) => a + orderLines(m).reduce((x, l) => x + l.lineCost, 0), 0);
+  const alerts = ms.filter(m => machineStatus(m) !== 'green' && !activeOrder(m)).length;
+  const pending = ms.reduce((a, m) => a + (activeOrder(m) ? 0 :
+    orderLines(m).reduce((x, l) => x + l.lineCost, 0)), 0);
+  const onOrder = ms.filter(m => activeOrder(m)).length;
 
   const summary = `<div class="summary">
     <div class="sum-card s-forest"><div class="v">${fmt$(rev)}</div><div class="k">FLEET REVENUE · 30D</div></div>
     <div class="sum-card s-cobalt" style="animation-delay:60ms"><div class="v">${units.toLocaleString()}</div><div class="k">UNITS SOLD · 30D</div></div>
     <div class="sum-card s-red" style="animation-delay:120ms"><div class="v">${alerts}</div><div class="k">MACHINES NEED ATTENTION</div></div>
-    <div class="sum-card s-mustard" style="animation-delay:180ms"><div class="v">${fmt$(pending)}</div><div class="k">DRAFT ORDERS PENDING</div></div>
+    <div class="sum-card s-mustard" style="animation-delay:180ms"><div class="v">${onOrder ? `${fmt$(pending)} · ${onOrder}🚚` : fmt$(pending)}</div><div class="k">DRAFTS PENDING${onOrder ? ' · EN ROUTE' : ''}</div></div>
   </div>`;
 
   const cards = ms.map((m, i) => {
-    const st = machineStatus(m);
-    const label = st === 'red' ? 'Runs dry soon' : st === 'yellow' ? 'Restock soon' : 'Healthy';
+    const order = activeOrder(m);
+    let st = machineStatus(m);
+    let label = st === 'red' ? 'Runs dry soon' : st === 'yellow' ? 'Restock soon' : 'Healthy';
     const urgent = urgentSkus(m).length;
-    const note = urgent ? `${urgent} SKU${urgent > 1 ? 's need' : ' needs'} attention` : 'All SKUs stocked';
+    let note = urgent ? `${urgent} SKU${urgent > 1 ? 's need' : ' needs'} attention` : 'All SKUs stocked';
+    if (order) {
+      st = 'blue'; label = 'Restock ordered';
+      note = `${fmt$(order.total)} arriving ${new Date(order.arrives).toLocaleDateString()}`;
+    }
     return `<div class="card" style="animation-delay:${i * 45}ms" onclick="go('machine','${m.machine_id}')">
       <div class="m-name">${esc(m.name)}</div>
       <div class="m-loc">${esc(m.location_type)} · ${esc(m.location)}</div>
@@ -343,8 +416,10 @@ function renderMachine(mid) {
       ${recs}
     </div>` : '';
 
+  const ord = activeOrder(m);
+  const headBadge = ord ? `<span class="badge blue">ON ORDER</span>` : `<span class="badge ${st}">${st.toUpperCase()}</span>`;
   return `<button class="back" onclick="go('fleet')">← Back to dashboard</button>
-    <div class="detail-head"><h1>${esc(m.name)}</h1><span class="badge ${st}">${st.toUpperCase()}</span></div>
+    <div class="detail-head"><h1>${esc(m.name)}</h1>${headBadge}</div>
     <div class="sub" style="text-transform:capitalize">${esc(m.location_type)} · ${esc(m.location)} · top seller ${esc(m.top_sku)} at ${m.top_sku_daily}/day</div>
     ${chips}
     ${recPanel}
@@ -360,10 +435,23 @@ function renderMachine(mid) {
 
 /* ---------- Draft order ---------- */
 function renderOrderPanel(m) {
+  const order = activeOrder(m);
+  if (order) {
+    const lineTxt = order.lines.map(l => `${esc(l.sku)} × ${l.qty}`).join(' · ');
+    return `<div class="panel placed">
+      <h2>🚚 Order placed · en route</h2>
+      <span class="truck">📦</span>
+      <div class="placed-total">${fmt$(order.total)}</div>
+      <div class="placed-eta">ARRIVING ${new Date(order.arrives).toLocaleDateString().toUpperCase()} · APPROVED ${new Date(order.ts).toLocaleString()}</div>
+      <div class="placed-lines">${lineTxt}</div>
+      <button class="btn deliver" onclick="deliverOrder('${m.machine_id}')">MARK DELIVERED · FILL THE MACHINE</button>
+      <div class="guard-note">Marking delivered adds the stock to this machine and clears the order.</div>
+    </div>`;
+  }
   const lines = orderLines(m);
   if (!lines.length) {
     return `<div class="panel"><h2>📦 Draft purchase order</h2>
-      <div class="empty">Nothing runs out within 7 days, so there is nothing to order.</div></div>`;
+      <div class="empty">Fully stocked. Nothing runs out within 7 days, so there is nothing to order.</div></div>`;
   }
   const total = lines.reduce((a, l) => a + l.lineCost, 0);
   const overCap = total > SPEND_CAP;
@@ -452,9 +540,17 @@ function approveOrder(mid) {
   });
   saveAudit(entries);
 
-  document.getElementById('approve-zone').innerHTML =
-    `<div class="banner ok">✓ Order approved: ${fmt$(total)} for ${lines.length} SKU${lines.length > 1 ? 's' : ''}.
-     Logged to the <a href="javascript:go('audit')">audit log</a>.</div>`;
+  // record the placed order; the draft panel becomes the en-route panel
+  const orders = getOrders();
+  const arrives = new Date(); arrives.setDate(arrives.getDate() + 2);
+  orders[m.machine_id] = {
+    ts: new Date().toISOString(),
+    total: +total.toFixed(2),
+    arrives: arrives.toISOString(),
+    lines: lines.map(l => ({ sku_id: l.sku_id, sku: l.name, qty: l.qty, cost: +l.lineCost.toFixed(2) })),
+  };
+  saveOrders(orders);
+  render();
 }
 
 /* ---------- Audit log ---------- */
@@ -479,7 +575,7 @@ function renderAudit() {
 /* ---------- Boot ---------- */
 fetch('../data/forecast.json')
   .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-  .then(d => { DATA = d; render(); })
+  .then(d => { DATA = d; applyDeliveries(); render(); })
   .catch(err => {
     document.getElementById('app').innerHTML =
       `<div class="empty">Could not load ../data/forecast.json (${esc(err.message)}).<br>

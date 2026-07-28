@@ -130,13 +130,62 @@
 
   .empty { color: var(--ink-faint); font-size: 14.5px; padding: 24px; text-align: center; }
   .guard-note { font-size: 12.5px; color: var(--ink-faint); margin-top: 10px; }
+
+  /* dashboard summary strip */
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .sum-card { border-radius: var(--radius); padding: 16px 18px; color: var(--white);
+    animation: rise .45s cubic-bezier(.2,.8,.3,1) both; }
+  .sum-card .v { font-family: "Archivo Black", sans-serif; font-size: 26px; line-height: 1.1; }
+  .sum-card .k { font-family: "Courier Prime", monospace; font-size: 10.5px; font-weight: 700; letter-spacing: .14em; opacity: .8; margin-top: 4px; }
+  .sum-card.s-red { background: var(--red); } .sum-card.s-cobalt { background: var(--cobalt); }
+  .sum-card.s-mustard { background: var(--mustard); color: var(--ink); }
+  .sum-card.s-forest { background: var(--forest); }
+
+  .m-stats { font-family: "Courier Prime", monospace; font-size: 11.5px; color: var(--ink-dim); margin-bottom: 12px; }
+  .m-stats b { color: var(--ink); }
+
+  /* machine detail stat chips */
+  .chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 18px; }
+  .chip { background: var(--white); border-radius: 12px; padding: 13px 15px; box-shadow: 0 2px 8px rgba(22,20,15,.06); }
+  .chip .v { font-family: "Archivo Black", sans-serif; font-size: 20px; }
+  .chip .v.up { color: var(--forest); } .chip .v.down { color: var(--red); }
+  .chip .k { font-family: "Courier Prime", monospace; font-size: 10px; font-weight: 700; letter-spacing: .13em; color: var(--ink-faint); margin-top: 3px; }
+
+  /* recommendations */
+  .rec { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .rec:last-child { border-bottom: none; }
+  .rec-tag { flex-shrink: 0; font-family: "Courier Prime", monospace; font-size: 10px; font-weight: 700; letter-spacing: .1em;
+    color: var(--white); border-radius: 6px; padding: 4px 8px; margin-top: 2px; }
+  .rec-tag.EXPAND { background: var(--cobalt); } .rec-tag.REPRICE { background: var(--red); }
+  .rec-tag.PREP { background: var(--mustard); color: var(--ink); } .rec-tag.SWAP { background: var(--ink); }
+  .rec-tag.TREND { background: var(--forest); }
+  .rec b { font-size: 14.5px; }
+  .rec p { font-size: 13px; color: var(--ink-dim); margin-top: 2px; line-height: 1.5; }
+
+  /* confirm order modal */
+  .modal-veil { position: fixed; inset: 0; background: rgba(22,20,15,.55); z-index: 50;
+    display: grid; place-items: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .modal-veil.on { opacity: 1; pointer-events: all; }
+  .modal { width: min(440px, 92vw); background: var(--white); border-radius: 18px; overflow: hidden;
+    transform: translateY(18px) scale(.97); transition: transform .25s cubic-bezier(.2,.9,.3,1.2); }
+  .modal-veil.on .modal { transform: none; }
+  .modal .flagline { height: 6px; }
+  .modal-pad { padding: 24px 26px; }
+  .modal h3 { font-family: "Archivo Black", sans-serif; font-weight: 400; text-transform: uppercase; font-size: 17px; margin-bottom: 2px; }
+  .modal .m-sub { color: var(--ink-faint); font-size: 13px; margin-bottom: 16px; }
+  .modal table { font-size: 13.5px; }
+  .modal .cap-note { font-family: "Courier Prime", monospace; font-size: 11.5px; color: var(--forest); font-weight: 700; margin-top: 12px; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+  .modal-actions .btn { margin-top: 0; flex: 1; }
+  .btn.ghost { background: none; color: var(--ink); border: 2px solid var(--line); box-shadow: none; }
+  .btn.ghost:hover { border-color: var(--ink); transform: none; box-shadow: none; }
 </style>
 </head>
 <body>
 <div class="flagline"><i></i><i></i><i></i><i></i></div>
 <header>
   <div class="logo"><div class="logo-mark">⟳</div>Restock</div>
-  <div class="tagline">FLEET CONSOLE · OWNER SESSION</div>
+  <div class="tagline" id="session-tag">FLEET CONSOLE</div>
   <nav>
     <button id="nav-fleet" onclick="go('fleet')">Fleet</button>
     <button id="nav-audit" onclick="go('audit')">Audit Log</button>
@@ -145,9 +194,29 @@
 </header>
 <main id="app"><div class="empty">Loading fleet data…</div></main>
 
+<div class="modal-veil" id="modal-veil">
+  <div class="modal">
+    <div class="flagline"><i></i><i></i><i></i><i></i></div>
+    <div class="modal-pad">
+      <h3>Confirm this order?</h3>
+      <div class="m-sub" id="modal-sub"></div>
+      <table id="modal-lines"></table>
+      <div class="cap-note" id="modal-cap"></div>
+      <div class="modal-actions">
+        <button class="btn ghost" onclick="closeConfirm()">CANCEL</button>
+        <button class="btn" id="modal-confirm">CONFIRM ORDER</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-// Demo auth gate. Owners only.
-if (sessionStorage.getItem('restock_auth') !== 'owner') location.replace('login.html');
+// Demo auth gate. Valid session required.
+let SESSION = null;
+try { SESSION = JSON.parse(sessionStorage.getItem('restock_auth')); } catch {}
+if (!SESSION || !SESSION.user) location.replace('login.html');
+else document.getElementById('session-tag').textContent =
+  `FLEET CONSOLE · ${SESSION.role.toUpperCase()} SESSION`;
 function logout() { sessionStorage.removeItem('restock_auth'); location.href = 'index.html'; }
 
 const SPEND_CAP = 200;
@@ -201,9 +270,22 @@ function render() {
   else app.innerHTML = renderFleet();
 }
 
-/* ---------- Fleet ---------- */
+/* ---------- Fleet dashboard ---------- */
 function renderFleet() {
-  const cards = DATA.machines.map((m, i) => {
+  const ms = DATA.machines;
+  const rev = ms.reduce((a, m) => a + m.revenue_30d, 0);
+  const units = ms.reduce((a, m) => a + m.units_30d, 0);
+  const alerts = ms.filter(m => machineStatus(m) !== 'green').length;
+  const pending = ms.reduce((a, m) => a + orderLines(m).reduce((x, l) => x + l.lineCost, 0), 0);
+
+  const summary = `<div class="summary">
+    <div class="sum-card s-forest"><div class="v">${fmt$(rev)}</div><div class="k">FLEET REVENUE · 30D</div></div>
+    <div class="sum-card s-cobalt" style="animation-delay:60ms"><div class="v">${units.toLocaleString()}</div><div class="k">UNITS SOLD · 30D</div></div>
+    <div class="sum-card s-red" style="animation-delay:120ms"><div class="v">${alerts}</div><div class="k">MACHINES NEED ATTENTION</div></div>
+    <div class="sum-card s-mustard" style="animation-delay:180ms"><div class="v">${fmt$(pending)}</div><div class="k">DRAFT ORDERS PENDING</div></div>
+  </div>`;
+
+  const cards = ms.map((m, i) => {
     const st = machineStatus(m);
     const label = st === 'red' ? 'Runs dry soon' : st === 'yellow' ? 'Restock soon' : 'Healthy';
     const urgent = urgentSkus(m).length;
@@ -211,14 +293,16 @@ function renderFleet() {
     return `<div class="card" style="animation-delay:${i * 45}ms" onclick="go('machine','${m.machine_id}')">
       <div class="m-name">${esc(m.name)}</div>
       <div class="m-loc">${esc(m.location_type)} · ${esc(m.location)}</div>
+      <div class="m-stats"><b>${fmt$(m.revenue_30d)}</b> / 30d · top: <b>${esc(m.top_sku)}</b></div>
       <div class="m-foot">
         <span class="badge ${st}">${label}</span>
         <span class="m-note">${note}</span>
       </div>
     </div>`;
   }).join('');
-  return `<h1>Fleet</h1>
-    <div class="sub">${DATA.machines.length} machines · forecast as of ${DATA.as_of}</div>
+  return `<h1>Dashboard</h1>
+    <div class="sub">${ms.length} machines · forecast as of ${DATA.as_of}</div>
+    ${summary}
     <div class="grid">${cards}</div>`;
 }
 
@@ -242,9 +326,28 @@ function renderMachine(mid) {
     </tr>`;
   }).join('');
 
-  return `<button class="back" onclick="go('fleet')">← Back to fleet</button>
+  const t = m.trend_pct;
+  const chips = `<div class="chips">
+    <div class="chip"><div class="v">${fmt$(m.revenue_30d)}</div><div class="k">REVENUE · 30D</div></div>
+    <div class="chip"><div class="v">${m.units_30d.toLocaleString()}</div><div class="k">UNITS · 30D</div></div>
+    <div class="chip"><div class="v">${m.avg_margin_pct.toFixed(0)}%</div><div class="k">AVG MARGIN</div></div>
+    <div class="chip"><div class="v ${t >= 0 ? 'up' : 'down'}">${t >= 0 ? '▲' : '▼'} ${Math.abs(t).toFixed(1)}%</div><div class="k">TREND · 14D VS PRIOR</div></div>
+  </div>`;
+
+  const recs = (m.recommendations || []).map(r => `<div class="rec">
+      <span class="rec-tag ${esc(r.type)}">${esc(r.type)}</span>
+      <div><b>${esc(r.title)}</b><p>${esc(r.detail)}</p></div>
+    </div>`).join('');
+  const recPanel = recs ? `<div class="panel">
+      <h2>📈 Market recommendations</h2>
+      ${recs}
+    </div>` : '';
+
+  return `<button class="back" onclick="go('fleet')">← Back to dashboard</button>
     <div class="detail-head"><h1>${esc(m.name)}</h1><span class="badge ${st}">${st.toUpperCase()}</span></div>
-    <div class="sub" style="text-transform:capitalize">${esc(m.location_type)} · ${esc(m.location)}</div>
+    <div class="sub" style="text-transform:capitalize">${esc(m.location_type)} · ${esc(m.location)} · top seller ${esc(m.top_sku)} at ${m.top_sku_daily}/day</div>
+    ${chips}
+    ${recPanel}
     <div class="panel">
       <h2>Inventory &amp; forecast</h2>
       <table>
@@ -302,11 +405,34 @@ function renderOrderPanel(m) {
     ${banners}
     <div id="approve-zone">
       <button class="btn" id="approve-btn" ${overCap ? 'disabled' : ''}
-        onclick="approveOrder('${m.machine_id}')">APPROVE ORDER · ${fmt$(total)}</button>
-      <div class="guard-note">Approval is recorded to the audit log with a timestamp and cap check.</div>
+        onclick="openConfirm('${m.machine_id}')">APPROVE ORDER · ${fmt$(total)}</button>
+      <div class="guard-note">You will be asked to confirm. Every approval is recorded to the audit log with a timestamp and cap check.</div>
     </div>
   </div>`;
 }
+
+/* ---------- Confirm step ---------- */
+function openConfirm(mid) {
+  const m = DATA.machines.find(x => x.machine_id === mid);
+  const lines = orderLines(m);
+  const total = lines.reduce((a, l) => a + l.lineCost, 0);
+  if (total > SPEND_CAP) return;
+
+  document.getElementById('modal-sub').textContent =
+    `${m.name} · ${lines.length} SKU${lines.length > 1 ? 's' : ''} · restock to ${TARGET_DAYS} days of cover`;
+  document.getElementById('modal-lines').innerHTML =
+    lines.map(l => `<tr><td>${esc(l.name)}</td><td class="num">${l.qty} × ${fmt$(l.unit_cost)}</td>
+      <td class="num">${fmt$(l.lineCost)}</td></tr>`).join('') +
+    `<tr class="order-total-row"><td colspan="2">Order total</td><td class="num">${fmt$(total)}</td></tr>`;
+  document.getElementById('modal-cap').textContent =
+    `CAP CHECK: PASS (${fmt$(total)} ≤ ${fmt$(SPEND_CAP)})`;
+  document.getElementById('modal-confirm').onclick = () => { closeConfirm(); approveOrder(mid); };
+  document.getElementById('modal-veil').classList.add('on');
+}
+function closeConfirm() { document.getElementById('modal-veil').classList.remove('on'); }
+document.getElementById('modal-veil').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeConfirm();
+});
 
 function approveOrder(mid) {
   const m = DATA.machines.find(x => x.machine_id === mid);
@@ -322,7 +448,7 @@ function approveOrder(mid) {
     lines: lines.map(l => ({ sku: l.name, qty: l.qty, cost: +l.lineCost.toFixed(2) })),
     total: +total.toFixed(2),
     cap_check: `PASS (${fmt$(total)} ≤ ${fmt$(SPEND_CAP)})`,
-    approved_by: 'Owner',
+    approved_by: SESSION.role,
   });
   saveAudit(entries);
 

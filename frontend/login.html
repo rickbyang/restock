@@ -106,21 +106,34 @@
     <input id="p" type="password">
     <button type="submit">UNLOCK THE CONSOLE</button>
     <div class="err" id="err">That code is not right. Try again.</div>
-    <div class="hint">Demo credentials: <code>owner</code> / <code>vend2026</code></div>
+    <div class="hint">Demo accounts: <code>owner</code> / <code>vend2026</code> &nbsp;·&nbsp; <code>admin</code> / <code>admin2026</code></div>
   </div>
 </form>
 <div class="unlock" id="unlock"><div class="msg">ACCESS GRANTED · OPENING THE CONSOLE</div></div>
 <script>
-  // Client-side demo gate only. This is a pitch demo, not real security.
+  // Client-side demo gate. Credentials are checked against salted
+  // SHA-256 hashes, so the codes are not readable in this source.
   const KEY = 'restock_auth';
-  if (sessionStorage.getItem(KEY) === 'owner') location.replace('app.html');
+  const SALT = 'restock-salt-2026';
+  const USERS = {
+    owner: { hash: '0bba4c0d7ed0242940ea88127b3c8d7c68b6d4fccef087940b82e2a9f0b61ead', role: 'Owner' },
+    admin: { hash: '18b088fae42e70109fe39528ba6be98ffc236a74818266c021d9a54732a477c8', role: 'Admin' },
+  };
+  try { if (JSON.parse(sessionStorage.getItem(KEY))?.user) location.replace('app.html'); } catch {}
 
-  document.getElementById('box').addEventListener('submit', e => {
+  async function sha256(text) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  document.getElementById('box').addEventListener('submit', async e => {
     e.preventDefault();
     const u = document.getElementById('u').value.trim().toLowerCase();
     const p = document.getElementById('p').value;
-    if (u === 'owner' && p === 'vend2026') {
-      sessionStorage.setItem(KEY, 'owner');
+    const acct = USERS[u];
+    const ok = acct && (await sha256(`${u}:${p}:${SALT}`)) === acct.hash;
+    if (ok) {
+      sessionStorage.setItem(KEY, JSON.stringify({ user: u, role: acct.role }));
       document.getElementById('unlock').classList.add('on');
       setTimeout(() => location.href = 'app.html', 900);
     } else {

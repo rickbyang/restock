@@ -14,9 +14,12 @@ Project Vend.
   (no ML) → `data/forecast.json` with avg daily sales and predicted
   stockout dates
 - `frontend/index.html`: public cinematic landing page (no build step)
-- `frontend/login.html`: owner login gate (demo: `owner` / `vend2026`)
-- `frontend/app.html`: the operator console (fleet view, machine
-  detail, draft orders, audit log); requires login
+- `frontend/login.html`: login gate with salted-hash credential checks.
+  Demo accounts: `owner` / `vend2026` and `admin` / `admin2026`
+- `frontend/app.html`: the operator console; requires login. Dashboard
+  with fleet totals and per-machine stats, market recommendations per
+  machine, inventory and forecasts, draft orders with a confirm step,
+  and the audit log
 
 ## Run
 

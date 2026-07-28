@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-23T14:08:16",
-  "as_of": "2026-07-23",
+  "generated_at": "2026-07-28T14:05:48",
+  "as_of": "2026-07-28",
   "horizon_days": 60,
   "machines": [
     {
@@ -8,6 +8,30 @@
       "name": "Acme HQ Lobby",
       "location": "412 Market St",
       "location_type": "office",
+      "units_30d": 451,
+      "revenue_30d": 964.5,
+      "profit_30d": 547.1,
+      "avg_margin_pct": 56.7,
+      "trend_pct": 16.3,
+      "top_sku": "Cola Classic",
+      "top_sku_daily": 2.89,
+      "recommendations": [
+        {
+          "type": "REPRICE",
+          "title": "Raise Protein Bar to at least $1.82",
+          "detail": "Selling at $1.75 on a $1.40 cost is a 20% margin, under the 1.3x floor."
+        },
+        {
+          "type": "SWAP",
+          "title": "Consider replacing Protein Bar",
+          "detail": "Slowest earner: 43 units in 30 days at 20% margin. A faster SKU earns the slot back."
+        },
+        {
+          "type": "TREND",
+          "title": "Protein Bar is heating up",
+          "detail": "Sales up 79% in the last two weeks. Watch cover; consider a price test."
+        }
+      ],
       "skus": [
         {
           "sku_id": "S1",
@@ -16,18 +40,24 @@
           "unit_cost": 0.75,
           "unit_price": 2.0,
           "current_stock": 85,
-          "avg_daily_sales": 2.93,
+          "avg_daily_sales": 2.89,
           "dow_factor": [
-            1.39,
-            1.491,
             1.061,
             1.314,
-            1.188,
-            0.303,
+            1.289,
+            1.364,
+            1.39,
+            0.328,
             0.278
           ],
-          "stockout_date": "2026-08-21",
-          "days_until_stockout": 29
+          "stockout_date": "2026-08-26",
+          "days_until_stockout": 29,
+          "units_30d": 83,
+          "revenue_30d": 166.0,
+          "profit_30d": 103.75,
+          "margin_pct": 62.5,
+          "trend_pct": 13.2,
+          "weekend_lift_pct": -69.7
         },
         {
           "sku_id": "S2",
@@ -38,16 +68,22 @@
           "current_stock": 30,
           "avg_daily_sales": 2.21,
           "dow_factor": [
-            1.43,
-            1.58,
-            1.279,
-            1.304,
-            0.828,
-            0.188,
-            0.414
+            1.286,
+            1.311,
+            0.984,
+            1.059,
+            1.475,
+            0.53,
+            0.378
           ],
-          "stockout_date": "2026-08-06",
-          "days_until_stockout": 14
+          "stockout_date": "2026-08-11",
+          "days_until_stockout": 14,
+          "units_30d": 65,
+          "revenue_30d": 113.75,
+          "profit_30d": 74.75,
+          "margin_pct": 65.7,
+          "trend_pct": 0.0,
+          "weekend_lift_pct": -54.6
         },
         {
           "sku_id": "S3",
@@ -56,18 +92,24 @@
           "unit_cost": 0.55,
           "unit_price": 1.5,
           "current_stock": 51,
-          "avg_daily_sales": 2.21,
+          "avg_daily_sales": 2.11,
           "dow_factor": [
-            1.04,
-            1.542,
-            1.471,
-            1.127,
-            1.184,
-            0.359,
-            0.287
+            1.448,
+            1.11,
+            1.307,
+            1.272,
+            1.342,
+            0.212,
+            0.318
           ],
-          "stockout_date": "2026-08-17",
-          "days_until_stockout": 25
+          "stockout_date": "2026-08-21",
+          "days_until_stockout": 24,
+          "units_30d": 65,
+          "revenue_30d": 97.5,
+          "profit_30d": 61.75,
+          "margin_pct": 63.3,
+          "trend_pct": -3.3,
+          "weekend_lift_pct": -73.5
         },
         {
           "sku_id": "S4",
@@ -76,18 +118,24 @@
           "unit_cost": 0.9,
           "unit_price": 2.25,
           "current_stock": 33,
-          "avg_daily_sales": 1.86,
+          "avg_daily_sales": 1.93,
           "dow_factor": [
-            1.079,
-            1.34,
-            1.34,
-            1.331,
-            1.452,
-            0.298,
-            0.186
+            1.312,
+            1.303,
+            1.53,
+            1.312,
+            1.093,
+            0.219,
+            0.255
           ],
-          "stockout_date": "2026-08-11",
-          "days_until_stockout": 19
+          "stockout_date": "2026-08-14",
+          "days_until_stockout": 17,
+          "units_30d": 58,
+          "revenue_30d": 130.5,
+          "profit_30d": 78.3,
+          "margin_pct": 60.0,
+          "trend_pct": 70.0,
+          "weekend_lift_pct": -76.3
         },
         {
           "sku_id": "S5",
@@ -96,18 +144,24 @@
           "unit_cost": 1.4,
           "unit_price": 1.75,
           "current_stock": 21,
-          "avg_daily_sales": 1.18,
+          "avg_daily_sales": 1.39,
           "dow_factor": [
-            1.352,
-            1.298,
-            1.19,
-            1.758,
-            0.919,
-            0.216,
-            0.325
+            1.12,
+            1.654,
+            1.069,
+            1.222,
+            1.324,
+            0.305,
+            0.356
           ],
-          "stockout_date": "2026-08-11",
-          "days_until_stockout": 19
+          "stockout_date": "2026-08-12",
+          "days_until_stockout": 15,
+          "units_30d": 43,
+          "revenue_30d": 75.25,
+          "profit_30d": 15.05,
+          "margin_pct": 20.0,
+          "trend_pct": 78.6,
+          "weekend_lift_pct": -66.9
         },
         {
           "sku_id": "S6",
@@ -116,18 +170,24 @@
           "unit_cost": 1.1,
           "unit_price": 2.5,
           "current_stock": 26,
-          "avg_daily_sales": 1.25,
+          "avg_daily_sales": 1.04,
           "dow_factor": [
-            1.587,
-            1.659,
-            1.514,
-            0.547,
-            0.938,
-            0.361,
-            0.361
+            1.652,
+            0.597,
+            1.023,
+            1.259,
+            1.337,
+            0.629,
+            0.472
           ],
-          "stockout_date": "2026-08-13",
-          "days_until_stockout": 21
+          "stockout_date": "2026-08-22",
+          "days_until_stockout": 25,
+          "units_30d": 32,
+          "revenue_30d": 80.0,
+          "profit_30d": 44.8,
+          "margin_pct": 56.0,
+          "trend_pct": -6.7,
+          "weekend_lift_pct": -44.9
         },
         {
           "sku_id": "S7",
@@ -136,18 +196,24 @@
           "unit_cost": 1.6,
           "unit_price": 3.5,
           "current_stock": 34,
-          "avg_daily_sales": 2.11,
+          "avg_daily_sales": 2.14,
           "dow_factor": [
-            1.554,
-            1.307,
-            1.166,
-            0.995,
-            1.201,
-            0.459,
-            0.318
+            1.184,
+            1.01,
+            1.291,
+            1.291,
+            1.363,
+            0.538,
+            0.323
           ],
-          "stockout_date": "2026-08-10",
-          "days_until_stockout": 18
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 16,
+          "units_30d": 61,
+          "revenue_30d": 213.5,
+          "profit_30d": 115.9,
+          "margin_pct": 54.3,
+          "trend_pct": -12.5,
+          "weekend_lift_pct": -57.0
         },
         {
           "sku_id": "S8",
@@ -156,18 +222,24 @@
           "unit_cost": 0.8,
           "unit_price": 2.0,
           "current_stock": 19,
-          "avg_daily_sales": 1.39,
+          "avg_daily_sales": 1.5,
           "dow_factor": [
-            0.751,
-            1.664,
-            1.288,
-            1.57,
-            1.181,
-            0.322,
-            0.268
+            1.24,
+            1.511,
+            1.24,
+            1.24,
+            1.24,
+            0.155,
+            0.413
           ],
-          "stockout_date": "2026-08-06",
-          "days_until_stockout": 14
+          "stockout_date": "2026-08-11",
+          "days_until_stockout": 14,
+          "units_30d": 44,
+          "revenue_30d": 88.0,
+          "profit_30d": 52.8,
+          "margin_pct": 60.0,
+          "trend_pct": 0.0,
+          "weekend_lift_pct": -71.6
         }
       ]
     },
@@ -176,6 +248,30 @@
       "name": "TechPark Tower 2",
       "location": "88 Innovation Way",
       "location_type": "office",
+      "units_30d": 391,
+      "revenue_30d": 815.0,
+      "profit_30d": 465.55,
+      "avg_margin_pct": 57.1,
+      "trend_pct": 19.3,
+      "top_sku": "Cola Classic",
+      "top_sku_daily": 2.82,
+      "recommendations": [
+        {
+          "type": "REPRICE",
+          "title": "Raise Protein Bar to at least $1.82",
+          "detail": "Selling at $1.75 on a $1.40 cost is a 20% margin, under the 1.3x floor."
+        },
+        {
+          "type": "SWAP",
+          "title": "Consider replacing Protein Bar",
+          "detail": "Slowest earner: 36 units in 30 days at 20% margin. A faster SKU earns the slot back."
+        },
+        {
+          "type": "TREND",
+          "title": "Trail Mix is heating up",
+          "detail": "Sales up 140% in the last two weeks. Watch cover; consider a price test."
+        }
+      ],
       "skus": [
         {
           "sku_id": "S1",
@@ -184,18 +280,24 @@
           "unit_cost": 0.75,
           "unit_price": 2.0,
           "current_stock": 78,
-          "avg_daily_sales": 2.93,
+          "avg_daily_sales": 2.82,
           "dow_factor": [
-            1.349,
-            1.199,
-            1.259,
-            1.201,
-            1.379,
-            0.36,
-            0.27
+            1.212,
+            1.156,
+            1.471,
+            1.356,
+            1.327,
+            0.317,
+            0.173
           ],
-          "stockout_date": "2026-08-19",
-          "days_until_stockout": 27
+          "stockout_date": "2026-08-25",
+          "days_until_stockout": 28,
+          "units_30d": 85,
+          "revenue_30d": 170.0,
+          "profit_30d": 106.25,
+          "margin_pct": 62.5,
+          "trend_pct": 19.4,
+          "weekend_lift_pct": -75.5
         },
         {
           "sku_id": "S2",
@@ -204,18 +306,24 @@
           "unit_cost": 0.6,
           "unit_price": 1.75,
           "current_stock": 27,
-          "avg_daily_sales": 1.75,
+          "avg_daily_sales": 1.71,
           "dow_factor": [
-            1.492,
-            1.036,
-            1.244,
-            1.482,
-            1.036,
-            0.373,
-            0.373
+            1.282,
+            1.528,
+            1.068,
+            1.282,
+            1.368,
+            0.342,
+            0.171
           ],
-          "stockout_date": "2026-08-08",
-          "days_until_stockout": 16
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 16,
+          "units_30d": 53,
+          "revenue_30d": 92.75,
+          "profit_30d": 60.95,
+          "margin_pct": 65.7,
+          "trend_pct": 0.0,
+          "weekend_lift_pct": -74.4
         },
         {
           "sku_id": "S3",
@@ -224,18 +332,24 @@
           "unit_cost": 0.55,
           "unit_price": 1.5,
           "current_stock": 38,
-          "avg_daily_sales": 2.04,
+          "avg_daily_sales": 1.82,
           "dow_factor": [
-            1.312,
-            1.312,
-            1.421,
-            1.184,
-            1.239,
-            0.401,
-            0.146
+            1.475,
+            1.23,
+            1.362,
+            1.475,
+            0.832,
+            0.378,
+            0.265
           ],
-          "stockout_date": "2026-08-12",
-          "days_until_stockout": 20
+          "stockout_date": "2026-08-18",
+          "days_until_stockout": 21,
+          "units_30d": 56,
+          "revenue_30d": 84.0,
+          "profit_30d": 53.2,
+          "margin_pct": 63.3,
+          "trend_pct": -17.9,
+          "weekend_lift_pct": -67.8
         },
         {
           "sku_id": "S4",
@@ -244,18 +358,24 @@
           "unit_cost": 0.9,
           "unit_price": 2.25,
           "current_stock": 11,
-          "avg_daily_sales": 1.64,
+          "avg_daily_sales": 1.75,
           "dow_factor": [
-            1.349,
-            1.169,
-            0.899,
-            1.412,
-            1.259,
-            0.584,
-            0.36
+            0.86,
+            1.351,
+            1.204,
+            1.72,
+            1.376,
+            0.344,
+            0.172
           ],
-          "stockout_date": "2026-07-30",
-          "days_until_stockout": 7
+          "stockout_date": "2026-08-04",
+          "days_until_stockout": 7,
+          "units_30d": 51,
+          "revenue_30d": 114.75,
+          "profit_30d": 68.85,
+          "margin_pct": 60.0,
+          "trend_pct": 13.0,
+          "weekend_lift_pct": -74.2
         },
         {
           "sku_id": "S5",
@@ -264,18 +384,24 @@
           "unit_cost": 1.4,
           "unit_price": 1.75,
           "current_stock": 14,
-          "avg_daily_sales": 1.32,
+          "avg_daily_sales": 1.18,
           "dow_factor": [
-            1.538,
-            1.374,
-            1.099,
-            1.369,
-            0.989,
-            0.44,
-            0.22
+            1.215,
+            1.513,
+            1.154,
+            1.336,
+            0.972,
+            0.547,
+            0.304
           ],
-          "stockout_date": "2026-08-04",
-          "days_until_stockout": 12
+          "stockout_date": "2026-08-10",
+          "days_until_stockout": 13,
+          "units_30d": 36,
+          "revenue_30d": 63.0,
+          "profit_30d": 12.6,
+          "margin_pct": 20.0,
+          "trend_pct": 53.8,
+          "weekend_lift_pct": -57.5
         },
         {
           "sku_id": "S6",
@@ -284,18 +410,24 @@
           "unit_cost": 1.1,
           "unit_price": 2.5,
           "current_stock": 22,
-          "avg_daily_sales": 1.11,
+          "avg_daily_sales": 1.21,
           "dow_factor": [
-            1.592,
-            1.177,
-            1.246,
-            1.2,
-            1.038,
-            0.554,
-            0.208
+            1.259,
+            1.212,
+            1.189,
+            1.608,
+            1.119,
+            0.49,
+            0.14
           ],
-          "stockout_date": "2026-08-13",
-          "days_until_stockout": 21
+          "stockout_date": "2026-08-15",
+          "days_until_stockout": 18,
+          "units_30d": 36,
+          "revenue_30d": 90.0,
+          "profit_30d": 50.4,
+          "margin_pct": 56.0,
+          "trend_pct": 140.0,
+          "weekend_lift_pct": -68.5
         },
         {
           "sku_id": "S7",
@@ -304,18 +436,24 @@
           "unit_cost": 1.6,
           "unit_price": 3.5,
           "current_stock": 35,
-          "avg_daily_sales": 1.43,
+          "avg_daily_sales": 1.21,
           "dow_factor": [
-            1.91,
-            1.432,
-            1.194,
-            1.086,
-            0.859,
-            0.286,
-            0.239
+            1.301,
+            1.184,
+            1.041,
+            1.197,
+            1.301,
+            0.677,
+            0.312
           ],
-          "stockout_date": "2026-08-18",
-          "days_until_stockout": 26
+          "stockout_date": "2026-08-26",
+          "days_until_stockout": 29,
+          "units_30d": 35,
+          "revenue_30d": 122.5,
+          "profit_30d": 66.5,
+          "margin_pct": 54.3,
+          "trend_pct": -21.1,
+          "weekend_lift_pct": -50.5
         },
         {
           "sku_id": "S8",
@@ -324,18 +462,24 @@
           "unit_cost": 0.8,
           "unit_price": 2.0,
           "current_stock": 13,
-          "avg_daily_sales": 1.32,
+          "avg_daily_sales": 1.29,
           "dow_factor": [
-            1.099,
-            1.484,
-            1.593,
-            1.429,
-            0.934,
-            0.22,
-            0.275
+            1.673,
+            1.5,
+            1.096,
+            0.692,
+            1.385,
+            0.288,
+            0.404
           ],
-          "stockout_date": "2026-08-04",
-          "days_until_stockout": 12
+          "stockout_date": "2026-08-07",
+          "days_until_stockout": 10,
+          "units_30d": 39,
+          "revenue_30d": 78.0,
+          "profit_30d": 46.8,
+          "margin_pct": 60.0,
+          "trend_pct": 0.0,
+          "weekend_lift_pct": -65.4
         }
       ]
     },
@@ -344,6 +488,35 @@
       "name": "Riverside Gym",
       "location": "230 River Rd",
       "location_type": "gym",
+      "units_30d": 704,
+      "revenue_30d": 1641.75,
+      "profit_30d": 923.05,
+      "avg_margin_pct": 56.2,
+      "trend_pct": -4.9,
+      "top_sku": "Energy Drink",
+      "top_sku_daily": 5.82,
+      "recommendations": [
+        {
+          "type": "EXPAND",
+          "title": "Add a second facing of Energy Drink",
+          "detail": "Top seller at 5.82/day and $630 revenue in 30 days. A second row halves its stockout risk."
+        },
+        {
+          "type": "REPRICE",
+          "title": "Raise Protein Bar to at least $1.82",
+          "detail": "Selling at $1.75 on a $1.40 cost is a 20% margin, under the 1.3x floor."
+        },
+        {
+          "type": "PREP",
+          "title": "Stock Energy Drink by Friday",
+          "detail": "Weekend demand runs 22% above the weekly average at this location."
+        },
+        {
+          "type": "TREND",
+          "title": "Sparkling Water is heating up",
+          "detail": "Sales up 19% in the last two weeks. Watch cover; consider a price test."
+        }
+      ],
       "skus": [
         {
           "sku_id": "S1",
@@ -352,18 +525,24 @@
           "unit_cost": 0.75,
           "unit_price": 2.0,
           "current_stock": 66,
-          "avg_daily_sales": 4.32,
+          "avg_daily_sales": 4.21,
           "dow_factor": [
-            1.151,
-            0.785,
-            0.913,
-            0.752,
-            0.804,
-            1.388,
-            1.187
+            0.963,
+            0.762,
+            0.907,
+            1.055,
+            0.926,
+            1.351,
+            1.018
           ],
-          "stockout_date": "2026-08-08",
-          "days_until_stockout": 16
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 16,
+          "units_30d": 125,
+          "revenue_30d": 250.0,
+          "profit_30d": 156.25,
+          "margin_pct": 62.5,
+          "trend_pct": 7.0,
+          "weekend_lift_pct": 18.5
         },
         {
           "sku_id": "S2",
@@ -372,18 +551,24 @@
           "unit_cost": 0.6,
           "unit_price": 1.75,
           "current_stock": 52,
-          "avg_daily_sales": 2.39,
+          "avg_daily_sales": 2.43,
           "dow_factor": [
-            0.952,
-            1.067,
-            0.865,
-            0.875,
-            0.865,
-            1.327,
-            1.038
+            0.939,
+            0.89,
+            0.968,
+            1.027,
+            0.851,
+            1.115,
+            1.203
           ],
-          "stockout_date": "2026-08-14",
-          "days_until_stockout": 22
+          "stockout_date": "2026-08-19",
+          "days_until_stockout": 22,
+          "units_30d": 72,
+          "revenue_30d": 126.0,
+          "profit_30d": 82.8,
+          "margin_pct": 65.7,
+          "trend_pct": 19.4,
+          "weekend_lift_pct": 15.9
         },
         {
           "sku_id": "S3",
@@ -392,18 +577,24 @@
           "unit_cost": 0.55,
           "unit_price": 1.5,
           "current_stock": 16,
-          "avg_daily_sales": 3.04,
+          "avg_daily_sales": 3.07,
           "dow_factor": [
-            1.076,
-            0.69,
-            0.91,
-            0.986,
-            0.772,
-            1.324,
-            1.241
+            0.981,
+            1.002,
+            0.869,
+            1.009,
+            1.009,
+            1.289,
+            0.841
           ],
-          "stockout_date": "2026-07-29",
-          "days_until_stockout": 6
+          "stockout_date": "2026-08-03",
+          "days_until_stockout": 6,
+          "units_30d": 93,
+          "revenue_30d": 139.5,
+          "profit_30d": 88.35,
+          "margin_pct": 63.3,
+          "trend_pct": -20.8,
+          "weekend_lift_pct": 6.5
         },
         {
           "sku_id": "S4",
@@ -412,18 +603,24 @@
           "unit_cost": 0.9,
           "unit_price": 2.25,
           "current_stock": 39,
-          "avg_daily_sales": 2.82,
+          "avg_daily_sales": 2.89,
           "dow_factor": [
-            0.782,
-            1.005,
-            1.033,
-            0.817,
-            0.893,
-            1.145,
-            1.312
+            1.098,
+            0.823,
+            0.985,
+            0.844,
+            1.069,
+            0.929,
+            1.238
           ],
-          "stockout_date": "2026-08-06",
-          "days_until_stockout": 14
+          "stockout_date": "2026-08-11",
+          "days_until_stockout": 14,
+          "units_30d": 86,
+          "revenue_30d": 193.5,
+          "profit_30d": 116.1,
+          "margin_pct": 60.0,
+          "trend_pct": 2.5,
+          "weekend_lift_pct": 8.3
         },
         {
           "sku_id": "S5",
@@ -432,18 +629,24 @@
           "unit_cost": 1.4,
           "unit_price": 1.75,
           "current_stock": 8,
-          "avg_daily_sales": 2.0,
+          "avg_daily_sales": 1.89,
           "dow_factor": [
-            0.929,
-            0.802,
-            0.971,
-            0.823,
-            1.055,
-            1.224,
-            1.182
+            1.052,
+            0.854,
+            1.183,
+            1.008,
+            0.789,
+            1.095,
+            1.008
           ],
-          "stockout_date": "2026-07-27",
-          "days_until_stockout": 4
+          "stockout_date": "2026-08-02",
+          "days_until_stockout": 5,
+          "units_30d": 57,
+          "revenue_30d": 99.75,
+          "profit_30d": 19.95,
+          "margin_pct": 20.0,
+          "trend_pct": -17.2,
+          "weekend_lift_pct": 5.2
         },
         {
           "sku_id": "S6",
@@ -452,18 +655,24 @@
           "unit_cost": 1.1,
           "unit_price": 2.5,
           "current_stock": 27,
-          "avg_daily_sales": 1.39,
+          "avg_daily_sales": 1.29,
           "dow_factor": [
-            1.202,
-            1.43,
-            1.03,
+            1.087,
             0.806,
-            0.572,
-            0.973,
-            0.973
+            0.744,
+            0.687,
+            0.687,
+            1.43,
+            1.545
           ],
-          "stockout_date": "2026-08-12",
-          "days_until_stockout": 20
+          "stockout_date": "2026-08-19",
+          "days_until_stockout": 22,
+          "units_30d": 42,
+          "revenue_30d": 105.0,
+          "profit_30d": 58.8,
+          "margin_pct": 56.0,
+          "trend_pct": 11.8,
+          "weekend_lift_pct": 48.8
         },
         {
           "sku_id": "S7",
@@ -472,18 +681,24 @@
           "unit_cost": 1.6,
           "unit_price": 3.5,
           "current_stock": 11,
-          "avg_daily_sales": 5.89,
+          "avg_daily_sales": 5.82,
           "dow_factor": [
-            1.023,
-            0.998,
-            0.985,
-            0.905,
-            0.636,
-            1.31,
-            1.135
+            1.068,
+            0.912,
+            0.729,
+            1.005,
+            0.842,
+            1.231,
+            1.206
           ],
-          "stockout_date": "2026-07-25",
-          "days_until_stockout": 2
+          "stockout_date": "2026-07-31",
+          "days_until_stockout": 3,
+          "units_30d": 180,
+          "revenue_30d": 630.0,
+          "profit_30d": 342.0,
+          "margin_pct": 54.3,
+          "trend_pct": -24.7,
+          "weekend_lift_pct": 21.9
         },
         {
           "sku_id": "S8",
@@ -492,18 +707,24 @@
           "unit_cost": 0.8,
           "unit_price": 2.0,
           "current_stock": 28,
-          "avg_daily_sales": 1.61,
+          "avg_daily_sales": 1.64,
           "dow_factor": [
-            0.854,
-            0.948,
-            1.091,
-            1.233,
-            0.948,
-            0.616,
-            1.328
+            1.169,
+            1.216,
+            0.936,
+            0.561,
+            0.936,
+            1.029,
+            1.169
           ],
-          "stockout_date": "2026-08-10",
-          "days_until_stockout": 18
+          "stockout_date": "2026-08-15",
+          "days_until_stockout": 18,
+          "units_30d": 49,
+          "revenue_30d": 98.0,
+          "profit_30d": 58.8,
+          "margin_pct": 60.0,
+          "trend_pct": 19.0,
+          "weekend_lift_pct": 9.9
         }
       ]
     },
@@ -512,6 +733,30 @@
       "name": "City Hospital ER Wing",
       "location": "1 Hospital Dr",
       "location_type": "hospital",
+      "units_30d": 387,
+      "revenue_30d": 816.75,
+      "profit_30d": 464.0,
+      "avg_margin_pct": 56.8,
+      "trend_pct": -3.9,
+      "top_sku": "Cola Classic",
+      "top_sku_daily": 2.82,
+      "recommendations": [
+        {
+          "type": "REPRICE",
+          "title": "Raise Protein Bar to at least $1.82",
+          "detail": "Selling at $1.75 on a $1.40 cost is a 20% margin, under the 1.3x floor."
+        },
+        {
+          "type": "SWAP",
+          "title": "Consider replacing Protein Bar",
+          "detail": "Slowest earner: 37 units in 30 days at 20% margin. A faster SKU earns the slot back."
+        },
+        {
+          "type": "TREND",
+          "title": "Sparkling Water is heating up",
+          "detail": "Sales up 22% in the last two weeks. Watch cover; consider a price test."
+        }
+      ],
       "skus": [
         {
           "sku_id": "S1",
@@ -522,16 +767,22 @@
           "current_stock": 61,
           "avg_daily_sales": 2.82,
           "dow_factor": [
-            1.214,
-            1.021,
             0.634,
             1.016,
             1.021,
             1.048,
-            1.048
+            1.048,
+            1.214,
+            1.021
           ],
-          "stockout_date": "2026-08-14",
-          "days_until_stockout": 22
+          "stockout_date": "2026-08-19",
+          "days_until_stockout": 22,
+          "units_30d": 84,
+          "revenue_30d": 168.0,
+          "profit_30d": 105.0,
+          "margin_pct": 62.5,
+          "trend_pct": -24.4,
+          "weekend_lift_pct": 11.7
         },
         {
           "sku_id": "S2",
@@ -542,16 +793,22 @@
           "current_stock": 32,
           "avg_daily_sales": 1.43,
           "dow_factor": [
-            0.865,
-            1.139,
             0.683,
             1.036,
             1.275,
             0.911,
-            1.093
+            1.093,
+            0.865,
+            1.139
           ],
-          "stockout_date": "2026-08-15",
-          "days_until_stockout": 23
+          "stockout_date": "2026-08-20",
+          "days_until_stockout": 23,
+          "units_30d": 41,
+          "revenue_30d": 71.75,
+          "profit_30d": 47.15,
+          "margin_pct": 65.7,
+          "trend_pct": 22.2,
+          "weekend_lift_pct": 0.2
         },
         {
           "sku_id": "S3",
@@ -562,16 +819,22 @@
           "current_stock": 22,
           "avg_daily_sales": 2.18,
           "dow_factor": [
-            0.941,
-            1.054,
             0.978,
             0.774,
             0.941,
             1.279,
-            1.016
+            1.016,
+            0.941,
+            1.054
           ],
-          "stockout_date": "2026-08-02",
-          "days_until_stockout": 10
+          "stockout_date": "2026-08-07",
+          "days_until_stockout": 10,
+          "units_30d": 65,
+          "revenue_30d": 97.5,
+          "profit_30d": 61.75,
+          "margin_pct": 63.3,
+          "trend_pct": -9.4,
+          "weekend_lift_pct": -0.3
         },
         {
           "sku_id": "S4",
@@ -583,15 +846,21 @@
           "avg_daily_sales": 1.86,
           "dow_factor": [
             1.05,
-            0.955,
-            1.05,
             1.397,
             0.668,
             0.668,
-            1.241
+            1.241,
+            1.05,
+            0.955
           ],
-          "stockout_date": "2026-08-03",
-          "days_until_stockout": 11
+          "stockout_date": "2026-08-08",
+          "days_until_stockout": 11,
+          "units_30d": 55,
+          "revenue_30d": 123.75,
+          "profit_30d": 74.25,
+          "margin_pct": 60.0,
+          "trend_pct": 16.7,
+          "weekend_lift_pct": 0.3
         },
         {
           "sku_id": "S5",
@@ -602,16 +871,22 @@
           "current_stock": 27,
           "avg_daily_sales": 1.32,
           "dow_factor": [
-            1.36,
-            0.989,
             1.113,
             1.004,
             0.989,
             0.618,
-            0.927
+            0.927,
+            1.36,
+            0.989
           ],
-          "stockout_date": "2026-08-13",
-          "days_until_stockout": 21
+          "stockout_date": "2026-08-18",
+          "days_until_stockout": 21,
+          "units_30d": 37,
+          "revenue_30d": 64.75,
+          "profit_30d": 12.95,
+          "margin_pct": 20.0,
+          "trend_pct": 17.6,
+          "weekend_lift_pct": 17.4
         },
         {
           "sku_id": "S6",
@@ -622,16 +897,22 @@
           "current_stock": 19,
           "avg_daily_sales": 0.86,
           "dow_factor": [
-            1.042,
-            0.596,
             0.819,
             1.371,
             0.968,
             1.266,
-            0.968
+            0.968,
+            1.042,
+            0.596
           ],
-          "stockout_date": "2026-08-15",
-          "days_until_stockout": 23
+          "stockout_date": "2026-08-20",
+          "days_until_stockout": 23,
+          "units_30d": 27,
+          "revenue_30d": 67.5,
+          "profit_30d": 37.8,
+          "margin_pct": 56.0,
+          "trend_pct": 0.0,
+          "weekend_lift_pct": -18.1
         },
         {
           "sku_id": "S7",
@@ -642,16 +923,22 @@
           "current_stock": 32,
           "avg_daily_sales": 1.57,
           "dow_factor": [
-            1.108,
-            1.052,
             1.218,
             0.72,
             0.886,
             0.775,
-            1.218
+            1.218,
+            1.108,
+            1.052
           ],
-          "stockout_date": "2026-08-13",
-          "days_until_stockout": 21
+          "stockout_date": "2026-08-18",
+          "days_until_stockout": 21,
+          "units_30d": 45,
+          "revenue_30d": 157.5,
+          "profit_30d": 85.5,
+          "margin_pct": 54.3,
+          "trend_pct": -16.7,
+          "weekend_lift_pct": 8.0
         },
         {
           "sku_id": "S8",
@@ -662,16 +949,22 @@
           "current_stock": 17,
           "avg_daily_sales": 1.11,
           "dow_factor": [
-            0.732,
-            0.732,
             1.531,
             1.082,
             1.065,
             0.599,
-            1.265
+            1.265,
+            0.732,
+            0.732
           ],
-          "stockout_date": "2026-08-08",
-          "days_until_stockout": 16
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 16,
+          "units_30d": 33,
+          "revenue_30d": 66.0,
+          "profit_30d": 39.6,
+          "margin_pct": 60.0,
+          "trend_pct": -17.6,
+          "weekend_lift_pct": -26.8
         }
       ]
     },
@@ -680,6 +973,25 @@
       "name": "State U Library",
       "location": "500 Campus Loop",
       "location_type": "campus",
+      "units_30d": 486,
+      "revenue_30d": 1018.5,
+      "profit_30d": 576.1,
+      "avg_margin_pct": 56.6,
+      "trend_pct": 5.6,
+      "top_sku": "Sea Salt Chips",
+      "top_sku_daily": 3.07,
+      "recommendations": [
+        {
+          "type": "REPRICE",
+          "title": "Raise Protein Bar to at least $1.82",
+          "detail": "Selling at $1.75 on a $1.40 cost is a 20% margin, under the 1.3x floor."
+        },
+        {
+          "type": "TREND",
+          "title": "Sea Salt Chips is heating up",
+          "detail": "Sales up 32% in the last two weeks. Watch cover; consider a price test."
+        }
+      ],
       "skus": [
         {
           "sku_id": "S1",
@@ -688,18 +1000,24 @@
           "unit_cost": 0.75,
           "unit_price": 2.0,
           "current_stock": 78,
-          "avg_daily_sales": 2.61,
+          "avg_daily_sales": 2.68,
           "dow_factor": [
-            1.445,
-            1.172,
-            1.199,
-            1.24,
-            1.09,
-            0.382,
-            0.491
+            1.176,
+            1.216,
+            1.203,
+            0.989,
+            1.23,
+            0.695,
+            0.508
           ],
-          "stockout_date": "2026-08-23",
-          "days_until_stockout": 31
+          "stockout_date": "2026-08-26",
+          "days_until_stockout": 29,
+          "units_30d": 78,
+          "revenue_30d": 156.0,
+          "profit_30d": 97.5,
+          "margin_pct": 62.5,
+          "trend_pct": 8.3,
+          "weekend_lift_pct": -39.9
         },
         {
           "sku_id": "S2",
@@ -708,18 +1026,24 @@
           "unit_cost": 0.6,
           "unit_price": 1.75,
           "current_stock": 45,
-          "avg_daily_sales": 2.18,
+          "avg_daily_sales": 2.14,
           "dow_factor": [
-            1.007,
-            1.133,
-            1.343,
-            0.909,
-            1.385,
-            0.462,
-            0.755
+            1.359,
+            0.92,
+            1.444,
+            0.849,
+            1.317,
+            0.51,
+            0.595
           ],
-          "stockout_date": "2026-08-13",
-          "days_until_stockout": 21
+          "stockout_date": "2026-08-19",
+          "days_until_stockout": 22,
+          "units_30d": 62,
+          "revenue_30d": 108.5,
+          "profit_30d": 71.3,
+          "margin_pct": 65.7,
+          "trend_pct": 6.9,
+          "weekend_lift_pct": -44.8
         },
         {
           "sku_id": "S3",
@@ -728,18 +1052,24 @@
           "unit_cost": 0.55,
           "unit_price": 1.5,
           "current_stock": 38,
-          "avg_daily_sales": 2.96,
+          "avg_daily_sales": 3.07,
           "dow_factor": [
-            1.133,
-            0.881,
-            1.29,
-            1.091,
-            1.227,
-            0.629,
-            0.755
+            1.25,
+            1.057,
+            1.22,
+            1.159,
+            1.372,
+            0.61,
+            0.335
           ],
-          "stockout_date": "2026-08-05",
-          "days_until_stockout": 13
+          "stockout_date": "2026-08-10",
+          "days_until_stockout": 13,
+          "units_30d": 90,
+          "revenue_30d": 135.0,
+          "profit_30d": 85.5,
+          "margin_pct": 63.3,
+          "trend_pct": 32.4,
+          "weekend_lift_pct": -52.7
         },
         {
           "sku_id": "S4",
@@ -748,18 +1078,24 @@
           "unit_cost": 0.9,
           "unit_price": 2.25,
           "current_stock": 28,
-          "avg_daily_sales": 2.46,
+          "avg_daily_sales": 2.43,
           "dow_factor": [
-            1.165,
-            1.028,
-            1.2,
-            1.3,
-            1.371,
-            0.411,
-            0.548
+            1.218,
+            1.319,
+            1.461,
+            0.835,
+            1.078,
+            0.591,
+            0.522
           ],
-          "stockout_date": "2026-08-04",
-          "days_until_stockout": 12
+          "stockout_date": "2026-08-10",
+          "days_until_stockout": 13,
+          "units_30d": 74,
+          "revenue_30d": 166.5,
+          "profit_30d": 99.9,
+          "margin_pct": 60.0,
+          "trend_pct": -16.2,
+          "weekend_lift_pct": -44.3
         },
         {
           "sku_id": "S5",
@@ -770,16 +1106,22 @@
           "current_stock": 32,
           "avg_daily_sales": 1.64,
           "dow_factor": [
-            1.442,
-            1.25,
-            1.202,
-            0.885,
-            1.154,
-            0.577,
-            0.481
+            1.219,
+            0.898,
+            1.365,
+            0.975,
+            1.024,
+            0.975,
+            0.536
           ],
-          "stockout_date": "2026-08-12",
-          "days_until_stockout": 20
+          "stockout_date": "2026-08-17",
+          "days_until_stockout": 20,
+          "units_30d": 50,
+          "revenue_30d": 87.5,
+          "profit_30d": 17.5,
+          "margin_pct": 20.0,
+          "trend_pct": -8.3,
+          "weekend_lift_pct": -24.4
         },
         {
           "sku_id": "S6",
@@ -788,18 +1130,24 @@
           "unit_cost": 1.1,
           "unit_price": 2.5,
           "current_stock": 25,
-          "avg_daily_sales": 1.14,
+          "avg_daily_sales": 1.18,
           "dow_factor": [
-            1.207,
-            0.889,
-            1.27,
-            1.307,
-            1.207,
-            0.635,
-            0.508
+            1.294,
+            1.332,
+            1.229,
+            1.035,
+            1.165,
+            0.647,
+            0.324
           ],
-          "stockout_date": "2026-08-14",
-          "days_until_stockout": 22
+          "stockout_date": "2026-08-19",
+          "days_until_stockout": 22,
+          "units_30d": 34,
+          "revenue_30d": 85.0,
+          "profit_30d": 47.6,
+          "margin_pct": 56.0,
+          "trend_pct": -5.9,
+          "weekend_lift_pct": -51.5
         },
         {
           "sku_id": "S7",
@@ -810,16 +1158,22 @@
           "current_stock": 20,
           "avg_daily_sales": 1.93,
           "dow_factor": [
-            1.012,
-            1.215,
-            0.81,
-            1.447,
-            1.296,
-            0.567,
-            0.688
+            0.778,
+            1.39,
+            1.4,
+            1.167,
+            1.245,
+            0.506,
+            0.545
           ],
-          "stockout_date": "2026-08-03",
-          "days_until_stockout": 11
+          "stockout_date": "2026-08-07",
+          "days_until_stockout": 10,
+          "units_30d": 56,
+          "revenue_30d": 196.0,
+          "profit_30d": 106.4,
+          "margin_pct": 54.3,
+          "trend_pct": -7.1,
+          "weekend_lift_pct": -47.5
         },
         {
           "sku_id": "S8",
@@ -828,18 +1182,24 @@
           "unit_cost": 0.8,
           "unit_price": 2.0,
           "current_stock": 24,
-          "avg_daily_sales": 1.32,
+          "avg_daily_sales": 1.43,
           "dow_factor": [
-            1.099,
-            0.989,
-            1.484,
-            1.131,
-            0.824,
-            0.769,
-            0.714
+            1.427,
+            1.088,
+            0.846,
+            1.321,
+            1.268,
+            0.581,
+            0.476
           ],
-          "stockout_date": "2026-08-11",
-          "days_until_stockout": 19
+          "stockout_date": "2026-08-14",
+          "days_until_stockout": 17,
+          "units_30d": 42,
+          "revenue_30d": 84.0,
+          "profit_30d": 50.4,
+          "margin_pct": 60.0,
+          "trend_pct": 22.2,
+          "weekend_lift_pct": -47.2
         }
       ]
     },
@@ -848,6 +1208,25 @@
       "name": "State U Dorm West",
       "location": "512 Campus Loop",
       "location_type": "campus",
+      "units_30d": 444,
+      "revenue_30d": 951.75,
+      "profit_30d": 534.6,
+      "avg_margin_pct": 56.2,
+      "trend_pct": 2.4,
+      "top_sku": "Cola Classic",
+      "top_sku_daily": 3.07,
+      "recommendations": [
+        {
+          "type": "REPRICE",
+          "title": "Raise Protein Bar to at least $1.82",
+          "detail": "Selling at $1.75 on a $1.40 cost is a 20% margin, under the 1.3x floor."
+        },
+        {
+          "type": "TREND",
+          "title": "Chocolate Bar is heating up",
+          "detail": "Sales up 30% in the last two weeks. Watch cover; consider a price test."
+        }
+      ],
       "skus": [
         {
           "sku_id": "S1",
@@ -856,18 +1235,24 @@
           "unit_cost": 0.75,
           "unit_price": 2.0,
           "current_stock": 76,
-          "avg_daily_sales": 2.93,
+          "avg_daily_sales": 3.07,
           "dow_factor": [
-            1.097,
-            0.784,
-            1.385,
-            1.245,
-            1.097,
-            0.653,
-            0.758
+            1.301,
+            1.17,
+            1.08,
+            1.252,
+            1.35,
+            0.589,
+            0.27
           ],
-          "stockout_date": "2026-08-19",
-          "days_until_stockout": 27
+          "stockout_date": "2026-08-22",
+          "days_until_stockout": 25,
+          "units_30d": 92,
+          "revenue_30d": 184.0,
+          "profit_30d": 115.0,
+          "margin_pct": 62.5,
+          "trend_pct": -34.6,
+          "weekend_lift_pct": -57.0
         },
         {
           "sku_id": "S2",
@@ -876,18 +1261,24 @@
           "unit_cost": 0.6,
           "unit_price": 1.75,
           "current_stock": 30,
-          "avg_daily_sales": 1.71,
+          "avg_daily_sales": 1.57,
           "dow_factor": [
-            1.204,
-            1.247,
-            0.989,
-            1.444,
-            1.204,
-            0.602,
-            0.344
+            1.034,
+            1.51,
+            1.349,
+            1.169,
+            0.764,
+            0.584,
+            0.629
           ],
-          "stockout_date": "2026-08-11",
-          "days_until_stockout": 19
+          "stockout_date": "2026-08-17",
+          "days_until_stockout": 20,
+          "units_30d": 50,
+          "revenue_30d": 87.5,
+          "profit_30d": 57.5,
+          "margin_pct": 65.7,
+          "trend_pct": 20.0,
+          "weekend_lift_pct": -39.3
         },
         {
           "sku_id": "S3",
@@ -896,18 +1287,24 @@
           "unit_cost": 0.55,
           "unit_price": 1.5,
           "current_stock": 30,
-          "avg_daily_sales": 2.32,
+          "avg_daily_sales": 2.29,
           "dow_factor": [
-            0.897,
-            1.399,
-            1.255,
-            1.088,
-            1.004,
-            0.717,
-            0.646
+            1.23,
+            1.066,
+            1.019,
+            1.265,
+            1.3,
+            0.457,
+            0.668
           ],
-          "stockout_date": "2026-08-05",
-          "days_until_stockout": 13
+          "stockout_date": "2026-08-11",
+          "days_until_stockout": 14,
+          "units_30d": 71,
+          "revenue_30d": 106.5,
+          "profit_30d": 67.45,
+          "margin_pct": 63.3,
+          "trend_pct": 20.7,
+          "weekend_lift_pct": -43.8
         },
         {
           "sku_id": "S4",
@@ -918,16 +1315,22 @@
           "current_stock": 20,
           "avg_daily_sales": 1.64,
           "dow_factor": [
-            0.843,
-            1.065,
-            1.376,
-            1.442,
-            1.198,
-            0.754,
-            0.355
+            1.341,
+            1.406,
+            1.255,
+            1.341,
+            0.822,
+            0.433,
+            0.433
           ],
-          "stockout_date": "2026-08-05",
-          "days_until_stockout": 13
+          "stockout_date": "2026-08-10",
+          "days_until_stockout": 13,
+          "units_30d": 51,
+          "revenue_30d": 114.75,
+          "profit_30d": 68.85,
+          "margin_pct": 60.0,
+          "trend_pct": 30.0,
+          "weekend_lift_pct": -56.7
         },
         {
           "sku_id": "S5",
@@ -936,18 +1339,24 @@
           "unit_cost": 1.4,
           "unit_price": 1.75,
           "current_stock": 19,
-          "avg_daily_sales": 1.43,
+          "avg_daily_sales": 1.61,
           "dow_factor": [
-            1.364,
-            0.839,
-            1.311,
-            0.909,
-            0.997,
-            0.997,
-            0.577
+            1.292,
+            0.896,
+            1.085,
+            1.602,
+            0.982,
+            0.723,
+            0.413
           ],
-          "stockout_date": "2026-08-06",
-          "days_until_stockout": 14
+          "stockout_date": "2026-08-10",
+          "days_until_stockout": 13,
+          "units_30d": 48,
+          "revenue_30d": 84.0,
+          "profit_30d": 16.8,
+          "margin_pct": 20.0,
+          "trend_pct": -4.3,
+          "weekend_lift_pct": -43.2
         },
         {
           "sku_id": "S6",
@@ -956,18 +1365,24 @@
           "unit_cost": 1.1,
           "unit_price": 2.5,
           "current_stock": 26,
-          "avg_daily_sales": 1.14,
+          "avg_daily_sales": 1.18,
           "dow_factor": [
-            0.823,
-            1.097,
-            1.577,
-            1.262,
-            0.823,
-            0.96,
-            0.48
+            1.561,
+            1.25,
+            0.95,
+            1.425,
+            0.882,
+            0.543,
+            0.407
           ],
-          "stockout_date": "2026-08-15",
-          "days_until_stockout": 23
+          "stockout_date": "2026-08-20",
+          "days_until_stockout": 23,
+          "units_30d": 36,
+          "revenue_30d": 90.0,
+          "profit_30d": 50.4,
+          "margin_pct": 56.0,
+          "trend_pct": -5.9,
+          "weekend_lift_pct": -52.5
         },
         {
           "sku_id": "S7",
@@ -976,18 +1391,24 @@
           "unit_cost": 1.6,
           "unit_price": 3.5,
           "current_stock": 28,
-          "avg_daily_sales": 2.07,
+          "avg_daily_sales": 2.04,
           "dow_factor": [
-            1.146,
-            1.058,
-            1.411,
-            1.099,
-            1.014,
-            0.706,
-            0.573
+            1.385,
+            1.078,
+            1.082,
+            1.298,
+            1.082,
+            0.562,
+            0.519
           ],
-          "stockout_date": "2026-08-06",
-          "days_until_stockout": 14
+          "stockout_date": "2026-08-11",
+          "days_until_stockout": 14,
+          "units_30d": 62,
+          "revenue_30d": 217.0,
+          "profit_30d": 117.8,
+          "margin_pct": 54.3,
+          "trend_pct": 3.6,
+          "weekend_lift_pct": -45.9
         },
         {
           "sku_id": "S8",
@@ -996,18 +1417,24 @@
           "unit_cost": 0.8,
           "unit_price": 2.0,
           "current_stock": 8,
-          "avg_daily_sales": 1.07,
+          "avg_daily_sales": 1.21,
           "dow_factor": [
-            0.841,
-            1.165,
-            0.776,
-            1.472,
-            1.165,
-            0.776,
-            0.841
+            0.748,
+            1.419,
+            1.247,
+            1.31,
+            1.435,
+            0.249,
+            0.624
           ],
-          "stockout_date": "2026-07-31",
-          "days_until_stockout": 8
+          "stockout_date": "2026-08-04",
+          "days_until_stockout": 7,
+          "units_30d": 34,
+          "revenue_30d": 68.0,
+          "profit_30d": 40.8,
+          "margin_pct": 60.0,
+          "trend_pct": 12.5,
+          "weekend_lift_pct": -56.3
         }
       ]
     },
@@ -1016,6 +1443,30 @@
       "name": "Central Station Concourse",
       "location": "1 Station Plaza",
       "location_type": "transit",
+      "units_30d": 883,
+      "revenue_30d": 2001.5,
+      "profit_30d": 1139.0,
+      "avg_margin_pct": 56.9,
+      "trend_pct": 0.6,
+      "top_sku": "Cola Classic",
+      "top_sku_daily": 6.96,
+      "recommendations": [
+        {
+          "type": "EXPAND",
+          "title": "Add a second facing of Cola Classic",
+          "detail": "Top seller at 6.96/day and $408 revenue in 30 days. A second row halves its stockout risk."
+        },
+        {
+          "type": "REPRICE",
+          "title": "Raise Protein Bar to at least $1.82",
+          "detail": "Selling at $1.75 on a $1.40 cost is a 20% margin, under the 1.3x floor."
+        },
+        {
+          "type": "TREND",
+          "title": "Instant Noodles is heating up",
+          "detail": "Sales up 55% in the last two weeks. Watch cover; consider a price test."
+        }
+      ],
       "skus": [
         {
           "sku_id": "S1",
@@ -1024,18 +1475,24 @@
           "unit_cost": 0.75,
           "unit_price": 2.0,
           "current_stock": 29,
-          "avg_daily_sales": 6.86,
+          "avg_daily_sales": 6.96,
           "dow_factor": [
-            1.014,
-            1.037,
-            1.084,
-            0.997,
-            1.212,
-            0.816,
-            0.839
+            1.078,
+            0.992,
+            1.206,
+            1.125,
+            1.136,
+            0.742,
+            0.719
           ],
-          "stockout_date": "2026-07-28",
-          "days_until_stockout": 5
+          "stockout_date": "2026-08-01",
+          "days_until_stockout": 4,
+          "units_30d": 204,
+          "revenue_30d": 408.0,
+          "profit_30d": 255.0,
+          "margin_pct": 62.5,
+          "trend_pct": 21.6,
+          "weekend_lift_pct": -26.9
         },
         {
           "sku_id": "S2",
@@ -1044,18 +1501,24 @@
           "unit_cost": 0.6,
           "unit_price": 1.75,
           "current_stock": 18,
-          "avg_daily_sales": 3.0,
+          "avg_daily_sales": 2.86,
           "dow_factor": [
-            1.214,
-            1.352,
-            1.131,
-            0.986,
-            0.772,
-            0.634,
-            0.91
+            1.163,
+            1.014,
+            0.794,
+            0.908,
+            1.22,
+            0.908,
+            0.993
           ],
-          "stockout_date": "2026-07-29",
-          "days_until_stockout": 6
+          "stockout_date": "2026-08-04",
+          "days_until_stockout": 7,
+          "units_30d": 85,
+          "revenue_30d": 148.75,
+          "profit_30d": 97.75,
+          "margin_pct": 65.7,
+          "trend_pct": 10.5,
+          "weekend_lift_pct": -4.9
         },
         {
           "sku_id": "S3",
@@ -1064,18 +1527,24 @@
           "unit_cost": 0.55,
           "unit_price": 1.5,
           "current_stock": 67,
-          "avg_daily_sales": 2.86,
+          "avg_daily_sales": 2.82,
           "dow_factor": [
-            1.114,
-            1.209,
-            1.091,
-            1.182,
-            1.091,
-            0.593,
-            0.735
+            1.11,
+            1.202,
+            1.11,
+            0.868,
+            1.013,
+            0.82,
+            0.893
           ],
-          "stockout_date": "2026-08-16",
-          "days_until_stockout": 24
+          "stockout_date": "2026-08-21",
+          "days_until_stockout": 24,
+          "units_30d": 84,
+          "revenue_30d": 126.0,
+          "profit_30d": 79.8,
+          "margin_pct": 63.3,
+          "trend_pct": -38.8,
+          "weekend_lift_pct": -14.4
         },
         {
           "sku_id": "S4",
@@ -1086,16 +1555,22 @@
           "current_stock": 18,
           "avg_daily_sales": 3.71,
           "dow_factor": [
-            1.221,
-            1.087,
-            0.935,
-            1.157,
+            0.953,
+            1.18,
+            1.011,
+            1.206,
             0.992,
-            0.896,
-            0.725
+            0.895,
+            0.778
           ],
-          "stockout_date": "2026-07-28",
-          "days_until_stockout": 5
+          "stockout_date": "2026-08-02",
+          "days_until_stockout": 5,
+          "units_30d": 113,
+          "revenue_30d": 254.25,
+          "profit_30d": 152.55,
+          "margin_pct": 60.0,
+          "trend_pct": -23.7,
+          "weekend_lift_pct": -16.4
         },
         {
           "sku_id": "S5",
@@ -1104,18 +1579,24 @@
           "unit_cost": 1.4,
           "unit_price": 1.75,
           "current_stock": 34,
-          "avg_daily_sales": 2.0,
+          "avg_daily_sales": 2.14,
           "dow_factor": [
-            0.918,
-            0.841,
-            1.147,
-            1.285,
-            1.453,
-            0.765,
-            0.612
+            1.117,
+            1.25,
+            1.414,
+            1.079,
+            0.856,
+            0.67,
+            0.633
           ],
-          "stockout_date": "2026-08-10",
-          "days_until_stockout": 18
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 16,
+          "units_30d": 62,
+          "revenue_30d": 108.5,
+          "profit_30d": 21.7,
+          "margin_pct": 20.0,
+          "trend_pct": -6.5,
+          "weekend_lift_pct": -34.9
         },
         {
           "sku_id": "S6",
@@ -1124,18 +1605,24 @@
           "unit_cost": 1.1,
           "unit_price": 2.5,
           "current_stock": 15,
-          "avg_daily_sales": 3.25,
+          "avg_daily_sales": 3.32,
           "dow_factor": [
-            1.0,
-            0.872,
-            1.128,
-            1.139,
-            1.333,
-            0.718,
-            0.821
+            1.112,
+            1.122,
+            1.314,
+            0.985,
+            1.137,
+            0.783,
+            0.556
           ],
-          "stockout_date": "2026-07-28",
-          "days_until_stockout": 5
+          "stockout_date": "2026-08-02",
+          "days_until_stockout": 5,
+          "units_30d": 98,
+          "revenue_30d": 245.0,
+          "profit_30d": 137.2,
+          "margin_pct": 56.0,
+          "trend_pct": -14.0,
+          "weekend_lift_pct": -33.0
         },
         {
           "sku_id": "S7",
@@ -1146,16 +1633,22 @@
           "current_stock": 28,
           "avg_daily_sales": 5.46,
           "dow_factor": [
-            1.013,
-            0.901,
-            0.943,
-            1.143,
-            1.168,
-            0.957,
-            0.886
+            0.931,
+            1.13,
+            1.154,
+            1.293,
+            1.154,
+            0.723,
+            0.626
           ],
-          "stockout_date": "2026-07-29",
-          "days_until_stockout": 6
+          "stockout_date": "2026-08-03",
+          "days_until_stockout": 6,
+          "units_30d": 158,
+          "revenue_30d": 553.0,
+          "profit_30d": 300.2,
+          "margin_pct": 54.3,
+          "trend_pct": -8.8,
+          "weekend_lift_pct": -32.6
         },
         {
           "sku_id": "S8",
@@ -1164,18 +1657,24 @@
           "unit_cost": 0.8,
           "unit_price": 2.0,
           "current_stock": 18,
-          "avg_daily_sales": 2.57,
+          "avg_daily_sales": 2.64,
           "dow_factor": [
-            1.069,
-            0.942,
-            1.374,
-            0.965,
-            1.044,
-            0.916,
-            0.687
+            1.359,
+            0.955,
+            1.032,
+            1.259,
+            1.007,
+            0.755,
+            0.629
           ],
-          "stockout_date": "2026-07-31",
-          "days_until_stockout": 8
+          "stockout_date": "2026-08-04",
+          "days_until_stockout": 7,
+          "units_30d": 79,
+          "revenue_30d": 158.0,
+          "profit_30d": 94.8,
+          "margin_pct": 60.0,
+          "trend_pct": 55.2,
+          "weekend_lift_pct": -30.8
         }
       ]
     },
@@ -1184,6 +1683,30 @@
       "name": "Airport Gate B12",
       "location": "Terminal B",
       "location_type": "transit",
+      "units_30d": 590,
+      "revenue_30d": 1252.75,
+      "profit_30d": 712.0,
+      "avg_margin_pct": 56.8,
+      "trend_pct": -8.5,
+      "top_sku": "Cola Classic",
+      "top_sku_daily": 4.57,
+      "recommendations": [
+        {
+          "type": "EXPAND",
+          "title": "Add a second facing of Cola Classic",
+          "detail": "Top seller at 4.57/day and $268 revenue in 30 days. A second row halves its stockout risk."
+        },
+        {
+          "type": "REPRICE",
+          "title": "Raise Protein Bar to at least $1.82",
+          "detail": "Selling at $1.75 on a $1.40 cost is a 20% margin, under the 1.3x floor."
+        },
+        {
+          "type": "TREND",
+          "title": "Sea Salt Chips is heating up",
+          "detail": "Sales up 23% in the last two weeks. Watch cover; consider a price test."
+        }
+      ],
       "skus": [
         {
           "sku_id": "S1",
@@ -1192,18 +1715,24 @@
           "unit_cost": 0.75,
           "unit_price": 2.0,
           "current_stock": 87,
-          "avg_daily_sales": 4.5,
+          "avg_daily_sales": 4.57,
           "dow_factor": [
-            0.902,
-            1.11,
-            1.319,
-            1.128,
-            1.076,
-            0.816,
-            0.659
+            1.312,
+            1.122,
+            1.07,
+            1.139,
+            0.915,
+            0.622,
+            0.829
           ],
-          "stockout_date": "2026-08-12",
-          "days_until_stockout": 20
+          "stockout_date": "2026-08-17",
+          "days_until_stockout": 20,
+          "units_30d": 134,
+          "revenue_30d": 268.0,
+          "profit_30d": 167.5,
+          "margin_pct": 62.5,
+          "trend_pct": -17.1,
+          "weekend_lift_pct": -27.5
         },
         {
           "sku_id": "S2",
@@ -1212,18 +1741,24 @@
           "unit_cost": 0.6,
           "unit_price": 1.75,
           "current_stock": 32,
-          "avg_daily_sales": 2.25,
+          "avg_daily_sales": 2.21,
           "dow_factor": [
-            1.113,
-            1.218,
-            1.044,
-            1.055,
-            1.044,
-            0.87,
-            0.661
+            1.065,
+            1.077,
+            1.065,
+            1.136,
+            0.852,
+            0.817,
+            0.994
           ],
-          "stockout_date": "2026-08-07",
-          "days_until_stockout": 15
+          "stockout_date": "2026-08-12",
+          "days_until_stockout": 15,
+          "units_30d": 69,
+          "revenue_30d": 120.75,
+          "profit_30d": 79.35,
+          "margin_pct": 65.7,
+          "trend_pct": 6.7,
+          "weekend_lift_pct": -9.5
         },
         {
           "sku_id": "S3",
@@ -1234,16 +1769,22 @@
           "current_stock": 39,
           "avg_daily_sales": 3.11,
           "dow_factor": [
-            1.126,
-            1.054,
-            1.054,
-            1.142,
-            1.054,
-            0.719,
-            0.862
+            1.061,
+            1.15,
+            1.061,
+            0.989,
+            1.158,
+            0.796,
+            0.796
           ],
-          "stockout_date": "2026-08-05",
-          "days_until_stockout": 13
+          "stockout_date": "2026-08-10",
+          "days_until_stockout": 13,
+          "units_30d": 93,
+          "revenue_30d": 139.5,
+          "profit_30d": 88.35,
+          "margin_pct": 63.3,
+          "trend_pct": 23.1,
+          "weekend_lift_pct": -20.4
         },
         {
           "sku_id": "S4",
@@ -1252,18 +1793,24 @@
           "unit_cost": 0.9,
           "unit_price": 2.25,
           "current_stock": 59,
-          "avg_daily_sales": 2.89,
+          "avg_daily_sales": 2.86,
           "dow_factor": [
-            1.087,
-            1.545,
-            1.001,
-            1.023,
-            0.83,
-            0.744,
-            0.772
+            1.027,
+            1.049,
+            0.851,
+            1.115,
+            1.056,
+            0.733,
+            1.173
           ],
-          "stockout_date": "2026-08-13",
-          "days_until_stockout": 21
+          "stockout_date": "2026-08-18",
+          "days_until_stockout": 21,
+          "units_30d": 82,
+          "revenue_30d": 184.5,
+          "profit_30d": 110.7,
+          "margin_pct": 60.0,
+          "trend_pct": 5.1,
+          "weekend_lift_pct": -4.7
         },
         {
           "sku_id": "S5",
@@ -1272,18 +1819,24 @@
           "unit_cost": 1.4,
           "unit_price": 1.75,
           "current_stock": 29,
-          "avg_daily_sales": 2.0,
+          "avg_daily_sales": 1.96,
           "dow_factor": [
-            1.293,
-            1.043,
-            1.46,
-            1.175,
-            0.876,
-            0.667,
-            0.5
+            1.496,
+            1.204,
+            0.897,
+            0.855,
+            0.769,
+            1.068,
+            0.726
           ],
-          "stockout_date": "2026-08-07",
-          "days_until_stockout": 15
+          "stockout_date": "2026-08-12",
+          "days_until_stockout": 15,
+          "units_30d": 56,
+          "revenue_30d": 98.0,
+          "profit_30d": 19.6,
+          "margin_pct": 20.0,
+          "trend_pct": -55.3,
+          "weekend_lift_pct": -10.3
         },
         {
           "sku_id": "S6",
@@ -1292,18 +1845,24 @@
           "unit_cost": 1.1,
           "unit_price": 2.5,
           "current_stock": 33,
-          "avg_daily_sales": 1.46,
+          "avg_daily_sales": 1.39,
           "dow_factor": [
-            1.374,
-            0.879,
-            1.154,
-            0.952,
-            0.989,
-            0.604,
-            1.044
+            1.163,
+            0.96,
+            0.997,
+            0.942,
+            1.218,
+            1.052,
+            0.665
           ],
-          "stockout_date": "2026-08-15",
-          "days_until_stockout": 23
+          "stockout_date": "2026-08-21",
+          "days_until_stockout": 24,
+          "units_30d": 41,
+          "revenue_30d": 102.5,
+          "profit_30d": 57.4,
+          "margin_pct": 56.0,
+          "trend_pct": -22.7,
+          "weekend_lift_pct": -14.2
         },
         {
           "sku_id": "S7",
@@ -1312,18 +1871,24 @@
           "unit_cost": 1.6,
           "unit_price": 3.5,
           "current_stock": 44,
-          "avg_daily_sales": 2.43,
+          "avg_daily_sales": 2.46,
           "dow_factor": [
-            1.016,
-            1.397,
-            0.826,
-            1.101,
-            1.048,
-            0.857,
-            0.762
+            0.837,
+            1.116,
+            1.063,
+            1.224,
+            0.966,
+            0.741,
+            1.063
           ],
-          "stockout_date": "2026-08-11",
-          "days_until_stockout": 19
+          "stockout_date": "2026-08-15",
+          "days_until_stockout": 18,
+          "units_30d": 73,
+          "revenue_30d": 255.5,
+          "profit_30d": 138.7,
+          "margin_pct": 54.3,
+          "trend_pct": -8.3,
+          "weekend_lift_pct": -9.8
         },
         {
           "sku_id": "S8",
@@ -1332,18 +1897,24 @@
           "unit_cost": 0.8,
           "unit_price": 2.0,
           "current_stock": 29,
-          "avg_daily_sales": 1.36,
+          "avg_daily_sales": 1.43,
           "dow_factor": [
-            0.962,
-            0.817,
-            0.913,
-            1.667,
-            1.154,
-            0.962,
-            0.577
+            0.901,
+            1.644,
+            1.138,
+            1.233,
+            0.806,
+            0.711,
+            0.616
           ],
-          "stockout_date": "2026-08-14",
-          "days_until_stockout": 22
+          "stockout_date": "2026-08-18",
+          "days_until_stockout": 21,
+          "units_30d": 42,
+          "revenue_30d": 84.0,
+          "profit_30d": 50.4,
+          "margin_pct": 60.0,
+          "trend_pct": -26.1,
+          "weekend_lift_pct": -33.6
         }
       ]
     },
@@ -1352,6 +1923,35 @@
       "name": "Downtown Fitness Club",
       "location": "77 2nd Ave",
       "location_type": "gym",
+      "units_30d": 428,
+      "revenue_30d": 907.0,
+      "profit_30d": 513.25,
+      "avg_margin_pct": 56.6,
+      "trend_pct": 6.6,
+      "top_sku": "Cola Classic",
+      "top_sku_daily": 3.0,
+      "recommendations": [
+        {
+          "type": "REPRICE",
+          "title": "Raise Protein Bar to at least $1.82",
+          "detail": "Selling at $1.75 on a $1.40 cost is a 20% margin, under the 1.3x floor."
+        },
+        {
+          "type": "PREP",
+          "title": "Stock Chocolate Bar by Friday",
+          "detail": "Weekend demand runs 34% above the weekly average at this location."
+        },
+        {
+          "type": "SWAP",
+          "title": "Consider replacing Protein Bar",
+          "detail": "Slowest earner: 43 units in 30 days at 20% margin. A faster SKU earns the slot back."
+        },
+        {
+          "type": "TREND",
+          "title": "Cola Classic is heating up",
+          "detail": "Sales up 33% in the last two weeks. Watch cover; consider a price test."
+        }
+      ],
       "skus": [
         {
           "sku_id": "S1",
@@ -1360,18 +1960,24 @@
           "unit_cost": 0.75,
           "unit_price": 2.0,
           "current_stock": 54,
-          "avg_daily_sales": 3.14,
+          "avg_daily_sales": 3.0,
           "dow_factor": [
-            1.071,
-            0.833,
-            0.809,
-            0.979,
-            0.738,
-            1.285,
-            1.285
+            0.923,
+            1.0,
+            0.802,
+            1.02,
+            0.972,
+            1.239,
+            1.045
           ],
-          "stockout_date": "2026-08-09",
-          "days_until_stockout": 17
+          "stockout_date": "2026-08-15",
+          "days_until_stockout": 18,
+          "units_30d": 86,
+          "revenue_30d": 172.0,
+          "profit_30d": 107.5,
+          "margin_pct": 62.5,
+          "trend_pct": 33.3,
+          "weekend_lift_pct": 14.2
         },
         {
           "sku_id": "S2",
@@ -1380,18 +1986,24 @@
           "unit_cost": 0.6,
           "unit_price": 1.75,
           "current_stock": 34,
-          "avg_daily_sales": 1.5,
+          "avg_daily_sales": 1.54,
           "dow_factor": [
-            1.024,
-            0.901,
-            0.819,
-            1.065,
-            0.574,
-            1.434,
-            1.188
+            0.929,
+            1.098,
+            0.633,
+            1.098,
+            0.886,
+            1.182,
+            1.182
           ],
-          "stockout_date": "2026-08-15",
-          "days_until_stockout": 23
+          "stockout_date": "2026-08-20",
+          "days_until_stockout": 23,
+          "units_30d": 47,
+          "revenue_30d": 82.25,
+          "profit_30d": 54.05,
+          "margin_pct": 65.7,
+          "trend_pct": 26.3,
+          "weekend_lift_pct": 18.2
         },
         {
           "sku_id": "S3",
@@ -1400,18 +2012,24 @@
           "unit_cost": 0.55,
           "unit_price": 1.5,
           "current_stock": 39,
-          "avg_daily_sales": 2.36,
+          "avg_daily_sales": 2.32,
           "dow_factor": [
-            0.865,
-            1.082,
-            0.742,
-            0.804,
-            0.927,
-            0.989,
-            1.576
+            0.811,
+            0.811,
+            1.06,
+            0.748,
+            1.247,
+            0.967,
+            1.341
           ],
-          "stockout_date": "2026-08-09",
-          "days_until_stockout": 17
+          "stockout_date": "2026-08-14",
+          "days_until_stockout": 17,
+          "units_30d": 73,
+          "revenue_30d": 109.5,
+          "profit_30d": 69.35,
+          "margin_pct": 63.3,
+          "trend_pct": -3.0,
+          "weekend_lift_pct": 15.4
         },
         {
           "sku_id": "S4",
@@ -1420,18 +2038,24 @@
           "unit_cost": 0.9,
           "unit_price": 2.25,
           "current_stock": 38,
-          "avg_daily_sales": 2.21,
+          "avg_daily_sales": 2.32,
           "dow_factor": [
-            1.178,
-            1.105,
-            0.884,
-            0.758,
-            1.031,
-            0.921,
-            1.105
+            0.914,
+            0.723,
+            1.089,
+            0.633,
+            0.949,
+            1.406,
+            1.265
           ],
-          "stockout_date": "2026-08-10",
-          "days_until_stockout": 18
+          "stockout_date": "2026-08-14",
+          "days_until_stockout": 17,
+          "units_30d": 70,
+          "revenue_30d": 157.5,
+          "profit_30d": 94.5,
+          "margin_pct": 60.0,
+          "trend_pct": -19.4,
+          "weekend_lift_pct": 33.5
         },
         {
           "sku_id": "S5",
@@ -1440,18 +2064,24 @@
           "unit_cost": 1.4,
           "unit_price": 1.75,
           "current_stock": 24,
-          "avg_daily_sales": 1.46,
+          "avg_daily_sales": 1.54,
           "dow_factor": [
-            1.112,
-            1.213,
-            0.707,
-            0.876,
-            0.809,
-            1.061,
-            1.213
+            0.697,
+            0.863,
+            0.847,
+            0.946,
+            0.747,
+            1.395,
+            1.494
           ],
-          "stockout_date": "2026-08-09",
-          "days_until_stockout": 17
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 16,
+          "units_30d": 43,
+          "revenue_30d": 75.25,
+          "profit_30d": 15.05,
+          "margin_pct": 20.0,
+          "trend_pct": 26.3,
+          "weekend_lift_pct": 44.4
         },
         {
           "sku_id": "S6",
@@ -1460,18 +2090,24 @@
           "unit_cost": 1.1,
           "unit_price": 2.5,
           "current_stock": 11,
-          "avg_daily_sales": 1.29,
+          "avg_daily_sales": 1.21,
           "dow_factor": [
-            1.006,
-            0.828,
-            0.888,
-            0.641,
-            0.828,
-            1.302,
-            1.479
+            1.015,
+            0.647,
+            0.895,
+            1.134,
+            1.134,
+            1.253,
+            0.895
           ],
-          "stockout_date": "2026-08-01",
-          "days_until_stockout": 9
+          "stockout_date": "2026-08-07",
+          "days_until_stockout": 10,
+          "units_30d": 35,
+          "revenue_30d": 87.5,
+          "profit_30d": 49.0,
+          "margin_pct": 56.0,
+          "trend_pct": 12.5,
+          "weekend_lift_pct": 7.4
         },
         {
           "sku_id": "S7",
@@ -1480,18 +2116,24 @@
           "unit_cost": 1.6,
           "unit_price": 3.5,
           "current_stock": 20,
-          "avg_daily_sales": 1.54,
+          "avg_daily_sales": 1.61,
           "dow_factor": [
-            1.084,
-            0.834,
-            1.043,
+            1.209,
             0.723,
-            1.126,
-            1.126,
-            1.043
+            1.209,
+            0.792,
+            0.751,
+            1.335,
+            0.959
           ],
-          "stockout_date": "2026-08-05",
-          "days_until_stockout": 13
+          "stockout_date": "2026-08-10",
+          "days_until_stockout": 13,
+          "units_30d": 50,
+          "revenue_30d": 175.0,
+          "profit_30d": 95.0,
+          "margin_pct": 54.3,
+          "trend_pct": 4.5,
+          "weekend_lift_pct": 14.7
         },
         {
           "sku_id": "S8",
@@ -1502,16 +2144,22 @@
           "current_stock": 13,
           "avg_daily_sales": 0.79,
           "dow_factor": [
-            0.962,
-            0.641,
-            1.09,
-            1.181,
-            0.705,
-            1.41,
-            1.026
+            1.334,
+            1.17,
+            0.826,
+            1.143,
+            0.699,
+            1.016,
+            0.826
           ],
-          "stockout_date": "2026-08-09",
-          "days_until_stockout": 17
+          "stockout_date": "2026-08-14",
+          "days_until_stockout": 17,
+          "units_30d": 24,
+          "revenue_30d": 48.0,
+          "profit_30d": 28.8,
+          "margin_pct": 60.0,
+          "trend_pct": -62.5,
+          "weekend_lift_pct": -7.9
         }
       ]
     },
@@ -1520,6 +2168,30 @@
       "name": "Northside Office Park",
       "location": "9600 North Blvd",
       "location_type": "office",
+      "units_30d": 305,
+      "revenue_30d": 654.75,
+      "profit_30d": 372.85,
+      "avg_margin_pct": 56.9,
+      "trend_pct": 11.0,
+      "top_sku": "Cola Classic",
+      "top_sku_daily": 2.11,
+      "recommendations": [
+        {
+          "type": "REPRICE",
+          "title": "Raise Protein Bar to at least $1.82",
+          "detail": "Selling at $1.75 on a $1.40 cost is a 20% margin, under the 1.3x floor."
+        },
+        {
+          "type": "SWAP",
+          "title": "Consider replacing Protein Bar",
+          "detail": "Slowest earner: 27 units in 30 days at 20% margin. A faster SKU earns the slot back."
+        },
+        {
+          "type": "TREND",
+          "title": "Instant Noodles is heating up",
+          "detail": "Sales up 60% in the last two weeks. Watch cover; consider a price test."
+        }
+      ],
       "skus": [
         {
           "sku_id": "S1",
@@ -1530,16 +2202,22 @@
           "current_stock": 34,
           "avg_daily_sales": 2.11,
           "dow_factor": [
-            0.999,
-            1.298,
-            1.398,
-            1.478,
-            1.032,
-            0.466,
-            0.366
+            1.352,
+            1.43,
+            1.095,
+            1.449,
+            1.256,
+            0.225,
+            0.225
           ],
-          "stockout_date": "2026-08-10",
-          "days_until_stockout": 18
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 16,
+          "units_30d": 62,
+          "revenue_30d": 124.0,
+          "profit_30d": 77.5,
+          "margin_pct": 62.5,
+          "trend_pct": 36.0,
+          "weekend_lift_pct": -77.5
         },
         {
           "sku_id": "S2",
@@ -1548,18 +2226,24 @@
           "unit_cost": 0.6,
           "unit_price": 1.75,
           "current_stock": 26,
-          "avg_daily_sales": 1.36,
+          "avg_daily_sales": 1.46,
           "dow_factor": [
-            1.445,
-            1.144,
-            1.445,
-            1.239,
-            1.084,
-            0.361,
-            0.301
+            1.396,
+            1.197,
+            1.164,
+            1.164,
+            1.338,
+            0.524,
+            0.233
           ],
-          "stockout_date": "2026-08-12",
-          "days_until_stockout": 20
+          "stockout_date": "2026-08-15",
+          "days_until_stockout": 18,
+          "units_30d": 42,
+          "revenue_30d": 73.5,
+          "profit_30d": 48.3,
+          "margin_pct": 65.7,
+          "trend_pct": -4.8,
+          "weekend_lift_pct": -62.2
         },
         {
           "sku_id": "S3",
@@ -1568,18 +2252,24 @@
           "unit_cost": 0.55,
           "unit_price": 1.5,
           "current_stock": 23,
-          "avg_daily_sales": 1.71,
+          "avg_daily_sales": 1.5,
           "dow_factor": [
-            1.366,
-            1.13,
-            1.79,
-            1.224,
-            1.036,
-            0.33,
-            0.141
+            1.827,
+            1.25,
+            1.106,
+            1.202,
+            1.01,
+            0.433,
+            0.192
           ],
-          "stockout_date": "2026-08-06",
-          "days_until_stockout": 14
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 16,
+          "units_30d": 46,
+          "revenue_30d": 69.0,
+          "profit_30d": 43.7,
+          "margin_pct": 63.3,
+          "trend_pct": 0.0,
+          "weekend_lift_pct": -68.8
         },
         {
           "sku_id": "S4",
@@ -1588,18 +2278,24 @@
           "unit_cost": 0.9,
           "unit_price": 2.25,
           "current_stock": 27,
-          "avg_daily_sales": 1.39,
+          "avg_daily_sales": 1.36,
           "dow_factor": [
-            1.138,
-            1.375,
-            0.996,
-            1.284,
-            1.66,
-            0.285,
-            0.285
+            1.003,
+            1.293,
+            1.767,
+            1.146,
+            1.289,
+            0.286,
+            0.239
           ],
-          "stockout_date": "2026-08-12",
-          "days_until_stockout": 20
+          "stockout_date": "2026-08-18",
+          "days_until_stockout": 21,
+          "units_30d": 38,
+          "revenue_30d": 85.5,
+          "profit_30d": 51.3,
+          "margin_pct": 60.0,
+          "trend_pct": -19.0,
+          "weekend_lift_pct": -73.7
         },
         {
           "sku_id": "S5",
@@ -1608,18 +2304,24 @@
           "unit_cost": 1.4,
           "unit_price": 1.75,
           "current_stock": 23,
-          "avg_daily_sales": 0.93,
+          "avg_daily_sales": 0.89,
           "dow_factor": [
-            1.447,
-            1.447,
-            1.033,
-            1.791,
-            0.827,
-            0.413,
-            0.103
+            1.018,
+            1.765,
+            0.916,
+            1.222,
+            1.324,
+            0.509,
+            0.305
           ],
-          "stockout_date": "2026-08-18",
-          "days_until_stockout": 26
+          "stockout_date": "2026-08-24",
+          "days_until_stockout": 27,
+          "units_30d": 27,
+          "revenue_30d": 47.25,
+          "profit_30d": 9.45,
+          "margin_pct": 20.0,
+          "trend_pct": -43.8,
+          "weekend_lift_pct": -59.3
         },
         {
           "sku_id": "S6",
@@ -1628,18 +2330,24 @@
           "unit_cost": 1.1,
           "unit_price": 2.5,
           "current_stock": 11,
-          "avg_daily_sales": 0.82,
+          "avg_daily_sales": 0.68,
           "dow_factor": [
-            1.671,
-            1.194,
-            1.114,
-            1.552,
-            0.875,
-            0.398,
-            0.239
+            1.197,
+            1.667,
+            0.94,
+            1.453,
+            1.026,
+            0.684,
+            0.085
           ],
-          "stockout_date": "2026-08-06",
-          "days_until_stockout": 14
+          "stockout_date": "2026-08-13",
+          "days_until_stockout": 16,
+          "units_30d": 19,
+          "revenue_30d": 47.5,
+          "profit_30d": 26.6,
+          "margin_pct": 56.0,
+          "trend_pct": -10.0,
+          "weekend_lift_pct": -61.5
         },
         {
           "sku_id": "S7",
@@ -1648,18 +2356,24 @@
           "unit_cost": 1.6,
           "unit_price": 3.5,
           "current_stock": 28,
-          "avg_daily_sales": 1.39,
+          "avg_daily_sales": 1.46,
           "dow_factor": [
-            1.491,
-            1.065,
-            0.905,
-            1.5,
-            1.172,
-            0.533,
-            0.373
+            0.853,
+            1.413,
+            1.304,
+            1.405,
+            1.355,
+            0.502,
+            0.201
           ],
-          "stockout_date": "2026-08-13",
-          "days_until_stockout": 21
+          "stockout_date": "2026-08-17",
+          "days_until_stockout": 20,
+          "units_30d": 44,
+          "revenue_30d": 154.0,
+          "profit_30d": 83.6,
+          "margin_pct": 54.3,
+          "trend_pct": 41.2,
+          "weekend_lift_pct": -64.9
         },
         {
           "sku_id": "S8",
@@ -1668,18 +2382,24 @@
           "unit_cost": 0.8,
           "unit_price": 2.0,
           "current_stock": 24,
-          "avg_daily_sales": 0.96,
+          "avg_daily_sales": 0.93,
           "dow_factor": [
-            1.522,
-            1.293,
-            1.445,
-            0.824,
-            1.293,
-            0.38,
-            0.228
+            1.53,
+            0.872,
+            1.449,
+            1.208,
+            1.127,
+            0.564,
+            0.242
           ],
-          "stockout_date": "2026-08-18",
-          "days_until_stockout": 26
+          "stockout_date": "2026-08-24",
+          "days_until_stockout": 27,
+          "units_30d": 27,
+          "revenue_30d": 54.0,
+          "profit_30d": 32.4,
+          "margin_pct": 60.0,
+          "trend_pct": 60.0,
+          "weekend_lift_pct": -59.7
         }
       ]
     }

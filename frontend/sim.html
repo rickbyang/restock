@@ -37,8 +37,7 @@
   .hud-stat .v { font-family: "Archivo Black", sans-serif; font-size: 16px; line-height: 1.1; }
   .hud-stat .v.cash { color: var(--forest); }
   .hud-stat .v.miss { color: var(--red); }
-  .hud-stat .v.you { color: var(--cobalt); }
-  .hud-stat .v.ai { color: var(--red); }
+  .hud-stat .v.streak { color: var(--mustard-text); }
   .hud-stat .k { font-family: "Courier Prime", monospace; font-size: 8.5px; font-weight: 700; letter-spacing: .12em; color: var(--faint); }
   .hud-clock { font-family: "Courier Prime", monospace; font-weight: 700; font-size: 14px;
     background: var(--ink); color: var(--snow); border-radius: 9px; padding: 8px 13px; }
@@ -59,8 +58,7 @@
 
   /* pins as Leaflet divIcons */
   .lpin-wrap { background: none; border: none; }
-  .lpin { position: relative; width: 56px; height: 52px; cursor: pointer; pointer-events: auto; touch-action: manipulation; }
-  .lpin * { pointer-events: none; }
+  .lpin { position: relative; width: 84px; height: 60px; cursor: pointer; }
   .lpin .ring { position: absolute; left: 50%; top: 16px; width: 34px; height: 34px; margin: -17px;
     border: 3px solid var(--red); border-radius: 50%; opacity: 0; }
   .lpin.red .ring { animation: ringpulse 1.1s ease-out infinite; }
@@ -94,12 +92,13 @@
   .vanicon { position: absolute; font-size: 24px; transform: translate(-50%, -50%);
     filter: drop-shadow(0 3px 5px rgba(22,20,15,.4)); }
 
-  /* fog */
+  /* karl the fog */
   #fog { position: absolute; inset: 0; z-index: 450; pointer-events: none; opacity: 0; transition: opacity 1.5s; }
   #fog.on { opacity: 1; }
   #fog .puff { position: absolute; border-radius: 50%; background: rgba(245,243,239,.75); filter: blur(26px);
     animation: fogdrift 16s ease-in-out infinite alternate; }
   @keyframes fogdrift { to { transform: translateX(80px); } }
+  #fog .karl { position: absolute; left: 22%; top: 46%; font-family: "Fraunces", serif; font-style: italic;
     font-size: 22px; color: rgba(22,20,15,.45); }
 
   .panel {
@@ -240,16 +239,8 @@
   .intro h1 .fr { font-family: "Fraunces", serif; font-style: italic; text-transform: none; color: var(--red); }
   .intro .sub { font-family: "Courier Prime", monospace; font-size: 11px; font-weight: 700;
     letter-spacing: .2em; color: var(--faint); margin: 6px 0 14px; }
-  .gstep { display: none; min-height: 235px; }
-  .gstep.on { display: block; }
-  .gico { font-size: 44px; margin-bottom: 8px; }
-  .gtext { font-size: 15px; line-height: 1.7; color: var(--dim); margin-top: 14px; }
-  .gtext b { color: var(--ink); }
-  .gnav { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
-  .gnav .btn { width: auto; flex: 1; margin-top: 0; }
-  .gdots { display: flex; gap: 6px; }
-  .gdots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
-  .gdots i.on { background: var(--red); }
+  .intro ol { margin: 0 0 6px 18px; font-size: 14px; line-height: 1.75; color: var(--dim); }
+  .intro ol b { color: var(--ink); }
   @media (max-width: 700px) { .hud-stat { min-width: 56px; } .hud-title { display: none; } }
 </style>
 </head>
@@ -257,19 +248,20 @@
 <div class="flagline"><i></i><i></i><i></i><i></i></div>
 <div class="hud">
   <div class="logo"><div class="logo-mark">⟳</div>Vend City SF</div>
-  <div class="hud-title">YOU, THE OPERATOR · VS THE AI</div>
-  <div class="hud-clock" id="clock">MON 08:00 · DAY 1/10</div>
-  <div class="hud-stat"><div class="v cash" id="hud-cash">$1500.00</div><div class="k">CASH</div></div>
-  <div class="hud-stat"><div class="v you" id="hud-you">$0.00</div><div class="k">YOUR PROFIT</div></div>
-  <div class="hud-stat"><div class="v ai" id="hud-ai">$0.00</div><div class="k">AI PROFIT</div></div>
+  <div class="hud-title">OWNER SIMULATION</div>
+  <div class="hud-clock" id="clock">MON 08:00 · DAY 1/15</div>
+  <div class="hud-stat"><div class="v cash" id="hud-cash">$800.00</div><div class="k">CASH</div></div>
+  <div class="hud-stat"><div class="v" id="hud-rev">$0.00</div><div class="k">SOLD TODAY</div></div>
   <div class="hud-stat"><div class="v miss" id="hud-miss">0</div><div class="k">MISSED</div></div>
   <div class="hud-stat"><div class="v" id="hud-vans">2/2</div><div class="k">VANS FREE</div></div>
+  <div class="hud-stat"><div class="v streak" id="hud-streak">0🔥</div><div class="k">STREAK</div></div>
   <div class="hud-right">
     <div class="seg">
       <button id="sp0" onclick="setSpeed(0)">❚❚ PAUSE</button>
       <button id="sp4" class="on" onclick="setSpeed(4)">▶ PLAY</button>
     </div>
     <button class="hud-btn" id="sndbtn" onclick="toggleSound()">SOUND OFF</button>
+    <a class="hud-btn" href="app.html">CONSOLE</a>
     <a class="hud-btn" href="index.html">EXIT</a>
   </div>
 </div>
@@ -280,10 +272,23 @@
     <div class="puff" style="left:-8%;top:10%;width:52%;height:36%"></div>
     <div class="puff" style="left:-4%;top:40%;width:60%;height:40%;animation-delay:-5s"></div>
     <div class="puff" style="left:0%;top:66%;width:48%;height:34%;animation-delay:-10s"></div>
+    <div class="karl">Karl was here.</div>
   </div>
   <div class="float-layer" id="floats"></div>
 
   <div class="alertdock" id="alertdock"></div>
+
+  <div class="sugg" id="sugg">
+    <div class="flagline" style="height:5px"><i></i><i></i><i></i><i></i></div>
+    <div class="sugg-pad">
+      <h4><span class="bulb">💡</span> Product suggestion</h4>
+      <p id="sugg-body"></p>
+      <div class="sugg-row">
+        <button class="btn" id="sugg-yes"></button>
+        <button class="btn ghostb" onclick="dismissSugg()">PASS</button>
+      </div>
+    </div>
+  </div>
 
   <div class="panel" id="panel">
     <div class="panel-head">
@@ -342,43 +347,15 @@
     <div class="intro-card">
       <div class="flagline" style="height:7px"><i></i><i></i><i></i><i></i></div>
       <div class="intro-pad">
-
-        <div class="gstep on" data-step="0">
-          <div class="gico">🧑‍🔧</div>
-          <h1>You are the <span class="fr">operator.</span></h1>
-          <div class="sub">VEND CITY: SAN FRANCISCO</div>
-          <p class="gtext">You own <b>10 vending machines</b> across the city, from the Marina to
-            Chase Center. They sell snacks and drinks all day on their own. Every sale is money in
-            your pocket. Your job: <b>keep them full.</b></p>
-        </div>
-
-        <div class="gstep" data-step="1">
-          <div class="gico">📦</div>
-          <h1>Keep them <span class="fr">full.</span></h1>
-          <div class="sub">THE ONE THING YOU DO</div>
-          <p class="gtext">Machines run dry in a few days. The <b>NEEDS FILLING</b> list (top left)
-            shows who is closest to empty; red pins pulse on the map. <b>Click a machine and
-            confirm its restock</b>: standard delivery, or <b>⚡ express for $20 more</b> (the van
-            drives twice as fast). An empty machine misses sales, and missed sales are money you
-            never get back.</p>
-        </div>
-
-        <div class="gstep" data-step="2">
-          <div class="gico">🤖</div>
-          <h1>Beat the <span class="fr">AI.</span></h1>
-          <div class="sub">YOUR RIVAL</div>
-          <p class="gtext">An invisible AI operator runs the <b>exact same 10 machines</b> with the
-            same customers and the same two vans. It never sleeps and never forgets a machine.
-            The scoreboard up top shows <b>YOUR PROFIT vs AI PROFIT</b> live. You have
-            <b>10 days</b>. Out-earn it if you can.</p>
-        </div>
-
-        <div class="gnav">
-          <button class="btn ghostb" id="g-back" onclick="guideStep(-1)" style="visibility:hidden">← BACK</button>
-          <div class="gdots" id="gdots"><i class="on"></i><i></i><i></i></div>
-          <button class="btn" id="g-next" onclick="guideStep(1)">NEXT →</button>
-        </div>
-
+        <h1>Vend City: <span class="fr">San Francisco.</span></h1>
+        <div class="sub">10 DAYS · 10 MACHINES · 2 VANS · ONE FOGGY CITY</div>
+        <ol>
+          <li>Every machine starts <b>full</b>, and a coil only holds 3 to 5 days of demand. The countdown starts now.</li>
+          <li>You have <b>two vans</b>, plus a <b>⚡ rush option</b> for $20 more. When both are out, someone waits.</li>
+          <li>The city will test you: <b>Warriors games, street fairs, Karl the Fog.</b> Every event is a call you make.</li>
+          <li>A <b>shadow AI</b> runs the same fleet on the same customers. After 10 days, the books are compared, down to how fast each of you would pay off the <b>$32,000 fleet</b>.</li>
+        </ol>
+        <button class="btn" onclick="startSim()">OPEN THE CITY →</button>
       </div>
     </div>
   </div>
@@ -397,6 +374,8 @@ const DAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
 const MIN_PER_SEC = 36;
 const VAN_TRIP_MIN = 240;
 const DEMAND_MULT = 1.55;            /* the city is very thirsty */
+const NEW_PRODUCTS = ['Cold Brew Can', 'Matcha Soda', 'Boba Tea', 'Kombucha', 'SF Sourdough Chips',
+  'Onigiri', 'Acai Bar', 'Ube Cookie', 'Yuzu Sparkler', 'Mochi Bites'];
 
 /* real SF coordinates */
 const SF = {
@@ -438,18 +417,10 @@ function initMap() {
         <div class="flame">🔥</div>
         <div class="lbl">${esc(m.hood.toUpperCase())}</div>
       </div>`,
-      iconSize: [56, 52], iconAnchor: [28, 30],
+      iconSize: [84, 60], iconAnchor: [42, 30],
     });
-    L.marker(SF[m.id].ll, { icon, riseOnHover: true }).addTo(map).on('click', () => openMachine(m.id));
+    L.marker(SF[m.id].ll, { icon }).addTo(map).on('click', () => openMachine(m.id));
   });
-
-  /* belt and suspenders: open the panel on any tap or click that lands on a pin,
-     even if Leaflet's own marker events fail on some device */
-  ['click', 'pointerup', 'touchend'].forEach(evt =>
-    document.addEventListener(evt, e => {
-      const pin = (e.target.closest ? e.target.closest('.lpin') : null);
-      if (pin && SIM && pin.id.startsWith('pin-')) openMachine(pin.id.slice(4));
-    }, true));
   L.marker(DEPOT_LL, {
     icon: L.divIcon({ className: 'ldepot', html: '<div class="chip">DEPOT 🏭</div>', iconSize: [80, 24], iconAnchor: [40, 12] }),
   }).addTo(map);
@@ -477,6 +448,7 @@ fetch('../data/forecast.json').then(r => r.json()).then(d => {
     over: false, streak: 0, bestStreak: 0,
     deliveries: [], aiDeliveries: [], rushes: [], fogUntil: 0,
     eventAt: 9 * 60 + Math.random() * 300, eventFired: false,
+    nextSuggAt: 1920 + 150 + Math.random() * 240,
     machines: d.machines.map(m => ({
       id: m.machine_id, name: m.name, type: m.location_type, loc: m.location,
       hood: SF[m.machine_id].hood,
@@ -583,14 +555,61 @@ function renderAlertDock() {
       <span class="cov">${x.st === 'b' ? 'VAN 🚚' : x.cover.toFixed(1) + 'D'}</span>
     </button>`).join('');
 }
-/* ---------- the live score: the AI runs 20% and $25 ahead by the finale ---------- */
-function youProfit() { return SIM.tot.rev - SIM.tot.spend; }
-function aiShownProfit() {
-  const you = youProfit();
-  const actual = SIM.tot.aiRev - SIM.tot.aiSpend;
-  const p = clamp(((SIM.day - 1) * 1440 + SIM.min - 480) / (GAME_DAYS * 1440), 0, 1);
-  const base = you >= 0 ? you * 1.2 : you;
-  return Math.max(actual, base + 25 * p);
+function checkRedCrossings() {
+  SIM.machines.forEach(m => {
+    const st = machineState(m);
+    if (st === 'red' && prevState[m.id] && prevState[m.id] !== 'red' && !enRoute(m.id)) {
+      const mid = m.id;
+      toast(`🔴 ${m.hood.toUpperCase()} IS ABOUT TO RUN DRY · TAP TO OPEN`, 'redt', 4.5, () => openMachine(mid));
+      sfxMiss();
+    }
+    prevState[m.id] = st;
+  });
+}
+
+/* ---------- product suggestion popups ---------- */
+let suggActive = null, suggUsed = [];
+function maybeSuggest() {
+  if (suggActive || document.querySelector('.gmodal.on')) return;
+  const pool = NEW_PRODUCTS.filter(p => !suggUsed.includes(p));
+  if (!pool.length) return;
+  const m = SIM.machines[Math.floor(Math.random() * SIM.machines.length)];
+  const slow = [...m.skus].sort((a, b) => a.avg - b.avg)[0];
+  const prod = pool[Math.floor(Math.random() * pool.length)];
+  const boost = 1.5 + Math.random() * .7;
+  const fee = Math.round(25 + Math.random() * 35);
+  suggActive = { mid: m.id, skuId: slow.id, prod, boost, fee };
+  document.getElementById('sugg-body').innerHTML =
+    `<b>${esc(slow.name)}</b> is the slowest seller at <b>${esc(m.hood)}</b>
+     (${slow.avg.toFixed(1)}/day). Swap the slot to <b>${esc(prod)}</b>:
+     projected <b>+${Math.round((boost - 1) * 100)}% velocity</b>. Install fee ${fmt$(fee)}.`;
+  document.getElementById('sugg-yes').textContent = `SWAP IT · ${fmt$(fee)}`;
+  document.getElementById('sugg-yes').onclick = acceptSugg;
+  document.getElementById('sugg').classList.add('on');
+  clearTimeout(maybeSuggest.hideT);
+  maybeSuggest.hideT = setTimeout(dismissSugg, 20000);
+}
+function acceptSugg() {
+  if (!suggActive) return;
+  const { mid, skuId, prod, boost, fee } = suggActive;
+  if (fee > SIM.cash) { toast('NOT ENOUGH CASH FOR THE SWAP.', 'redt', 2.5); return; }
+  const m = SIM.machines.find(x => x.id === mid);
+  const s = m.skus.find(x => x.id === skuId);
+  s.name = prod; s.avg *= boost; s.price = +(s.price * 1.15).toFixed(2);
+  /* shared catalog: both fleets sell it, both books pay the install */
+  SIM.cash -= fee; SIM.spendToday += fee; SIM.tot.spend += fee;
+  SIM.aiSpendToday += fee; SIM.tot.aiSpend += fee;
+  suggUsed.push(prod);
+  const p = pxOf(mid);
+  confettiAt(p.x, p.y - 16);
+  toast(`${prod.toUpperCase()} INSTALLED AT ${m.hood.toUpperCase()}`, 'gold', 3.5);
+  sfxOrder();
+  dismissSugg();
+  if (openId === mid) renderPanel();
+}
+function dismissSugg() {
+  suggActive = null;
+  document.getElementById('sugg').classList.remove('on');
 }
 
 /* ---------- sound ---------- */
@@ -619,23 +638,14 @@ function setSpeed(s) {
   document.getElementById('sp0').classList.toggle('on', s === 0);
   document.getElementById('sp4').classList.toggle('on', s !== 0);
 }
-let gStep = 0;
-function guideStep(dir) {
-  if (gStep === 2 && dir === 1) { startSim(); return; }
-  gStep = clamp(gStep + dir, 0, 2);
-  document.querySelectorAll('.gstep').forEach(s => s.classList.toggle('on', +s.dataset.step === gStep));
-  document.querySelectorAll('#gdots i').forEach((d, i) => d.classList.toggle('on', i === gStep));
-  document.getElementById('g-back').style.visibility = gStep === 0 ? 'hidden' : 'visible';
-  document.getElementById('g-next').textContent = gStep === 2 ? 'START THE 10 DAYS →' : 'NEXT →';
-}
 function startSim() {
   document.getElementById('intro').classList.add('gone');
   if (!audio && !muted) audio = new (window.AudioContext || window.webkitAudioContext)();
-  toast('DAY 1 OPEN. WATCH THE NEEDS FILLING LIST.', 'gold', 4);
+  toast('THE CITY IS OPEN. WATCH THE RED PINS.', 'gold', 4);
 }
 
 /* ---------- events ---------- */
-function pauseFor(modalId) { prevSpeed = speed || 4; setSpeed(0); document.getElementById(modalId).classList.add('on'); }
+function pauseFor(modalId) { prevSpeed = speed || 4; setSpeed(0); dismissSugg(); document.getElementById(modalId).classList.add('on'); }
 function closeModal(modalId, resume) {
   document.getElementById(modalId).classList.remove('on');
   if (resume) setSpeed(prevSpeed);
@@ -680,12 +690,12 @@ const EVENTS = [
     ai: m => { aiCourier(m.id, 1.4); },
   },
   {
-    ico: '🌫', title: () => 'Fog rolls in.',
+    ico: '🌫', title: () => 'Karl rolls in.',
     pick: () => null,
     body: () => `The fog is thick from the Sunset to the Marina. <b>Vans drive at half speed until tomorrow
       morning</b>, yours and everyone else's. Order early or wait it out.`,
     actions: () => [{ label: 'RESPECT THE FOG', run: () => { SIM.fogUntil = absMin() + 18 * 60;
-      toast('FOG IS IN. VANS AT HALF SPEED.', '', 3.5); } }],
+      toast('KARL IS HERE. VANS AT HALF SPEED.', '', 3.5); } }],
     ai: () => {},
   },
   {
@@ -710,11 +720,31 @@ const EVENTS = [
       toast('MARINA IS MOBBED. 3X DEMAND.', 'redt', 3.5); } }],
     ai: () => {},
   },
+  {
+    ico: '📋', title: () => 'Permit renewal week.',
+    pick: () => null,
+    body: () => `SF vending permits do not renew themselves. <b>$60, due now</b>, for every operator in the
+      city. The shadow AI pays it too. Nobody escapes paperwork.`,
+    actions: () => [{ label: 'PAY THE CITY $60', run: () => {
+      SIM.cash -= 60; SIM.spendToday += 60; SIM.tot.spend += 60;
+      SIM.aiSpendToday += 60; SIM.tot.aiSpend += 60;
+      toast('PERMITS PAID. VERY CIVIC OF YOU.', '', 3); } }],
+    ai: () => {},
+  },
+  {
+    ico: '🚧', title: () => 'Market St is torn up again.',
+    pick: () => null,
+    body: () => `Roadworks, orange cones as far as the eye can see. <b>Van trips take twice as long
+      until tomorrow</b>. Both fleets suffer. Classic.`,
+    actions: () => [{ label: 'OF COURSE IT IS', run: () => { SIM.fogUntil = Math.max(SIM.fogUntil, absMin() + 14 * 60);
+      toast('CONES EVERYWHERE. VANS SLOWED.', '', 3.2); } }],
+    ai: () => {},
+  },
 ];
 
 function fireEvent() {
-  /* each event type shows up at most once per run */
-  const avail = EVENTS.filter(e => !(e.used || 0));
+  /* each event type shows up at most twice per run, least-seen first */
+  const avail = EVENTS.filter(e => (e.used || 0) < 2);
   if (!avail.length) return;
   const minUsed = Math.min(...avail.map(e => e.used || 0));
   const pool = avail.filter(e => (e.used || 0) === minUsed);
@@ -741,12 +771,17 @@ function tick(t) {
   requestAnimationFrame(tick);
   if (!SIM) return;
   if (lastT == null) { lastT = t; return; }
-  const dtReal = clamp((t - lastT) / 1000, 0, .1); lastT = t;
+  const dtReal = Math.min(.1, (t - lastT) / 1000); lastT = t;
   if (speed === 0 || !document.getElementById('intro').classList.contains('gone')) { updateHud(); return; }
   const dtMin = dtReal * MIN_PER_SEC * speed;
   SIM.min += dtMin;
 
   if (!SIM.eventFired && SIM.min >= SIM.eventAt) { SIM.eventFired = true; fireEvent(); return; }
+
+  if (absMin() >= SIM.nextSuggAt) {
+    SIM.nextSuggAt = absMin() + 900 + Math.random() * 1100;
+    maybeSuggest();
+  }
 
   if (SIM.min >= 1440) {
     SIM.min -= 1440;
@@ -766,7 +801,7 @@ function tick(t) {
         if (s.stock > 0) {
           s.stock--;
           SIM.cash += s.price; SIM.revToday += s.price; SIM.tot.rev += s.price; SIM.salesToday++;
-          if (Math.random() < .25) { floatAt(p.x + (Math.random() * 26 - 13), p.y - 26, '+' + fmt$(s.price), '#1d6b45'); sfxSale(); }
+          if (Math.random() < .45) { floatAt(p.x + (Math.random() * 26 - 13), p.y - 26, '+' + fmt$(s.price), '#1d6b45'); sfxSale(); }
         } else {
           SIM.missed++; SIM.missedToday++; SIM.tot.missed++;
           SIM.missedRevToday += s.price;
@@ -845,7 +880,7 @@ function tick(t) {
   tick.acc += dtReal;
   if (tick.acc > .5) {
     tick.acc = 0;
-    drawPins(); renderAlertDock();
+    drawPins(); renderAlertDock(); checkRedCrossings();
     if (openId) renderPanel();
   }
   updateHud();
@@ -858,10 +893,10 @@ function updateHud() {
   document.getElementById('clock').textContent =
     `${DAYS[dowIdx()]} ${String(h).padStart(2, '0')}:${String(mm).padStart(2, '0')} · DAY ${Math.min(SIM.day, GAME_DAYS)}/${GAME_DAYS}`;
   document.getElementById('hud-cash').textContent = fmt$(SIM.cash);
-  document.getElementById('hud-you').textContent = fmt$(youProfit());
-  document.getElementById('hud-ai').textContent = fmt$(aiShownProfit());
+  document.getElementById('hud-rev').textContent = fmt$(SIM.revToday);
   document.getElementById('hud-miss').textContent = SIM.missed;
   document.getElementById('hud-vans').textContent = `${vansFree()}/${VAN_COUNT}`;
+  document.getElementById('hud-streak').textContent = SIM.streak + '🔥';
 }
 
 /* ---------- day summary & finale ---------- */
@@ -877,6 +912,8 @@ function endOfDay() {
     fat: SIM.machines.filter(m => machineDays(m) > 22).map(m => m.hood),
     aiProfit: SIM.aiRevToday - SIM.aiSpendToday,
   };
+  if (s.missed === 0) { SIM.streak++; SIM.bestStreak = Math.max(SIM.bestStreak, SIM.streak); }
+  else SIM.streak = 0;
   SIM.revToday = 0; SIM.spendToday = 0; SIM.salesToday = 0;
   SIM.missedToday = 0; SIM.missedRevToday = 0; SIM.dryToday = {};
   SIM.aiRevToday = 0; SIM.aiSpendToday = 0;
@@ -893,11 +930,12 @@ function endOfDay() {
 function showDaySummary(s) {
   const notes = [];
   if (s.dry.length) notes.push(`Biggest leak: ${esc(s.dry[0].name)} missed ${s.dry[0].n} sales while empty.`);
-  else notes.push('No machine ran dry today. Clean sheet.');
+  else notes.push(`No machine ran dry. Streak: ${SIM.streak} 🔥`);
+  if (s.fat.length) notes.push(`Cash is sleeping in ${esc(s.fat[0])}: over 3 weeks of cover in the coils.`);
   if (s.missedRev > 0) notes.push(`Stockouts cost you about ${fmt$(s.missedRev)} today.`);
-  const gap = aiShownProfit() - youProfit();
-  notes.push(gap > 1 ? `The AI operator is ${fmt$(gap)} ahead of you overall.`
-    : 'You are keeping pace with the AI operator. For now.');
+  const behind = s.aiProfit - s.profit;
+  notes.push(behind > 1 ? `The AI's shadow fleet made ${fmt$(behind)} more than you today.`
+    : `You matched the AI's shadow fleet today. Rare.`);
 
   document.getElementById('dm-title').innerHTML = `Day ${s.day} <span class="fr">closed.</span>`;
   document.getElementById('dm-grid').innerHTML = `
@@ -913,14 +951,15 @@ function showDaySummary(s) {
 function resumeDay() { closeModal('daymodal', true); }
 
 function showFinal() {
-  const you = youProfit();
-  const ai = aiShownProfit();
-  const ratio = ai > 0 ? clamp(you / ai, 0, 1) : 1;
-  const grade = ratio >= .8 ? 'A' : ratio >= .65 ? 'B' : ratio >= .45 ? 'C' : 'D';
-  const verdict =
-    ratio >= .8 ? 'The AI wins, barely. You ran this city like a real operator.'
-    : ratio >= .65 ? 'The AI wins. It never sleeps, never fears the fog.'
-    : 'The AI wins by a cable car length. Every empty coil was money it kept.';
+  const you = SIM.tot.rev - SIM.tot.spend;
+  const ai = SIM.tot.aiRev - SIM.tot.aiSpend;
+  const ratio = ai > 0 ? clamp(you / ai, 0, 1.5) : 1;
+  const grade = you >= ai ? 'S+' : ratio >= .95 ? 'S' : ratio >= .85 ? 'A' : ratio >= .7 ? 'B' : ratio >= .5 ? 'C' : 'D';
+  const verdict = you >= ai
+    ? 'You beat the machine. Frame this screen, it will not happen twice.'
+    : ratio >= .9 ? 'The machine wins, barely. You ran this city like an operator.'
+    : ratio >= .7 ? 'The machine wins. It never sleeps, never fears the fog.'
+    : 'The machine wins by a cable car length. Every empty coil was money it kept.';
   const maxP = Math.max(you, ai, 1);
   document.getElementById('fin-grade').textContent = grade;
   document.getElementById('fin-verdict').textContent = verdict;
@@ -932,7 +971,7 @@ function showFinal() {
       <div class="fin-track"><i style="width:${clamp(ai / maxP * 100, 2, 100)}%;background:var(--red)"></i></div>
       <span class="fin-val">${fmt$(ai)}</span></div>`;
   document.getElementById('fin-sub').textContent =
-    `${GAME_DAYS} DAYS · ${SIM.tot.missed} MISSED SALES · SAME CITY, SAME CUSTOMERS, SAME VANS`;
+    `${GAME_DAYS} DAYS · ${SIM.tot.missed} MISSED SALES · BEST STREAK ${SIM.bestStreak} · SAME CITY, SAME CUSTOMERS`;
 
   /* payback math: fleet cost / (profit per day), from the actual totals */
   const perDayYou = you / GAME_DAYS, perDayAi = ai / GAME_DAYS;
@@ -985,28 +1024,28 @@ function renderPanel() {
 
   const box = document.getElementById('p-order');
   if (enRoute(m.id)) {
-    box.innerHTML = `<h3>🚚 Delivery en route</h3>
-      <div class="allgood">Hold tight, the restock is on the road${foggy() ? ' (slowly, in the fog)' : ''}.</div>`;
+    box.innerHTML = `<h3>🚚 Van en route</h3>
+      <div class="allgood">Hold tight, the restock is on the road${foggy() ? ' (slowly, thanks Karl)' : ''}.</div>`;
     return;
   }
   const { lines, total } = orderFor(m);
-  const full = !lines.length;
-  const broke = !full && total > SIM.cash;
-  const brokeExpress = !full && total + RUSH_FEE > SIM.cash;
+  if (!lines.length) {
+    box.innerHTML = `<h3>📦 Draft order</h3><div class="allgood">Fully stocked. Nothing to order.</div>`;
+    return;
+  }
+  const broke = total > SIM.cash;
+  const brokeRush = total + RUSH_FEE > SIM.cash;
   const noVans = vansFree() <= 0;
-  const blocked = full || broke || noVans;
-  box.innerHTML = `<h3>📦 Restock this machine</h3>
-    ${full
-      ? `<div class="oline"><span>Every slot is at capacity.</span><span>NOTHING TO ADD</span></div>`
-      : lines.map(l => `<div class="oline"><span>${esc(l.name)} ${l.flag ? '<span class="oflag">⚠ margin</span>' : ''}</span>
-          <span>${l.qty} × ${fmt$(l.cost)} = ${fmt$(l.lineCost)}</span></div>`).join('') +
-        `<div class="oline total"><span>TOTAL</span><span>${fmt$(total)}</span></div>`}
+  box.innerHTML = `<h3>📦 Draft order · fill to capacity</h3>
+    ${lines.map(l => `<div class="oline"><span>${esc(l.name)} ${l.flag ? '<span class="oflag">⚠ margin</span>' : ''}</span>
+      <span>${l.qty} × ${fmt$(l.cost)} = ${fmt$(l.lineCost)}</span></div>`).join('')}
+    <div class="oline total"><span>TOTAL</span><span>${fmt$(total)}</span></div>
     ${broke ? `<div class="funds-banner">Not enough cash. You have ${fmt$(SIM.cash)}. Sell a few more cans first.</div>` : ''}
-    ${noVans && !full && !broke ? `<div class="vans-banner">🚚 Both vans are out. One frees up when it gets back to the depot.</div>` : ''}
-    <button class="btn" ${blocked ? 'disabled' : ''} onclick="confirmOrder('${m.id}', false)">
-      ${full ? 'MACHINE IS FULL' : `STANDARD DELIVERY · ${fmt$(total)}`}</button>
-    <button class="btn blue" ${full || brokeExpress || noVans ? 'disabled' : ''} onclick="confirmOrder('${m.id}', true)">
-      ${full ? 'COME BACK WHEN IT SELLS' : `⚡ EXPRESS, 2X SPEED · ${fmt$(total + RUSH_FEE)}`}</button>`;
+    ${noVans && !broke ? `<div class="vans-banner">🚚 Both vans are out. One frees up when it gets back to the depot.</div>` : ''}
+    <button class="btn" ${broke || noVans ? 'disabled' : ''} onclick="confirmOrder('${m.id}', false)">
+      STANDARD VAN · ${fmt$(total)}</button>
+    <button class="btn blue" ${brokeRush || noVans ? 'disabled' : ''} onclick="confirmOrder('${m.id}', true)">
+      ⚡ RUSH VAN, 2X SPEED · ${fmt$(total + RUSH_FEE)}</button>`;
 }
 
 function confirmOrder(mid, rush) {
@@ -1022,7 +1061,7 @@ function confirmOrder(mid, rush) {
     bend: Math.random() * 160 - 80,
   });
   sfxOrder();
-  toast(`${rush ? '⚡ EXPRESS ' : ''}ORDER CONFIRMED: ${fmt$(cost)} TO ${m.hood.toUpperCase()}`, '', 3);
+  toast(`${rush ? '⚡ RUSH ' : ''}ORDER CONFIRMED: ${fmt$(cost)} TO ${m.hood.toUpperCase()}`, '', 3);
   const p = pxOf(mid);
   floatAt(p.x, p.y - 40, '-' + fmt$(cost), '#a87b06');
   drawPins(); renderPanel(); updateHud();

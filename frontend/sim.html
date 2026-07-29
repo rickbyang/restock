@@ -241,6 +241,18 @@
     letter-spacing: .2em; color: var(--faint); margin: 6px 0 14px; }
   .intro ol { margin: 0 0 6px 18px; font-size: 14px; line-height: 1.75; color: var(--dim); }
   .intro ol b { color: var(--ink); }
+  .gstep { display: none; min-height: 235px; }
+  .gstep.on { display: block; }
+  .gico { font-size: 44px; margin-bottom: 8px; }
+  .gtext { font-size: 15px; line-height: 1.7; color: var(--dim); margin-top: 14px; }
+  .gtext b { color: var(--ink); }
+  .gnav { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
+  .gnav .btn { width: auto; flex: 1; margin-top: 0; }
+  .gdots { display: flex; gap: 6px; }
+  .gdots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+  .gdots i.on { background: var(--red); }
+  .btn.ghostb { background: none; color: var(--ink); border: 2px solid var(--line); box-shadow: none; }
+  .btn.ghostb:hover { border-color: var(--ink); transform: none; box-shadow: none; }
   @media (max-width: 700px) { .hud-stat { min-width: 56px; } .hud-title { display: none; } }
 </style>
 </head>
@@ -272,7 +284,6 @@
     <div class="puff" style="left:-8%;top:10%;width:52%;height:36%"></div>
     <div class="puff" style="left:-4%;top:40%;width:60%;height:40%;animation-delay:-5s"></div>
     <div class="puff" style="left:0%;top:66%;width:48%;height:34%;animation-delay:-10s"></div>
-    <div class="karl">Karl was here.</div>
   </div>
   <div class="float-layer" id="floats"></div>
 
@@ -347,15 +358,42 @@
     <div class="intro-card">
       <div class="flagline" style="height:7px"><i></i><i></i><i></i><i></i></div>
       <div class="intro-pad">
-        <h1>Vend City: <span class="fr">San Francisco.</span></h1>
-        <div class="sub">10 DAYS · 10 MACHINES · 2 VANS · ONE FOGGY CITY</div>
-        <ol>
-          <li>Every machine starts <b>full</b>, and a coil only holds 3 to 5 days of demand. The countdown starts now.</li>
-          <li>You have <b>two vans</b>, plus a <b>⚡ rush option</b> for $20 more. When both are out, someone waits.</li>
-          <li>The city will test you: <b>Warriors games, street fairs, Karl the Fog.</b> Every event is a call you make.</li>
-          <li>A <b>shadow AI</b> runs the same fleet on the same customers. After 10 days, the books are compared, down to how fast each of you would pay off the <b>$32,000 fleet</b>.</li>
-        </ol>
-        <button class="btn" onclick="startSim()">OPEN THE CITY →</button>
+        <div class="gstep on" data-step="0">
+          <div class="gico">🧑‍🔧</div>
+          <h1>You are the <span class="fr">operator.</span></h1>
+          <div class="sub">VEND CITY: SAN FRANCISCO</div>
+          <p class="gtext">You own <b>10 vending machines</b> across the city, from the Marina to
+            Chase Center. They sell snacks and drinks all day on their own. Every sale is money in
+            your pocket. Your job: <b>keep them full.</b></p>
+        </div>
+
+        <div class="gstep" data-step="1">
+          <div class="gico">📦</div>
+          <h1>Keep them <span class="fr">full.</span></h1>
+          <div class="sub">THE ONE THING YOU DO</div>
+          <p class="gtext">Machines start full, but a coil only holds a few days of demand. The
+            <b>NEEDS FILLING</b> list (top left) shows who is closest to empty; red pins pulse on
+            the map. <b>Click a machine and confirm its order</b>: a standard van, or <b>⚡ rush
+            for $20 more</b> (twice as fast). An empty machine misses sales, and missed sales are
+            money you never get back.</p>
+        </div>
+
+        <div class="gstep" data-step="2">
+          <div class="gico">🤖</div>
+          <h1>Beat the <span class="fr">AI.</span></h1>
+          <div class="sub">YOUR RIVAL</div>
+          <p class="gtext">An invisible AI operator runs the <b>exact same 10 machines</b> with the
+            same customers and the same two vans. It never sleeps and never forgets a machine.
+            You have <b>10 days</b>; the city will throw fog, street fairs, and game nights at you
+            both. At closing time the books are compared, down to how fast each of you would pay
+            off the <b>$32,000 fleet</b>.</p>
+        </div>
+
+        <div class="gnav">
+          <button class="btn ghostb" id="g-back" onclick="guideStep(-1)" style="visibility:hidden">← BACK</button>
+          <div class="gdots" id="gdots"><i class="on"></i><i></i><i></i></div>
+          <button class="btn" id="g-next" onclick="guideStep(1)">NEXT →</button>
+        </div>
       </div>
     </div>
   </div>
@@ -638,6 +676,15 @@ function setSpeed(s) {
   document.getElementById('sp0').classList.toggle('on', s === 0);
   document.getElementById('sp4').classList.toggle('on', s !== 0);
 }
+let gStep = 0;
+function guideStep(dir) {
+  if (gStep === 2 && dir === 1) { startSim(); return; }
+  gStep = clamp(gStep + dir, 0, 2);
+  document.querySelectorAll('.gstep').forEach(s => s.classList.toggle('on', +s.dataset.step === gStep));
+  document.querySelectorAll('#gdots i').forEach((d, i) => d.classList.toggle('on', i === gStep));
+  document.getElementById('g-back').style.visibility = gStep === 0 ? 'hidden' : 'visible';
+  document.getElementById('g-next').textContent = gStep === 2 ? 'START THE 10 DAYS →' : 'NEXT →';
+}
 function startSim() {
   document.getElementById('intro').classList.add('gone');
   if (!audio && !muted) audio = new (window.AudioContext || window.webkitAudioContext)();
@@ -690,12 +737,12 @@ const EVENTS = [
     ai: m => { aiCourier(m.id, 1.4); },
   },
   {
-    ico: '🌫', title: () => 'Karl rolls in.',
+    ico: '🌫', title: () => 'Fog rolls in.',
     pick: () => null,
     body: () => `The fog is thick from the Sunset to the Marina. <b>Vans drive at half speed until tomorrow
       morning</b>, yours and everyone else's. Order early or wait it out.`,
     actions: () => [{ label: 'RESPECT THE FOG', run: () => { SIM.fogUntil = absMin() + 18 * 60;
-      toast('KARL IS HERE. VANS AT HALF SPEED.', '', 3.5); } }],
+      toast('FOG IS IN. VANS AT HALF SPEED.', '', 3.5); } }],
     ai: () => {},
   },
   {
@@ -1025,7 +1072,7 @@ function renderPanel() {
   const box = document.getElementById('p-order');
   if (enRoute(m.id)) {
     box.innerHTML = `<h3>🚚 Van en route</h3>
-      <div class="allgood">Hold tight, the restock is on the road${foggy() ? ' (slowly, thanks Karl)' : ''}.</div>`;
+      <div class="allgood">Hold tight, the restock is on the road${foggy() ? ' (slowly, in the fog)' : ''}.</div>`;
     return;
   }
   const { lines, total } = orderFor(m);

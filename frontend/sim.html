@@ -93,13 +93,12 @@
   .vanicon { position: absolute; font-size: 24px; transform: translate(-50%, -50%);
     filter: drop-shadow(0 3px 5px rgba(22,20,15,.4)); }
 
-  /* karl the fog */
+  /* fog */
   #fog { position: absolute; inset: 0; z-index: 450; pointer-events: none; opacity: 0; transition: opacity 1.5s; }
   #fog.on { opacity: 1; }
   #fog .puff { position: absolute; border-radius: 50%; background: rgba(245,243,239,.75); filter: blur(26px);
     animation: fogdrift 16s ease-in-out infinite alternate; }
   @keyframes fogdrift { to { transform: translateX(80px); } }
-  #fog .karl { position: absolute; left: 22%; top: 46%; font-family: "Fraunces", serif; font-style: italic;
     font-size: 22px; color: rgba(22,20,15,.45); }
 
   .panel {
@@ -280,7 +279,6 @@
     <div class="puff" style="left:-8%;top:10%;width:52%;height:36%"></div>
     <div class="puff" style="left:-4%;top:40%;width:60%;height:40%;animation-delay:-5s"></div>
     <div class="puff" style="left:0%;top:66%;width:48%;height:34%;animation-delay:-10s"></div>
-    <div class="karl">Karl was here.</div>
   </div>
   <div class="float-layer" id="floats"></div>
 
@@ -672,12 +670,12 @@ const EVENTS = [
     ai: m => { aiCourier(m.id, 1.4); },
   },
   {
-    ico: '🌫', title: () => 'Karl rolls in.',
+    ico: '🌫', title: () => 'Fog rolls in.',
     pick: () => null,
     body: () => `The fog is thick from the Sunset to the Marina. <b>Vans drive at half speed until tomorrow
       morning</b>, yours and everyone else's. Order early or wait it out.`,
     actions: () => [{ label: 'RESPECT THE FOG', run: () => { SIM.fogUntil = absMin() + 18 * 60;
-      toast('KARL IS HERE. VANS AT HALF SPEED.', '', 3.5); } }],
+      toast('FOG IS IN. VANS AT HALF SPEED.', '', 3.5); } }],
     ai: () => {},
   },
   {
@@ -978,7 +976,7 @@ function renderPanel() {
   const box = document.getElementById('p-order');
   if (enRoute(m.id)) {
     box.innerHTML = `<h3>🚚 Van en route</h3>
-      <div class="allgood">Hold tight, the restock is on the road${foggy() ? ' (slowly, thanks Karl)' : ''}.</div>`;
+      <div class="allgood">Hold tight, the restock is on the road${foggy() ? ' (slowly, in the fog)' : ''}.</div>`;
     return;
   }
   const { lines, total } = orderFor(m);

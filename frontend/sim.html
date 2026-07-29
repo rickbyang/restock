@@ -356,9 +356,10 @@
           <h1>Keep them <span class="fr">full.</span></h1>
           <div class="sub">THE ONE THING YOU DO</div>
           <p class="gtext">Machines run dry in a few days. The <b>NEEDS FILLING</b> list (top left)
-            shows who is closest to empty; red pins pulse on the map. <b>Click a machine, confirm
-            its order</b>, and a van drives out to refill it. An empty machine misses sales, and
-            missed sales are money you never get back.</p>
+            shows who is closest to empty; red pins pulse on the map. <b>Click a machine and
+            confirm its restock</b>: standard delivery, or <b>⚡ express for $20 more</b> (the van
+            drives twice as fast). An empty machine misses sales, and missed sales are money you
+            never get back.</p>
         </div>
 
         <div class="gstep" data-step="2">
@@ -731,7 +732,7 @@ function tick(t) {
   requestAnimationFrame(tick);
   if (!SIM) return;
   if (lastT == null) { lastT = t; return; }
-  const dtReal = Math.min(.1, (t - lastT) / 1000); lastT = t;
+  const dtReal = clamp((t - lastT) / 1000, 0, .1); lastT = t;
   if (speed === 0 || !document.getElementById('intro').classList.contains('gone')) { updateHud(); return; }
   const dtMin = dtReal * MIN_PER_SEC * speed;
   SIM.min += dtMin;
@@ -975,28 +976,28 @@ function renderPanel() {
 
   const box = document.getElementById('p-order');
   if (enRoute(m.id)) {
-    box.innerHTML = `<h3>🚚 Van en route</h3>
+    box.innerHTML = `<h3>🚚 Delivery en route</h3>
       <div class="allgood">Hold tight, the restock is on the road${foggy() ? ' (slowly, in the fog)' : ''}.</div>`;
     return;
   }
   const { lines, total } = orderFor(m);
-  if (!lines.length) {
-    box.innerHTML = `<h3>📦 Draft order</h3><div class="allgood">Fully stocked. Nothing to order.</div>`;
-    return;
-  }
-  const broke = total > SIM.cash;
-  const brokeRush = total + RUSH_FEE > SIM.cash;
+  const full = !lines.length;
+  const broke = !full && total > SIM.cash;
+  const brokeExpress = !full && total + RUSH_FEE > SIM.cash;
   const noVans = vansFree() <= 0;
-  box.innerHTML = `<h3>📦 Draft order · fill to capacity</h3>
-    ${lines.map(l => `<div class="oline"><span>${esc(l.name)} ${l.flag ? '<span class="oflag">⚠ margin</span>' : ''}</span>
-      <span>${l.qty} × ${fmt$(l.cost)} = ${fmt$(l.lineCost)}</span></div>`).join('')}
-    <div class="oline total"><span>TOTAL</span><span>${fmt$(total)}</span></div>
+  const blocked = full || broke || noVans;
+  box.innerHTML = `<h3>📦 Restock this machine</h3>
+    ${full
+      ? `<div class="oline"><span>Every slot is at capacity.</span><span>NOTHING TO ADD</span></div>`
+      : lines.map(l => `<div class="oline"><span>${esc(l.name)} ${l.flag ? '<span class="oflag">⚠ margin</span>' : ''}</span>
+          <span>${l.qty} × ${fmt$(l.cost)} = ${fmt$(l.lineCost)}</span></div>`).join('') +
+        `<div class="oline total"><span>TOTAL</span><span>${fmt$(total)}</span></div>`}
     ${broke ? `<div class="funds-banner">Not enough cash. You have ${fmt$(SIM.cash)}. Sell a few more cans first.</div>` : ''}
-    ${noVans && !broke ? `<div class="vans-banner">🚚 Both vans are out. One frees up when it gets back to the depot.</div>` : ''}
-    <button class="btn" ${broke || noVans ? 'disabled' : ''} onclick="confirmOrder('${m.id}', false)">
-      STANDARD VAN · ${fmt$(total)}</button>
-    <button class="btn blue" ${brokeRush || noVans ? 'disabled' : ''} onclick="confirmOrder('${m.id}', true)">
-      ⚡ RUSH VAN, 2X SPEED · ${fmt$(total + RUSH_FEE)}</button>`;
+    ${noVans && !full && !broke ? `<div class="vans-banner">🚚 Both vans are out. One frees up when it gets back to the depot.</div>` : ''}
+    <button class="btn" ${blocked ? 'disabled' : ''} onclick="confirmOrder('${m.id}', false)">
+      ${full ? 'MACHINE IS FULL' : `STANDARD DELIVERY · ${fmt$(total)}`}</button>
+    <button class="btn blue" ${full || brokeExpress || noVans ? 'disabled' : ''} onclick="confirmOrder('${m.id}', true)">
+      ${full ? 'COME BACK WHEN IT SELLS' : `⚡ EXPRESS, 2X SPEED · ${fmt$(total + RUSH_FEE)}`}</button>`;
 }
 
 function confirmOrder(mid, rush) {
@@ -1012,7 +1013,7 @@ function confirmOrder(mid, rush) {
     bend: Math.random() * 160 - 80,
   });
   sfxOrder();
-  toast(`${rush ? '⚡ RUSH ' : ''}ORDER CONFIRMED: ${fmt$(cost)} TO ${m.hood.toUpperCase()}`, '', 3);
+  toast(`${rush ? '⚡ EXPRESS ' : ''}ORDER CONFIRMED: ${fmt$(cost)} TO ${m.hood.toUpperCase()}`, '', 3);
   const p = pxOf(mid);
   floatAt(p.x, p.y - 40, '-' + fmt$(cost), '#a87b06');
   drawPins(); renderPanel(); updateHud();

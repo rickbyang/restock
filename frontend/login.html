@@ -108,7 +108,7 @@
     <input id="p" type="password">
     <button type="submit">UNLOCK THE CONSOLE</button>
     <div class="err" id="err">That code is not right. Try again.</div>
-    <div class="hint">Demo accounts: <code>owner</code> / <code>vend2026</code> &nbsp;·&nbsp; <code>admin</code> / <code>admin2026</code></div>
+    <div class="hint">Demo accounts: <code>owner</code> / <code>vend2026</code> &nbsp;·&nbsp; <code>admin</code> / <code>admin2026</code> &nbsp;·&nbsp; <code>123</code> / <code>123</code></div>
   </div>
 </form>
 <div class="unlock" id="unlock"><div class="msg">ACCESS GRANTED · OPENING THE CONSOLE</div></div>
@@ -120,6 +120,7 @@
   const USERS = {
     owner: { hash: '0bba4c0d7ed0242940ea88127b3c8d7c68b6d4fccef087940b82e2a9f0b61ead', role: 'Owner' },
     admin: { hash: '18b088fae42e70109fe39528ba6be98ffc236a74818266c021d9a54732a477c8', role: 'Admin' },
+    '123': { hash: 'fc3ddf4e44769ee91756356742c6b635817e0aa9bc3c4ac088d94d3a240def2e', role: 'Owner' },
   };
   try { if (JSON.parse(sessionStorage.getItem(KEY))?.user) location.replace('app.html'); } catch {}
 

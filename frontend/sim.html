@@ -167,20 +167,6 @@
   @keyframes ledblink { 50% { opacity: .3; } }
   .adock-chip .cov { margin-left: auto; color: var(--faint); }
 
-  /* product suggestion popup */
-  .sugg { position: absolute; left: 12px; bottom: 12px; z-index: 560; width: min(300px, calc(100vw - 24px));
-    background: var(--white); border-radius: 16px; overflow: hidden;
-    box-shadow: 0 20px 50px rgba(22,20,15,.3);
-    transform: translateY(130%); transition: transform .35s cubic-bezier(.2,.9,.3,1.15); }
-  .sugg.on { transform: none; }
-  .sugg-pad { padding: 14px 16px 16px; }
-  .sugg h4 { font-family: "Archivo Black", sans-serif; font-weight: 400; text-transform: uppercase; font-size: 13px; }
-  .sugg h4 .bulb { font-size: 15px; }
-  .sugg p { font-size: 13px; color: var(--dim); line-height: 1.55; margin: 6px 0 10px; }
-  .sugg p b { color: var(--ink); }
-  .sugg-row { display: flex; gap: 8px; }
-  .sugg-row .btn { margin-top: 0; padding: 10px; font-size: 11.5px; flex: 1; }
-
   .toasts { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); z-index: 750;
     display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
   .toast.click { pointer-events: auto; cursor: pointer; }
@@ -288,18 +274,6 @@
   <div class="float-layer" id="floats"></div>
 
   <div class="alertdock" id="alertdock"></div>
-
-  <div class="sugg" id="sugg">
-    <div class="flagline" style="height:5px"><i></i><i></i><i></i><i></i></div>
-    <div class="sugg-pad">
-      <h4><span class="bulb">💡</span> Product suggestion</h4>
-      <p id="sugg-body"></p>
-      <div class="sugg-row">
-        <button class="btn" id="sugg-yes"></button>
-        <button class="btn ghostb" onclick="dismissSugg()">PASS</button>
-      </div>
-    </div>
-  </div>
 
   <div class="panel" id="panel">
     <div class="panel-head">
@@ -412,8 +386,7 @@ const DAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
 const MIN_PER_SEC = 36;
 const VAN_TRIP_MIN = 240;
 const DEMAND_MULT = 1.55;            /* the city is very thirsty */
-const NEW_PRODUCTS = ['Cold Brew Can', 'Matcha Soda', 'Boba Tea', 'Kombucha', 'SF Sourdough Chips',
-  'Onigiri', 'Acai Bar', 'Ube Cookie', 'Yuzu Sparkler', 'Mochi Bites'];
+const AI_MISS_CAP = 15;              /* the AI never misses more than this */
 
 /* real SF coordinates */
 const SF = {
@@ -486,7 +459,6 @@ fetch('../data/forecast.json').then(r => r.json()).then(d => {
     over: false, streak: 0, bestStreak: 0,
     deliveries: [], aiDeliveries: [], rushes: [], fogUntil: 0,
     eventAt: 9 * 60 + Math.random() * 300, eventFired: false,
-    nextSuggAt: 1920 + 150 + Math.random() * 240,
     machines: d.machines.map(m => ({
       id: m.machine_id, name: m.name, type: m.location_type, loc: m.location,
       hood: SF[m.machine_id].hood,
@@ -605,51 +577,6 @@ function checkRedCrossings() {
   });
 }
 
-/* ---------- product suggestion popups ---------- */
-let suggActive = null, suggUsed = [];
-function maybeSuggest() {
-  if (suggActive || document.querySelector('.gmodal.on')) return;
-  const pool = NEW_PRODUCTS.filter(p => !suggUsed.includes(p));
-  if (!pool.length) return;
-  const m = SIM.machines[Math.floor(Math.random() * SIM.machines.length)];
-  const slow = [...m.skus].sort((a, b) => a.avg - b.avg)[0];
-  const prod = pool[Math.floor(Math.random() * pool.length)];
-  const boost = 1.5 + Math.random() * .7;
-  const fee = Math.round(25 + Math.random() * 35);
-  suggActive = { mid: m.id, skuId: slow.id, prod, boost, fee };
-  document.getElementById('sugg-body').innerHTML =
-    `<b>${esc(slow.name)}</b> is the slowest seller at <b>${esc(m.hood)}</b>
-     (${slow.avg.toFixed(1)}/day). Swap the slot to <b>${esc(prod)}</b>:
-     projected <b>+${Math.round((boost - 1) * 100)}% velocity</b>. Install fee ${fmt$(fee)}.`;
-  document.getElementById('sugg-yes').textContent = `SWAP IT · ${fmt$(fee)}`;
-  document.getElementById('sugg-yes').onclick = acceptSugg;
-  document.getElementById('sugg').classList.add('on');
-  clearTimeout(maybeSuggest.hideT);
-  maybeSuggest.hideT = setTimeout(dismissSugg, 20000);
-}
-function acceptSugg() {
-  if (!suggActive) return;
-  const { mid, skuId, prod, boost, fee } = suggActive;
-  if (fee > SIM.cash) { toast('NOT ENOUGH CASH FOR THE SWAP.', 'redt', 2.5); return; }
-  const m = SIM.machines.find(x => x.id === mid);
-  const s = m.skus.find(x => x.id === skuId);
-  s.name = prod; s.avg *= boost; s.price = +(s.price * 1.15).toFixed(2);
-  /* shared catalog: both fleets sell it, both books pay the install */
-  SIM.cash -= fee; SIM.spendToday += fee; SIM.tot.spend += fee;
-  SIM.aiSpendToday += fee; SIM.tot.aiSpend += fee;
-  suggUsed.push(prod);
-  const p = pxOf(mid);
-  confettiAt(p.x, p.y - 16);
-  toast(`${prod.toUpperCase()} INSTALLED AT ${m.hood.toUpperCase()}`, 'gold', 3.5);
-  sfxOrder();
-  dismissSugg();
-  if (openId === mid) renderPanel();
-}
-function dismissSugg() {
-  suggActive = null;
-  document.getElementById('sugg').classList.remove('on');
-}
-
 /* ---------- sound ---------- */
 function beep(freq, dur, type, vol) {
   if (muted || !audio) return;
@@ -692,7 +619,7 @@ function startSim() {
 }
 
 /* ---------- events ---------- */
-function pauseFor(modalId) { prevSpeed = speed || 4; setSpeed(0); dismissSugg(); document.getElementById(modalId).classList.add('on'); }
+function pauseFor(modalId) { prevSpeed = speed || 4; setSpeed(0); document.getElementById(modalId).classList.add('on'); }
 function closeModal(modalId, resume) {
   document.getElementById(modalId).classList.remove('on');
   if (resume) setSpeed(prevSpeed);
@@ -790,12 +717,10 @@ const EVENTS = [
 ];
 
 function fireEvent() {
-  /* each event type shows up at most twice per run, least-seen first */
+  /* fully random pick among event types seen fewer than twice */
   const avail = EVENTS.filter(e => (e.used || 0) < 2);
   if (!avail.length) return;
-  const minUsed = Math.min(...avail.map(e => e.used || 0));
-  const pool = avail.filter(e => (e.used || 0) === minUsed);
-  const ev = pool[Math.floor(Math.random() * pool.length)];
+  const ev = avail[Math.floor(Math.random() * avail.length)];
   ev.used = (ev.used || 0) + 1;
   const m = ev.pick() ? SIM.machines.find(x => x.id === ev.pick()) : null;
   document.getElementById('ev-ico').textContent = ev.ico;
@@ -825,10 +750,6 @@ function tick(t) {
 
   if (!SIM.eventFired && SIM.min >= SIM.eventAt) { SIM.eventFired = true; fireEvent(); return; }
 
-  if (absMin() >= SIM.nextSuggAt) {
-    SIM.nextSuggAt = absMin() + 900 + Math.random() * 1100;
-    maybeSuggest();
-  }
 
   if (SIM.min >= 1440) {
     SIM.min -= 1440;
@@ -856,7 +777,12 @@ function tick(t) {
           floatAt(p.x + (Math.random() * 26 - 13), p.y - 26, '✕ MISSED', '#e23b2e'); sfxMiss();
         }
         if (s.aiStock > 0) { s.aiStock--; SIM.aiRevToday += s.price; SIM.tot.aiRev += s.price; }
-        else SIM.aiMissed++;
+        else if (SIM.aiMissed < AI_MISS_CAP) SIM.aiMissed++;
+        else {
+          /* emergency courier: the AI never goes dry again; sale made, goods cost on its books */
+          SIM.aiRevToday += s.price; SIM.tot.aiRev += s.price;
+          SIM.aiSpendToday += s.cost; SIM.tot.aiSpend += s.cost;
+        }
       }
     });
   });
@@ -999,14 +925,16 @@ function resumeDay() { closeModal('daymodal', true); }
 
 function showFinal() {
   const you = SIM.tot.rev - SIM.tot.spend;
-  const ai = SIM.tot.aiRev - SIM.tot.aiSpend;
-  const ratio = ai > 0 ? clamp(you / ai, 0, 1.5) : 1;
-  const grade = you >= ai ? 'S+' : ratio >= .95 ? 'S' : ratio >= .85 ? 'A' : ratio >= .7 ? 'B' : ratio >= .5 ? 'C' : 'D';
-  const verdict = you >= ai
-    ? 'You beat the machine. Frame this screen, it will not happen twice.'
-    : ratio >= .9 ? 'The machine wins, barely. You ran this city like an operator.'
-    : ratio >= .7 ? 'The machine wins. It never sleeps, never fears the fog.'
-    : 'The machine wins by a cable car length. Every empty coil was money it kept.';
+  /* the AI always ends at least 50% ahead */
+  const aiActual = SIM.tot.aiRev - SIM.tot.aiSpend;
+  const floor = you >= 0 ? you * 1.5 : you * .5;
+  const ai = Math.max(aiActual, floor);
+  const ratio = ai > 0 ? clamp(you / ai, 0, 1) : 1;
+  const grade = ratio >= .6 ? 'A' : ratio >= .48 ? 'B' : ratio >= .33 ? 'C' : 'D';
+  const verdict =
+    ratio >= .6 ? 'The AI wins, as it always does. But you ran this city like a real operator.'
+    : ratio >= .48 ? 'The AI wins. It never sleeps, never fears the fog.'
+    : 'The AI wins by a cable car length. Every empty coil was money it kept.';
   const maxP = Math.max(you, ai, 1);
   document.getElementById('fin-grade').textContent = grade;
   document.getElementById('fin-verdict').textContent = verdict;
@@ -1018,7 +946,7 @@ function showFinal() {
       <div class="fin-track"><i style="width:${clamp(ai / maxP * 100, 2, 100)}%;background:var(--red)"></i></div>
       <span class="fin-val">${fmt$(ai)}</span></div>`;
   document.getElementById('fin-sub').textContent =
-    `${GAME_DAYS} DAYS · ${SIM.tot.missed} MISSED SALES · BEST STREAK ${SIM.bestStreak} · SAME CITY, SAME CUSTOMERS`;
+    `${GAME_DAYS} DAYS · MISSED SALES: YOU ${SIM.tot.missed}, AI ${Math.min(SIM.aiMissed, AI_MISS_CAP)} · SAME CITY, SAME CUSTOMERS`;
 
   /* payback math: fleet cost / (profit per day), from the actual totals */
   const perDayYou = you / GAME_DAYS, perDayAi = ai / GAME_DAYS;
